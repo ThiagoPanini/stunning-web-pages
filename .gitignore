@@ -1,0 +1,21 @@
+# worktrees dos agentes
+.worktrees/
+.claude/worktrees/
+
+# estado local do Claude Code
+.claude/settings.local.json
+
+# notas de handoff entre sessões; o que merece ficar entra nos documentos do catálogo
+.handoff/
+
+# dependências, build do Next e resultados do Playwright
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+test-results/
+playwright-report/
+
+# sistema
+.DS_Store
