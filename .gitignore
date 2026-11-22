@@ -8,6 +8,10 @@
 # notas de handoff entre sessões; o que merece ficar entra nos documentos do catálogo
 .handoff/
 
+# runtime do editor do Claude Design: baixado a cada Puxada, nunca versionado
+support.js
+dc-runtime.js
+
 # dependências, build do Next e resultados do Playwright
 node_modules/
 .next/
