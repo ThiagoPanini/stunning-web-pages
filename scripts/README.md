@@ -134,7 +134,7 @@ A árvore do Tema não guarda nada da Subida além do endereço no Ponteiro. O t
 | `README.md` | | o livro da marca, como está |
 | `components/<Componente>/README.md` | | como está; a lista das pastas é a lista dos componentes que sobem |
 | `components/<Componente>/preview.html` | o HTML do export estático (`web/out/`), o marcador com altura e subtítulo | o grupo do marcador (`group="…"`) |
-| `components/bundle.css` | o CSS compilado do app, sem o que `tokens.json` declara, sem `@font-face` e sem as animações | |
+| `components/bundle.css` | o CSS compilado do app, sem o que `tokens.json` declara, sem `@font-face` e no estado de movimento reduzido: as regras de `prefers-reduced-motion: reduce` valem sem a condição, e as que esperam `no-preference`, como as animações, saem | |
 | `components/Cover/preview.html` | | a capa, como está |
 | `fonts/` | os arquivos das faces de `fonts.ts` | nada: uma fonte que o app não tem mais sai |
 | `assets/` | `assets/Licenses/` recebe os arquivos de licença de `web/fonts/` | o resto, como está, com o `README.md` de cada grupo |

@@ -434,37 +434,60 @@ function tokensCss(tokens) {
   return `:root, [data-theme="${tokens.color.themes[0].id}"] {\n${declare(tokens.color.tokens)}\n${declare(tokens.shadow?.tokens ?? [])}\n}\n:root {\n${declare(rest)}\n${families}\n}\n${styles}\n${faces}\n`;
 }
 
-// components/bundle.css: the app's compiled CSS without what tokens.css declares (the token variables and
-// the @font-face rules) and without the animations, which wait for prefers-reduced-motion: the previews
-// show the final state, as the app does with reduced motion.
-async function bundleCss(theme, declared) {
-  const chunks = join(theme.web, 'out', '_next', 'static', 'chunks');
-  const cssFiles = readdirSync(chunks).filter((f) => f.endsWith('.css'));
-  if (cssFiles.length !== 1) throw new Error(`${chunks}: expected one CSS chunk, found ${cssFiles.length}`);
+// How a media rule stands to the motion preference: 'reduce' when it holds for reduced motion alone, the
+// state the previews show, so its rules apply as they are; 'motion' when it names the preference any other
+// way (no-preference, or reduce along with another condition), so it goes.
+function motionGuard(rule) {
+  const queries = rule.value.query.mediaQueries;
+  if (!JSON.stringify(queries).includes('prefers-reduced-motion')) return undefined;
+  const [query] = queries;
+  const feature = query.condition?.type === 'feature' ? query.condition.value : undefined;
+  const reduceAlone =
+    queries.length === 1 &&
+    query.qualifier === null &&
+    query.mediaType === 'all' &&
+    feature?.name === 'prefers-reduced-motion' &&
+    feature.value?.value === 'reduce';
+  return reduceAlone ? 'reduce' : 'motion';
+}
+
+// The app's compiled CSS as the previews take it: without what tokens.css declares (the token variables
+// and the @font-face rules) and in the state of reduced motion, as the app shows it then: what holds for
+// reduced motion applies, and what waits for no preference (the animations) goes.
+export async function previewCss(css, declared) {
   const lightning = await import('lightningcss');
   const transform = lightning.transform ?? lightning.default.transform;
-  const isMotionGuard = (rule) => JSON.stringify(rule.value.query).includes('prefers-reduced-motion');
   const { code } = transform({
     filename: 'app.css',
-    code: readFileSync(join(chunks, cssFiles[0])),
+    code: Buffer.from(css),
     minify: false,
     errorRecovery: false,
     visitor: {
       Rule: {
         'font-face': () => [],
-        media: (rule) => (isMotionGuard(rule) ? [] : undefined),
+        media: (rule) => ({ reduce: rule.value.rules, motion: [] })[motionGuard(rule)],
         // next/font's own classes, which name the families after the constants of fonts.ts.
         style: (rule) => (/_className|_variable/.test(JSON.stringify(rule.value.selectors)) ? [] : undefined),
       },
       Declaration: { custom: (property) => (declared.has(property.name) ? [] : undefined) },
     },
   });
-  const css = Buffer.from(code).toString('utf8');
+  const out = Buffer.from(code).toString('utf8');
   for (const name of declared) {
-    if (new RegExp(`(^|[;{\\s])${name}\\s*:`).test(css)) throw new Error(`bundle.css still declares ${name}`);
+    if (new RegExp(`(^|[;{\\s])${name}\\s*:`).test(out)) throw new Error(`bundle.css still declares ${name}`);
   }
-  if (/@font-face/.test(css)) throw new Error('bundle.css still has @font-face');
-  if (/prefers-reduced-motion/.test(css)) throw new Error('bundle.css still has motion rules');
+  if (/@font-face/.test(out)) throw new Error('bundle.css still has @font-face');
+  if (/prefers-reduced-motion/.test(out)) throw new Error('bundle.css still has motion rules');
+  return out;
+}
+
+// components/bundle.css: the previews' CSS (previewCss) of the app's one CSS chunk, with the frame of the
+// previews.
+async function bundleCss(theme, declared) {
+  const chunks = join(theme.web, 'out', '_next', 'static', 'chunks');
+  const cssFiles = readdirSync(chunks).filter((f) => f.endsWith('.css'));
+  if (cssFiles.length !== 1) throw new Error(`${chunks}: expected one CSS chunk, found ${cssFiles.length}`);
+  const css = await previewCss(readFileSync(join(chunks, cssFiles[0]), 'utf8'), declared);
   return `/* ${theme.name}: o CSS do app (Tailwind 4, compilado no export estático), sem o que tokens.json declara.
    Os valores dos tokens vêm de tokens.css; daqui saíram as @font-face, que tokens.css também declara,
    e as animações, guardadas por prefers-reduced-motion: as prévias mostram o estado final, como o app
