@@ -1,14 +1,15 @@
 # Ferramentas do Catálogo
 
-O laço com o Claude Design tem um veículo por sentido, e cada um tem aqui o seu passo a passo: a Puxada, que desce os Quadros de um Tema para a Origem, e a Subida, que publica o Sistema de design do Tema como Artefato do tipo Design System. O conferidor de documentos vem junto, para o fim de um Ciclo.
+O laço com o Claude Design tem um veículo por sentido, e cada um tem aqui o seu passo a passo: a Puxada, que desce os Quadros de um Tema para a Origem, e a Subida, que publica o Sistema de design do Tema como Artefato do tipo Design System. O conferidor de documentos e a conferência de um Tema vêm junto, para o fim de um Ciclo.
 
 | Ferramenta | Código | O que faz |
 |---|---|---|
 | [Puxada](#puxada) | `capture.mjs` | renderiza os Quadros fora do editor e tira as Capturas de referência |
 | [Subida](#subida) | `publish.mjs` | monta os arquivos do Artefato Design System a partir do app, confere e compara |
 | [Conferidor de documentos](#conferidor-de-documentos) | `check-docs.mjs` | confere links, tokens e valores dos documentos de um Tema |
+| [Conferência de um Tema](#conferência-de-um-tema) | `check.mjs` | instala, confere e testa o app de um Tema e roda o conferidor de documentos, num comando só |
 
-Cada ferramenta recebe o caminho de um Tema e tira dele o que é do Tema; nenhuma cita um Tema. O que mexe num Artefato (ler, listar, publicar) é feito pelo agente com a ferramenta Artifact, como dizem os passos abaixo.
+Cada ferramenta recebe o caminho de um Tema e tira dele o que é do Tema; nenhuma cita um Tema. O teste `tests/cites-no-theme.test.mjs` confere isso: lê os nomes do Catálogo (as pastas de Projeto e de Tema e o `# ` do `README.md` de cada Tema) e falha se um deles, ou um endereço de Artefato, aparece no código de `scripts/`. O que mexe num Artefato (ler, listar, publicar) é feito pelo agente com a ferramenta Artifact, como dizem os passos abaixo.
 
 `scripts/` carrega as próprias dependências, sem workspace na raiz. Uma vez por máquina, da raiz do repositório: `pnpm --dir scripts install`, que instala o Playwright e o lightningcss fixados em `scripts/package.json`; se o navegador da versão não estiver em cache, `pnpm --dir scripts exec playwright install chromium`. Os testes das ferramentas rodam com `pnpm --dir scripts test`, sem servidor; só o da extração das prévias abre o Chromium do Playwright.
 
@@ -221,3 +222,19 @@ Ele falha, listando cada caso, quando:
 - um documento cita endereço de Artefato, que só o Ponteiro guarda.
 
 A saída diz quantos links e tokens conferiu, os tokens do `@theme` que o `DESIGN.md` não cita e os valores literais que achou, e termina em `OK` quando não há falha.
+
+## Conferência de um Tema
+
+`check.mjs` roda num comando só a conferência de um Tema, o portão local de um Ciclo que toca o Tema. Da raiz do repositório:
+
+```
+node scripts/check.mjs projects/<projeto>/themes/<tema>
+```
+
+Os passos vêm em ordem, um de cada vez, com a saída à vista:
+
+1. `install`: `pnpm install --frozen-lockfile` no `web/` do Tema, que falha se o lockfile não acompanha o manifesto.
+2. `lint`, `typecheck` e `test`: os scripts do `package.json` do app, no `web/`. A ferramenta só os chama; o `test` monta o app e roda o Playwright dele.
+3. `docs`: o [conferidor de documentos](#conferidor-de-documentos) no Tema.
+
+O primeiro passo que falha para a conferência, e o script sai com o código dele. A última linha diz o que passou: `OK: install, lint, typecheck, test, docs`, ou `FAILED: <passo> exited with <código>; passed: <os anteriores>`. Um caminho que não é `projects/<projeto>/themes/<tema>` é recusado antes do primeiro passo.

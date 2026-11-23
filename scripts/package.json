@@ -2,7 +2,7 @@
   "name": "stunning-web-pages-scripts",
   "private": true,
   "type": "module",
-  "description": "Ferramentas do Catálogo que recebem o caminho de um Tema: a captura de referência da Puxada, a Subida do Sistema de design e o conferidor de documentos. Dependências próprias, sem workspace na raiz.",
+  "description": "Ferramentas do Catálogo que recebem o caminho de um Tema: a captura de referência da Puxada, a Subida do Sistema de design, o conferidor de documentos e a conferência de um Tema. Dependências próprias, sem workspace na raiz.",
   "scripts": {
     "test": "node --test 'tests/*.test.mjs'"
   },
