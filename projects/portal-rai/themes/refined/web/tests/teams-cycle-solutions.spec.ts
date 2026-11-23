@@ -15,4 +15,9 @@ for (const width of WIDTHS) {
     const page = await referencePage(width);
     await expectBandToMatchReference(page, { width, from: "cycle" });
   });
+
+  test(`Soluções matches the reference at ${width} px`, async ({ referencePage }) => {
+    const page = await referencePage(width);
+    await expectBandToMatchReference(page, { width, from: "solutions" });
+  });
 }
