@@ -1,25 +1,27 @@
 import localFont from "next/font/local";
 
 // The four families of the design, latin subset: the same files Google Fonts serves the Chromium of the
-// reference captures for the boards' requests (Inter Tight v9, Inter v20, JetBrains Mono v24 and Geist
-// Mono v6), each a variable font with a weight axis. The licenses are the OFL-*.txt files next to them,
-// in fonts/.
+// reference captures for the boards' requests, with Google's latin unicode-range. Each is a variable
+// font with a weight axis:
 //
-// Each face is declared as Google declares it: one @font-face per weight the board asks for, all on the
-// same file, with Google's latin unicode-range. The board asks for Inter Tight 300, 400 and 500, Inter
-// 400, 500 and 600, JetBrains Mono 400 and 500, and, for the logo, Geist Mono 400 and 500.
+// - Inter Tight v9, font version 3.004, weights 100 to 900; the board asks for 300, 400 and 500.
+// - Inter v20, font version 4.001, weights 100 to 900; the board asks for 400, 500 and 600.
+// - JetBrains Mono v24, font version 2.211, weights 400 to 800 (the file Google cuts for the board's
+//   400 and 500).
+// - Geist Mono v6, font version 1.701, weights 100 to 900; the logo board asks for 400 and 500.
+//
+// Google declares one @font-face per weight asked for, all on the same file; here each file has one
+// @font-face with its whole weight axis, which draws every weight the design uses the same way. The
+// licenses are the OFL-*.txt files next to the fonts, in fonts/.
 //
 // The @font-face keeps the design's family name, so the stacks in @theme are the board's own and no
 // automatic fallback goes in front of them. The layout imports this module only for its @font-face rules:
 // the className next/font generates names the family after the constant, not the design. The font loader
-// only takes literals, hence the repeated paths and range.
+// only takes literals, hence the repeated range.
 
 export const interTight = localFont({
-  src: [
-    { path: "../fonts/inter-tight-latin.woff2", weight: "300" },
-    { path: "../fonts/inter-tight-latin.woff2", weight: "400" },
-    { path: "../fonts/inter-tight-latin.woff2", weight: "500" },
-  ],
+  src: "../fonts/inter-tight-latin.woff2",
+  weight: "100 900",
   display: "swap",
   adjustFontFallback: false,
   declarations: [
@@ -33,11 +35,8 @@ export const interTight = localFont({
 });
 
 export const inter = localFont({
-  src: [
-    { path: "../fonts/inter-latin.woff2", weight: "400" },
-    { path: "../fonts/inter-latin.woff2", weight: "500" },
-    { path: "../fonts/inter-latin.woff2", weight: "600" },
-  ],
+  src: "../fonts/inter-latin.woff2",
+  weight: "100 900",
   display: "swap",
   adjustFontFallback: false,
   declarations: [
@@ -51,10 +50,8 @@ export const inter = localFont({
 });
 
 export const jetBrainsMono = localFont({
-  src: [
-    { path: "../fonts/jetbrains-mono-latin.woff2", weight: "400" },
-    { path: "../fonts/jetbrains-mono-latin.woff2", weight: "500" },
-  ],
+  src: "../fonts/jetbrains-mono-latin.woff2",
+  weight: "400 800",
   display: "swap",
   adjustFontFallback: false,
   declarations: [
@@ -68,10 +65,8 @@ export const jetBrainsMono = localFont({
 });
 
 export const geistMono = localFont({
-  src: [
-    { path: "../fonts/geist-mono-latin.woff2", weight: "400" },
-    { path: "../fonts/geist-mono-latin.woff2", weight: "500" },
-  ],
+  src: "../fonts/geist-mono-latin.woff2",
+  weight: "100 900",
   display: "swap",
   adjustFontFallback: false,
   declarations: [

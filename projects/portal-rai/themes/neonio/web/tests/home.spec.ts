@@ -75,25 +75,31 @@ for (const width of WIDTHS) {
   }
 }
 
-test("the text uses the design's faces, from the app's own font files", async ({ newWindow }) => {
+test("the text uses the design's families, from the app's own font files", async ({
+  newWindow,
+}) => {
   const page = await newWindow(1440);
+  const files: string[] = [];
+  page.on("request", (request) => {
+    const { pathname } = new URL(request.url());
+    if (pathname.endsWith(".woff2")) files.push(pathname.replace(/^.*\/([a-z_]+)\..*$/, "$1"));
+  });
   await load(page, "/");
   const loaded = await page.evaluate(() =>
     [...document.fonts]
       .filter((face) => face.status === "loaded")
-      .map((face) => `${face.family.replace(/["']/g, "")} ${face.weight}`)
+      .map((face) => face.family.replace(/["']/g, ""))
       .sort(),
   );
-  // The header and the hero; the blocks below and the logo bring the rest.
-  expect(loaded).toEqual(
-    expect.arrayContaining([
-      "Inter 400",
-      "Inter 500",
-      "Inter Tight 300",
-      "Inter Tight 500",
-      "JetBrains Mono 400",
-    ]),
-  );
+  // The header and the hero draw in three families; the logo brings Geist Mono. Next preloads the
+  // four files of the layout's fonts.
+  expect(loaded).toEqual(["Inter", "Inter Tight", "JetBrains Mono"]);
+  expect([...new Set(files)].sort()).toEqual([
+    "geist_mono_latin",
+    "inter_latin",
+    "inter_tight_latin",
+    "jetbrains_mono_latin",
+  ]);
 });
 
 // Scrolls from the top to the bottom of the page, one half window at a time, waiting two frames at
