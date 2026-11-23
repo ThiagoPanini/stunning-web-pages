@@ -313,8 +313,13 @@
   }
 }
 
-/* Text that lights up as it enters the view: rf-lit. */
+/* Text that lights up as it enters the view: rf-lit. Inside data-show-state="unlit" it is drawn before it
+   lights up, with no motion: the /design-system route shows that state. */
 @utility light-up {
+  &:is([data-show-state="unlit"] *) {
+    color: var(--color-unlit);
+    animation: none;
+  }
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       animation: rf-lit linear both;
