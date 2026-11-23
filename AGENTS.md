@@ -33,7 +33,7 @@ stunning-web-pages/
 One vehicle per direction: Telas come down, the Sistema de design goes up.
 
 - **Puxada**, down: copies the Tema's Quadros from the Artefato into `origin/` exactly as they are, records the Artefato's version in the Ponteiro and generates the Capturas de referência. The step by step is in `scripts/README.md`. After a Puxada, `git diff` on `origin/` shows what the Autor changed in the design: that diff is the work for the app.
-- **Subida**, up: publishes the Tema's Sistema de design, generated from the app's `@theme`, as a private Design System Artefato in the Autor's Claude account, and Claude Design draws the Tema's next Telas on top of it. It carries tokens, fonts, brand copy and static component previews.
+- **Subida**, up: publishes the Tema's Sistema de design, built from the app, as a private Design System Artefato in the Autor's Claude account, and Claude Design draws the Tema's next Telas on top of it. It carries the tokens from `@theme`, the app's fonts, brand copy and static component previews.
 - The Quadros are the Autor's canvas: the agent reads them and leaves them as they are. An adjustment born in code is a Desvio: list it in the Tema's `HANDOFF.md`; it reaches the Quadro only when the Autor asks.
 - The Ponteiro is the one file in `origin/` that holds Artefato addresses, the Subida's included. It declares itself the Autor's. No other file cites an address, and no document depends on the Ponteiro.
 - The editor runtime the Quadros load as `support.js` belongs to the publisher of the Artefato type. The Puxada downloads it to a temporary folder every time, and `.gitignore` keeps it out of git.
