@@ -1,14 +1,14 @@
-// Reference capture of Claude Design boards (.dc.html), rendered outside the editor.
+// The Capturas de referência of the Claude Design Quadros (.dc.html), rendered outside the editor.
 //
 // Usage: node scripts/capture.mjs <origin-dir> --runtime <path/to/dc-runtime.js>
 //
 // Reads <origin-dir>/captures.json, serves <origin-dir>/boards/ over HTTP on 127.0.0.1 (ephemeral port),
-// answering /support.js with the editor runtime given in --runtime, and writes for each board and width:
-//   <origin-dir>/reference/<Board>-<width>.png   full-page capture
-//   <origin-dir>/reference/<Board>-<width>.json  page size, capture conditions and the box of each block
+// answering /support.js with the editor runtime given in --runtime, and writes for each Quadro and width:
+//   <origin-dir>/reference/<Quadro>-<width>.png   the full page, the Captura de referência itself
+//   <origin-dir>/reference/<Quadro>-<width>.json  page size, capture conditions and the box of each block
 //
 // Capture conditions: headless Chromium from the pinned Playwright, deviceScaleFactor 1, reduced motion,
-// no touch emulation, and a viewport grown to the document height. The reveals of the boards use CSS
+// no touch emulation, and a viewport grown to the document height. The reveals of the Quadros use CSS
 // scroll-driven animations; in a short viewport everything below the fold would stay invisible.
 // See scripts/README.md for the whole Puxada.
 
@@ -19,8 +19,8 @@ import { basename, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 
-// Start short: documentElement.scrollHeight never reports less than the viewport, so a board smaller than
-// the first viewport (the logo, 560 px) would be captured with empty space below it.
+// Start short: documentElement.scrollHeight never reports less than the viewport, so a Quadro smaller
+// than the first viewport (the logo, 560 px) would be captured with empty space below it.
 const INITIAL_VIEWPORT_HEIGHT = 100;
 const MAX_GROW_STEPS = 6;
 const SETTLE_MS = 500;
@@ -175,7 +175,8 @@ async function captureBoard(browser, base, entry, width) {
     };
   });
 
-  // Every check runs before anything is written, so a failed capture leaves the reference files as they were.
+  // Every check runs before anything is written, so a failed capture leaves the Capturas de referência as
+  // they were.
   const checkProblems = () => {
     if (problems.length > 0) throw new Error(`${entry.board} em ${width} px:\n  ${problems.join('\n  ')}`);
   };
