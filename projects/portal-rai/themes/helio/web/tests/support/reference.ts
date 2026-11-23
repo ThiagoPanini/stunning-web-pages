@@ -48,10 +48,11 @@ const SETTLE_MS = 500;
 const PIXEL_THRESHOLD = 0.1;
 
 // Default share of a band's pixels that may differ. First calibration, on the header and hero band with
-// the logo masked: 0 differing pixels at 1440 and at 390 px. Exactly equal pixels fail only in the header
-// at 1440 px, by one level of one channel (its translucent, blurred background), which the threshold
-// above absorbs. The limit is kept near zero, so a moved line of text or a wrong color fails: 0.01% is 85
-// pixels of the header and hero band at 1440 px. The calibration of the whole Home may revise it.
+// the logo masked: 0 differing pixels at 1440 and at 390 px. Compared byte for byte, the bands differ
+// only in the header at 1440 px, by one level of one channel (its translucent, blurred background), which
+// the threshold above absorbs. The limit stays near zero, so a moved line of text or a wrong color fails:
+// 0.01% is 85 pixels of the header and hero band at 1440 px. The calibration of the whole Home may
+// revise it.
 export const MAX_DIFF_PIXEL_RATIO = 0.0001;
 
 export async function readReference(width: Width): Promise<ReferenceRecord & { image: PNG }> {
