@@ -120,6 +120,39 @@ test('the brand goes back to the top of the page, and "Contato" to the footer', 
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 });
 
+test("the keyboard focus ring is white around a link, and dark inside the links of the white block", async ({
+  newWindow,
+}) => {
+  const page = await newWindow(1440);
+  await page.goto("/");
+  const ring = () =>
+    page.evaluate(() => {
+      const style = getComputedStyle(document.activeElement as Element);
+      return {
+        name: document.activeElement?.textContent,
+        ring: `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor} ${style.outlineOffset}`,
+      };
+    });
+  const dark = "solid 2px rgb(4, 4, 6) -4px";
+  const white = "solid 2px rgb(255, 255, 255) 2px";
+  const expected = [
+    { name: "Responsible AI", ring: dark },
+    { name: "Dados", ring: dark },
+    { name: "Playground", ring: dark },
+    { name: "Integrações", ring: dark },
+    { name: "Contato", ring: white },
+    { name: "Testar um guardrail", ring: white },
+    { name: "Testar um guardrail", ring: white },
+    { name: "Ver os dados", ring: white },
+  ];
+  const found = [];
+  for (const _ of expected) {
+    await page.keyboard.press("Tab");
+    found.push(await ring());
+  }
+  expect(found).toEqual(expected);
+});
+
 // Links to screens the design does not have yet, and buttons whose action does not exist.
 const INERT_LINKS: [string, string][] = [
   ["header", "Dados"],

@@ -170,7 +170,8 @@ function literalValues(value: string): string[] {
 }
 
 // Drawings keep their geometry in their own file, as globals.css explains: an illustration's positions
-// in % and an icon's strokes. A component file named *-illustration.tsx is one.
+// in % and an icon's strokes. A component file named *-illustration.tsx is one: its arbitrary values may
+// carry lengths, but its colors are tokens like everyone's.
 const DRAWING = /-illustration\.tsx$/;
 
 // The body of an at-rule block of a stylesheet, braces balanced: `@layer base` gives its rules.
@@ -189,12 +190,14 @@ test("no component or base rule writes a design value outside @theme", () => {
   const dir = join(import.meta.dirname, "..", "components");
   const found: string[] = [];
   for (const file of readdirSync(dir).filter((name) => name.endsWith(".tsx"))) {
-    if (DRAWING.test(file)) continue;
     const source = readFileSync(join(dir, file), "utf8");
-    // Arbitrary values of classes (grow-[1.2], grid-cols-[…]) and colors written out anywhere.
+    // Arbitrary values of classes (grow-[1.2], grid-cols-[…]), and colors written out anywhere: in a
+    // class, a style or an SVG attribute.
     for (const [className, value] of source.matchAll(/[\w:-]+-\[([^\]\s"'`]+)\]/g)) {
       const literals = literalValues(value);
-      if (literals.length > 0) found.push(`${file}: ${className} (${literals.join(", ")})`);
+      if (literals.length > 0 && !DRAWING.test(file)) {
+        found.push(`${file}: ${className} (${literals.join(", ")})`);
+      }
     }
     for (const [color] of source.matchAll(/#[0-9A-Fa-f]{3,8}\b|rgba?\([^)]*\)/g)) {
       found.push(`${file}: ${color}`);
