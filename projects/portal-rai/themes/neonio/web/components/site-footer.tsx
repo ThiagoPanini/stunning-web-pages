@@ -1,27 +1,5 @@
 import type { ReactNode } from "react";
-import { InertLink } from "./inert-link";
-
-const linkClassName =
-  "inline-flex min-h-11 items-center text-muted transition-[color] hover:text-white";
-
-type FooterLinkProps = {
-  children: ReactNode;
-  // An anchor of the Home; without one the link leads to a screen the design does not have yet, and
-  // stays inert.
-  href?: `#${string}`;
-};
-
-// A link of the footer (.uk-foot a, .uk-flink): grey, white on hover.
-function FooterLink({ children, href }: FooterLinkProps) {
-  if (href) {
-    return (
-      <a href={href} className={linkClassName}>
-        {children}
-      </a>
-    );
-  }
-  return <InertLink className={linkClassName}>{children}</InertLink>;
-}
+import { FooterLink } from "./footer-link";
 
 type FooterColumnProps = {
   heading: string;

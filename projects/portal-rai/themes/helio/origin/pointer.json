@@ -4,18 +4,18 @@
   "tool": "Claude Design",
   "title": "Responsible AI · Home · explorações",
   "url": "https://claude.ai/artifact/Kkz7Y2vrKS697Mzk2m7Q3F",
-  "version": "1795287167-d2bc",
-  "pulledAt": "2026-11-22",
+  "version": "1795438918-1424",
+  "pulledAt": "2026-11-23",
   "boards": [
     {
       "file": "Main.dc.html",
       "title": "Home · Hélio",
-      "sha256": "fbd50ec05b6db49ac260ed33fd37f87a927420fb8d18386ddfac69aab51be1e6"
+      "sha256": "36c52550a185fbf476b32843a9053e62c97515a8b139adb20e9336176561a663"
     },
     {
-      "file": "LogoLab5.dc.html",
-      "title": "Lab 5 · Eclusa",
-      "sha256": "6104691d45fe630f8c2f3847dc7a11d99d4a222690a1462a5825c73e412050bf"
+      "file": "LogoLab1.dc.html",
+      "title": "Lab 1 · Ondas",
+      "sha256": "4ece8b634b8ba3be530e4ad08141332260e1d457d815f72a7856d67253449c3b"
     }
   ],
   "designSystem": {
@@ -23,7 +23,7 @@
     "type": "Design System",
     "title": "portal-rai · Hélio",
     "url": "https://claude.ai/artifact/WpZdP2dhhEYSXLCvD6yKDZ",
-    "version": "1795402749-b1cd",
-    "publishedAt": "2026-11-22"
+    "version": "1795447636-5dde",
+    "publishedAt": "2026-11-23"
   }
 }

@@ -2,18 +2,21 @@
  * The Hélio's design system.
  *
  * The @theme block below is the only source of the tokens: every value the origin uses (the Home board
- * and the Eclusa logo board) has a name here, named as found. Close values stay separate (ADR 0004).
+ * and the Ondas logo board) has a name here, named as found. Close values stay separate (ADR 0004).
  * Tailwind's own theme is reset, so its palette, type scale, radii, shadows, breakpoints and the rest do
  * not exist as classes; only its spacing scale comes back, and it names every fixed length in px
  * (gap-2.5 is 10px).
  *
  * Naming: a color or a length with one job is named after the job (night, gutter); a value that belongs
  * to a scale is named after its value (text-15 is 15px, text-36-80 grows from 36 to 80px, leading-160 is
- * 1.6, tracking-tight-35 is -0.035em, radius-10 is 10px).
+ * 1.6, tracking-tight-35 is -0.035em, radius-10 is 10px). The Ondas logo's own values keep the names of
+ * its component, the same file in every theme of the project, so they stay apart from the page's equal
+ * values and leading-1200 counts in thousandths.
  *
  * Left out on purpose: the two hover rules of the board no element uses (.chip and .atk), the rule for
- * the Selo logo's caption under 380px, which the Eclusa does not show, and the drawing of the brand mark,
- * the caption icons and the logo (stroke widths and coordinates stay in the SVG and in the components).
+ * the Selo logo's caption under 380px, which the Home with the Ondas does not show, and the drawing of
+ * the brand mark
+ * and the logo (the mark's stroke widths and the logo's geometry stay in their components).
  * The motion keeps its own geometry too: the distances, scale and opacity of the board's keyframes and
  * the ranges of its scroll-driven animations stay in the keyframes and utilities below; their durations
  * and curves are tokens.
@@ -36,6 +39,8 @@
   /* Families, with the board's fallbacks. */
   --font-sans: "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-logo:
+    "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; /* the Ondas logo */
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 
@@ -45,16 +50,21 @@
   --color-rule: #1f282e; /* section and card rules */
   --color-rule-strong: #2c373e; /* Mission column rules, dotted leaders */
   --color-unlit: #5a6870; /* Mission title words before they light up */
-  --color-subtle: #87949c; /* mono labels, footer, logo response rings */
+  --color-subtle: #87949c; /* mono labels, footer */
   --color-muted: #a9b4ba; /* paragraphs, nav, links, caption "agente" */
-  --color-disc: #c9d1d6; /* logo disc */
   --color-bright: #eef1f2; /* main text, light button, brand mark */
 
   /* Accents: red is attack and the Red Team, blue is guardrail and the Blue Team. */
   --color-red: #ec5b48;
   --color-blue: #5a90f8; /* also the focus ring */
-  --color-blue-soft: #a9c5fb; /* logo: warm segment and shock wave */
-  --color-blue-pale: #dce7fe; /* logo: hot segment */
+
+  /* The Ondas logo's colors: its drawing, on its board's background. */
+  --color-logo-red: #ec5b48; /* attack */
+  --color-logo-blue: #5a90f8; /* guardrails */
+  --color-logo-agent: #c9d1d6; /* agent */
+  --color-logo-gray: #87949c; /* valid answers */
+  --color-logo-bright: #eef1f2; /* the logo's base color */
+  --color-logo-night: #0a0d0f; /* the logo board's own background */
 
   /* Translucent colors, named after their alpha in hundredths. */
   --color-header: rgba(10, 13, 15, 0.82);
@@ -81,6 +91,7 @@
   --text-32-56: clamp(32px, 3.8vw, 56px); /* Start title */
   --text-36-80: clamp(36px, 4.9vw, 80px); /* hero title */
   --text-36-92: clamp(36px, 6vw, 92px); /* Mission title */
+  --text-logo: 2.604cqw; /* the logo's characters: 64 columns span its width */
 
   --font-weight-light: 300;
   --font-weight-normal: 400;
@@ -105,6 +116,7 @@
   --leading-150: 1.5; /* page base, API card */
   --leading-155: 1.55; /* solution descriptions */
   --leading-160: 1.6; /* paragraphs */
+  --leading-1200: 1.2; /* the logo's characters */
 
   /* Fluid spacing and the page width. */
   --spacing-gutter: clamp(20px, 4vw, 48px); /* side padding of header, main and footer */
