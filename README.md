@@ -6,11 +6,11 @@ Cada Projeto reúne um ou mais Temas. Um Tema é um design criado numa ferrament
 
 ## Índice
 
-| Projeto | Tema | Captura | Telas cobertas | Stack |
-|---|---|---|---|---|
-| [`portal-rai`](projects/portal-rai/README.md): o portal de um time de Responsible AI | [Hélio](projects/portal-rai/themes/helio/README.md) | <img src="projects/portal-rai/themes/helio/screenshots/home-1440.png" alt="Captura da Home do Hélio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático |
-| | [Neônio](projects/portal-rai/themes/neonio/README.md) | <img src="projects/portal-rai/themes/neonio/screenshots/home-1440.png" alt="Captura da Home do Neônio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático |
-| | [Refined](projects/portal-rai/themes/refined/README.md) | <img src="projects/portal-rai/themes/refined/screenshots/home-1440.png" alt="Captura da Home do Refined" width="240"> | Home | Next.js 16, Tailwind CSS 4, Base UI, export estático |
+| Projeto | Tema | Captura | Telas cobertas | Stack | Implementado em |
+|---|---|---|---|---|---|
+| [`portal-rai`](projects/portal-rai/README.md): o portal de um time de Responsible AI | [Hélio](projects/portal-rai/themes/helio/README.md) | <img src="projects/portal-rai/themes/helio/screenshots/home-1440.png" alt="Captura da Home do Hélio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
+| | [Neônio](projects/portal-rai/themes/neonio/README.md) | <img src="projects/portal-rai/themes/neonio/screenshots/home-1440.png" alt="Captura da Home do Neônio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
+| | [Refined](projects/portal-rai/themes/refined/README.md) | <img src="projects/portal-rai/themes/refined/screenshots/home-1440.png" alt="Captura da Home do Refined" width="240"> | Home | Next.js 16, Tailwind CSS 4, Base UI, export estático | 23/11/2026 |
 
 ## Como usar um Tema
 
