@@ -12,7 +12,7 @@ type FooterLinkProps = {
 // A link of the footer: subtle, bright on hover, with a 44px tall target.
 export function FooterLink({ children, href, current = false }: FooterLinkProps) {
   const className = [
-    "inline-flex min-h-11 items-center transition-[color] hover:text-bright",
+    "inline-flex min-h-11 items-center text-13 transition-[color] hover:text-bright",
     current ? "text-bright" : "text-subtle",
   ].join(" ");
   if (href) {

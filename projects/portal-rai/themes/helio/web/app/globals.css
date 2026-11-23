@@ -18,8 +18,10 @@
 
 @import "tailwindcss";
 
-/* The Quadro's :hover rules apply to any pointer; Tailwind's own hover waits for (hover: hover). */
-@custom-variant hover (&:hover);
+/* The Quadro's :hover rules apply to any pointer; Tailwind's own hover waits for (hover: hover).
+   Inside data-show-state="hover" a component is drawn hovered: the /design-system route shows the state
+   that way, with no pointer over it. */
+@custom-variant hover (&:is(:hover, [data-show-state="hover"] *));
 
 /* The Quadro's only breakpoint: at 760px and below the header stops sticking and the nav gets a row. */
 @custom-variant narrow (@media (max-width: 760px));
@@ -196,9 +198,11 @@
     background: var(--color-night);
   }
 
+  /* Inside data-show-state="focus", drawn focused: the /design-system route shows the state that way. */
   a:focus-visible,
   button:focus-visible,
-  textarea:focus-visible {
+  textarea:focus-visible,
+  [data-show-state="focus"] :is(a, button, textarea) {
     outline: 2px solid var(--color-blue);
     outline-offset: 3px;
   }

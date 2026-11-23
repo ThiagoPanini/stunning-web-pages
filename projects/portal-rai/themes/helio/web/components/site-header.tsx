@@ -1,9 +1,7 @@
 import { BrandMark } from "./brand-mark";
 import { ButtonLink } from "./button-link";
-import { InertLink } from "./inert-link";
-
-const navLink =
-  "flex h-9 items-center whitespace-nowrap rounded-pill px-3.5 transition-[color,background-color] pointer-coarse:h-11";
+import { NavLink } from "./nav-link";
+import { NavPill } from "./nav-pill";
 
 // Telas the design does not have yet: their links are Lacunas.
 const otherScreens = ["Dados", "Playground", "Integrações"];
@@ -26,22 +24,14 @@ export function SiteHeader() {
           <span>Responsible AI</span>
         </a>
         <div className="narrow:order-3 narrow:flex-[1_1_100%] narrow:overflow-x-auto">
-          <nav
-            aria-label="Principal"
-            className="flex w-max items-center gap-0.5 rounded-pill border border-white-9 bg-white-4 p-0.75 text-14"
-          >
-            <a href="/" aria-current="page" className={`${navLink} bg-white-10 text-bright`}>
+          <NavPill label="Principal">
+            <NavLink href="/" current>
               Home
-            </a>
+            </NavLink>
             {otherScreens.map((screen) => (
-              <InertLink
-                key={screen}
-                className={`${navLink} text-muted hover:bg-white-6 hover:text-bright`}
-              >
-                {screen}
-              </InertLink>
+              <NavLink key={screen}>{screen}</NavLink>
             ))}
-          </nav>
+          </NavPill>
         </div>
         <div className="flex flex-[1_1_0] justify-end">
           <ButtonLink variant="header">Testar um guardrail</ButtonLink>
