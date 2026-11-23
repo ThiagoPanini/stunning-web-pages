@@ -30,6 +30,10 @@ test("the Home lays out its blocks in the board's order", async ({ page }) => {
 for (const width of WIDTHS) {
   // The limit and its reason are next to MAX_DIFF_PIXEL_RATIO, in support/reference.ts.
   test(`the whole Home matches the reference capture at ${width} px`, async ({ referencePage }) => {
+    // The heaviest test of the suite: a window as tall as the page, its picture (12.6 million pixels at
+    // 1440 px) decoded and compared with the reference's, and the three images attached. About 7 s on
+    // an idle machine; past the default 30 s when other suites load it. Triple time, the same check.
+    test.slow();
     const page = await referencePage(width);
     const reference = await readReference(width);
     const screenshot = await page.screenshot({ fullPage: true, animations: "disabled" });
