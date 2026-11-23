@@ -4,7 +4,7 @@
 // same Playwright, deviceScaleFactor 1, reduced motion, no touch and a viewport as tall as the document.
 // Each block of the page carries data-block="<name>", the names of origin/captures.json; a band runs from
 // the top of one block to the bottom of another, edge to edge, and is compared with the same band cut
-// from the reference image.
+// from the Captura de referência.
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -79,7 +79,7 @@ export async function readReference(width: Width): Promise<ReferenceRecord & { i
   return { ...record, image };
 }
 
-// The browser context of a reference capture, at the given width.
+// The browser context of a Captura de referência, at the given width.
 export function referenceContextOptions(width: number): BrowserContextOptions {
   return {
     viewport: { width, height: INITIAL_VIEWPORT_HEIGHT },
@@ -147,38 +147,22 @@ function crop(image: PNG, y: number, height: number): PNG {
   return band;
 }
 
-type BandOptions = {
-  width: Width;
-  from: BlockName;
-  to?: BlockName;
-  // Regions skipped in both images, such as the place of a component that does not exist yet.
-  mask?: RegionName[];
-  // A band that needs a looser limit than the default says so here, with the reason next to it.
-  maxDiffPixelRatio?: number;
+type ImageOptions = {
+  // The per-pixel threshold, when a comparison needs another one than PIXEL_THRESHOLD; the reason goes
+  // next to the value, as in logo.spec.ts.
+  threshold?: number;
 };
 
-// Compares the band of the page from the top of `from` to the bottom of `to` with the same band of the
-// Captura de referência. The band must start where the reference's starts and have its height, and at
-// most maxDiffPixelRatio of its pixels may differ. Actual, expected and diff images are attached to the
-// test result, and the count of differing pixels goes to its annotations.
-export async function expectBandToMatchReference(page: Page, options: BandOptions): Promise<void> {
-  const { width, from, to = from, mask = [], maxDiffPixelRatio = MAX_DIFF_PIXEL_RATIO } = options;
-  const reference = await readReference(width);
-  const refTop = reference.blocks[from].y;
-  const refHeight = reference.blocks[to].y + reference.blocks[to].height - refTop;
-  const appFrom = await blockBox(page, from);
-  const appTo = to === from ? appFrom : await blockBox(page, to);
-  const appTop = appFrom.y;
-  const appHeight = appTo.y + appTo.height - appTop;
-  const name = `${from === to ? from : `${from}-${to}`}-${width}`;
-
-  const expected = crop(reference.image, refTop, refHeight);
-  const actual = PNG.sync.read(
-    await page.screenshot({
-      clip: { x: 0, y: appTop, width, height: appHeight },
-      animations: "disabled",
-    }),
-  );
+// Compares an image of the app with the image it must match, pixel by pixel: both must have the same
+// size, and at most MAX_DIFF_PIXEL_RATIO of the pixels may differ. Actual, expected and diff images are
+// attached to the test result as <name>-actual.png and so on, and the count of differing pixels goes to
+// its annotations.
+export async function expectImageToMatch(
+  name: string,
+  actual: PNG,
+  expected: PNG,
+  { threshold = PIXEL_THRESHOLD }: ImageOptions = {},
+): Promise<void> {
   await test.info().attach(`${name}-expected.png`, {
     body: PNG.sync.write(expected),
     contentType: "image/png",
@@ -187,39 +171,61 @@ export async function expectBandToMatchReference(page: Page, options: BandOption
     body: PNG.sync.write(actual),
     contentType: "image/png",
   });
-
-  expect(
-    { top: appTop, height: appHeight },
-    `posição e altura da faixa ${from}..${to} em ${width} px`,
-  ).toEqual({ top: refTop, height: refHeight });
-
-  const ignoreMask = new Uint8Array(width * refHeight);
-  for (const region of mask) {
-    const box = reference.regions[region];
-    for (
-      let y = Math.max(0, box.y - refTop);
-      y < Math.min(refHeight, box.y + box.height - refTop);
-      y++
-    ) {
-      ignoreMask.fill(1, y * width + box.x, y * width + box.x + box.width);
-    }
-  }
-  const diff = new PNG({ width, height: refHeight });
-  const differing = pixelmatch(actual.data, expected.data, diff.data, width, refHeight, {
-    threshold: PIXEL_THRESHOLD,
-    ignoreMask,
+  const { width, height } = expected;
+  expect({ width: actual.width, height: actual.height }, `tamanho de ${name}`).toEqual({
+    width,
+    height,
   });
+
+  const diff = new PNG({ width, height });
+  const differing = pixelmatch(actual.data, expected.data, diff.data, width, height, { threshold });
   await test.info().attach(`${name}-diff.png`, {
     body: PNG.sync.write(diff),
     contentType: "image/png",
   });
-  const compared = width * refHeight - ignoreMask.reduce((sum, value) => sum + value, 0);
+  const total = width * height;
   test.info().annotations.push({
     type: "diff",
-    description: `${name}: ${differing} de ${compared} pixels diferem`,
+    description: `${name}: ${differing} de ${total} pixels diferem`,
   });
   expect(
-    differing / compared,
-    `${differing} de ${compared} pixels diferem na faixa ${from}..${to} em ${width} px`,
-  ).toBeLessThanOrEqual(maxDiffPixelRatio);
+    differing / total,
+    `${differing} de ${total} pixels diferem em ${name}`,
+  ).toBeLessThanOrEqual(MAX_DIFF_PIXEL_RATIO);
+}
+
+type BandOptions = {
+  width: Width;
+  from: BlockName;
+  to?: BlockName;
+};
+
+// Compares the band of the page from the top of `from` to the bottom of `to` with the same band of the
+// Captura de referência: the band must start where the reference's starts, and its image must match the
+// reference's (expectImageToMatch).
+export async function expectBandToMatchReference(page: Page, options: BandOptions): Promise<void> {
+  const { width, from, to = from } = options;
+  const reference = await readReference(width);
+  const refTop = reference.blocks[from].y;
+  const refHeight = reference.blocks[to].y + reference.blocks[to].height - refTop;
+  const appFrom = await blockBox(page, from);
+  const appTo = to === from ? appFrom : await blockBox(page, to);
+  const appTop = appFrom.y;
+  const appHeight = appTo.y + appTo.height - appTop;
+
+  // Soft, so a band in the wrong place still shows its images and its diff.
+  expect
+    .soft(
+      { top: appTop, height: appHeight },
+      `posição e altura da faixa ${from}..${to} em ${width} px`,
+    )
+    .toEqual({ top: refTop, height: refHeight });
+  const actual = PNG.sync.read(
+    await page.screenshot({
+      clip: { x: 0, y: appTop, width, height: appHeight },
+      animations: "disabled",
+    }),
+  );
+  const name = `${from === to ? from : `${from}-${to}`}-${width}`;
+  await expectImageToMatch(name, actual, crop(reference.image, refTop, refHeight));
 }

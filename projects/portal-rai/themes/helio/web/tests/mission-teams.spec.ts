@@ -2,35 +2,22 @@
 // pelo scroll (as palavras do título que acendem, os cartões que entram dos lados), o estado final com
 // movimento reduzido e nenhum transbordo horizontal.
 
-import type { BrowserContext, Locator, Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
+import { spilledElements } from "./support/overflow";
 import { expectBandToMatchReference, WIDTHS, type Width } from "./support/reference";
-import { test as base, expect } from "./support/test";
+import { test as base, expect, load, type Motion } from "./support/test";
 
 // The colors of the Missão title's words before and after they light up (unlit and bright).
 const UNLIT = "rgb(90, 104, 112)";
 const BRIGHT = "rgb(238, 241, 242)";
 
-// The window of each width under test: a desktop and a phone.
-const WINDOW_HEIGHT: Record<Width, number> = { 1440: 900, 390: 844 };
-
-type Motion = "reduce" | "no-preference";
-
 const test = base.extend<{ openHome: (width: Width, motion: Motion) => Promise<Page> }>({
-  openHome: async ({ browser, baseURL }, use) => {
-    const contexts: BrowserContext[] = [];
+  openHome: async ({ newWindow }, use) => {
     await use(async (width, motion) => {
-      const context = await browser.newContext({
-        baseURL,
-        viewport: { width, height: WINDOW_HEIGHT[width] },
-        reducedMotion: motion,
-      });
-      contexts.push(context);
-      const page = await context.newPage();
-      await page.goto("/", { waitUntil: "networkidle" });
-      await page.evaluate(() => document.fonts.ready);
+      const page = await newWindow(width, { motion });
+      await load(page, "/");
       return page;
     });
-    for (const context of contexts) await context.close();
   },
 });
 
@@ -161,22 +148,7 @@ for (const width of WIDTHS) {
     referencePage,
   }) => {
     const page = await referencePage(width);
-    // Every element stays between the edges of its block, and no content spills out of its box.
-    const outside = await page
-      .locator('[data-block="mission"], [data-block="teams"]')
-      .evaluateAll((blocks) =>
-        blocks.flatMap((block) => {
-          const edge = block.getBoundingClientRect();
-          return [...block.querySelectorAll("*")]
-            .filter((element) => {
-              const box = element.getBoundingClientRect();
-              const spills = element.clientWidth > 0 && element.scrollWidth > element.clientWidth;
-              return box.left < edge.left - 0.5 || box.right > edge.right + 0.5 || spills;
-            })
-            .map((element) => element.outerHTML.slice(0, 80));
-        }),
-      );
-    expect(outside).toEqual([]);
+    expect(await spilledElements(page, width, ["mission", "teams"])).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
   });
 }
