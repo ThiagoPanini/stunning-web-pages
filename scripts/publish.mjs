@@ -423,10 +423,11 @@ function tokensCss(tokens) {
         `.${s.name} { font-family: var(--font-${s.family}); font-size: ${s.fontSize}; font-weight: ${s.fontWeight}; line-height: ${s.lineHeight};${s.letterSpacing ? ` letter-spacing: ${s.letterSpacing};` : ''} }`,
     )
     .join('\n');
+  const format = (file) => ({ woff2: 'woff2', woff: 'woff', ttf: 'truetype', otf: 'opentype' })[file.split('.').pop().toLowerCase()];
   const faces = tokens.type.fonts
     .map(
       (f) =>
-        `@font-face { font-family: "${f.family}"; src: url(../project/${f.file}) format("woff2"); font-weight: ${f.weight}; font-style: ${f.style};${f.unicodeRange ? ` unicode-range: ${f.unicodeRange};` : ''} }`,
+        `@font-face { font-family: "${f.family}"; src: url(../project/${f.file}) format("${format(f.file)}"); font-weight: ${f.weight}; font-style: ${f.style};${f.unicodeRange ? ` unicode-range: ${f.unicodeRange};` : ''} }`,
     )
     .join('\n');
   return `:root, [data-theme="${tokens.color.themes[0].id}"] {\n${declare(tokens.color.tokens)}\n${declare(tokens.shadow?.tokens ?? [])}\n}\n:root {\n${declare(rest)}\n${families}\n}\n${styles}\n${faces}\n`;
