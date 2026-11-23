@@ -645,22 +645,30 @@ export async function build({ themeDir, draftDir, outDir, note, ref }) {
     const { markup, lang } = await extractMarkup(browser, theme, draft.components, files);
     const frame = (body) =>
       `<!doctype html><html lang="${lang}" data-theme="${tokens.color.themes[0].id}"><head><meta charset="utf-8"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="../project/components/bundle.css"></head><body>${body}</body></html>`;
-    const measure = async (name, body, width) => {
+    // Writes <name>.html in the harness, opens it at the width given with reduced motion, waits for its
+    // fonts and saves <name>.png. Without a height, the page's first element gives it (40px at least), and
+    // the viewport takes it before the capture. Returns the height.
+    const render = async (name, html, width, height) => {
       const file = join(harnessDir, `${name}.html`);
-      writeFileSync(file, frame(body));
-      const page = await browser.newPage({ viewport: { width, height: 40 }, reducedMotion: 'reduce' });
-      await page.goto(pathToFileURL(file).href);
-      await page.evaluate(() => document.fonts.ready);
-      const height = await page.evaluate(() => Math.max(40, Math.ceil(document.querySelector('body > :first-child').getBoundingClientRect().height)));
-      await page.setViewportSize({ width, height });
-      await page.screenshot({ path: join(harnessDir, `${name}.png`) });
-      await page.close();
-      return height;
+      writeFileSync(file, html);
+      const page = await browser.newPage({ viewport: { width, height: height ?? 40 }, reducedMotion: 'reduce' });
+      try {
+        await page.goto(pathToFileURL(file).href);
+        await page.evaluate(() => document.fonts.ready);
+        if (height === undefined) {
+          height = await page.evaluate(() => Math.max(40, Math.ceil(document.querySelector('body > :first-child').getBoundingClientRect().height)));
+          await page.setViewportSize({ width, height });
+        }
+        await page.screenshot({ path: join(harnessDir, `${name}.png`) });
+        return height;
+      } finally {
+        await page.close();
+      }
     };
     for (const { name, readme, group } of draft.components) {
       const { kind, body } = markup.get(name);
       const file = files.get(name);
-      const height = await measure(name, body, kind === 'piece' ? PIECE_WIDTH : BLOCK_WIDTH);
+      const height = await render(name, frame(body), kind === 'piece' ? PIECE_WIDTH : BLOCK_WIDTH);
       heights[name] = height;
       const groupAttr = group === undefined ? '' : ` group="${group}"`;
       const marker =
@@ -675,14 +683,8 @@ export async function build({ themeDir, draftDir, outDir, note, ref }) {
     }
     if (draft.cover) {
       write('components/Cover/preview.html', draft.cover);
-      const coverHeight = dsCardMarker(draft.cover)?.height ?? 288;
-      const file = join(harnessDir, 'Cover.html');
-      writeFileSync(file, draft.cover.replace('<head>', '<head><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="../project/components/bundle.css">'));
-      const page = await browser.newPage({ viewport: { width: PIECE_WIDTH, height: coverHeight }, reducedMotion: 'reduce' });
-      await page.goto(pathToFileURL(file).href);
-      await page.evaluate(() => document.fonts.ready);
-      await page.screenshot({ path: join(harnessDir, 'Cover.png') });
-      await page.close();
+      const cover = draft.cover.replace('<head>', '<head><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="../project/components/bundle.css">');
+      await render('Cover', cover, PIECE_WIDTH, dsCardMarker(draft.cover)?.height ?? 288);
     } else {
       warnings.push('the draft has no components/Cover/preview.html: the system has no cover');
     }
