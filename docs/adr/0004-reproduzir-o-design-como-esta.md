@@ -16,6 +16,5 @@ O app de um Tema reproduz o design como ele está, inclusive no que parece incon
 
 - O que parecer inconsistência vira Observação, numa lista do `DESIGN.md`, para o Consumidor decidir o que corrigir no projeto dele.
 - O `HANDOFF.md` lista as Lacunas, para o agente do Consumidor não tratá-las como defeito.
-- A Origem guarda só os Quadros que formam o Tema. As outras variantes de logo e o Quadro de comparação ficam no Artefato.
-- Material que não é Tela, como o briefing e o laboratório do logo, não vira Tela do app.
+- A Origem guarda só os Quadros que formam o Tema: os das Telas e os dos componentes que elas desenham, mesmo os que o Artefato arquiva entre os laboratórios. O resto fica no Artefato e não vira Tela do app ([spec #21](https://github.com/ThiagoPanini/stunning-web-pages/issues/21)).
 - O texto da interface é o do design, com os espaços reservados como estão (`[NOME DA COMPANHIA]` e afins).
