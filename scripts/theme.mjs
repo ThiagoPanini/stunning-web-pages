@@ -28,7 +28,7 @@ export function parseThemeTokens(css) {
   return tokens;
 }
 
-// ASCII identifier from a display name: "Neônio Claro" -> "NeonioClaro".
+// ASCII identifier from a display name: "Aurora Índigo" -> "AuroraIndigo".
 function identifier(name) {
   return name
     .normalize('NFD')
