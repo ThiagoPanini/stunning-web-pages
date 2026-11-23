@@ -48,9 +48,7 @@ export async function startStaticServer(root: string): Promise<StaticServer> {
     const { pathname } = new URL(request.url ?? "/", "http://127.0.0.1");
     const file = await resolveFile(root, pathname);
     if (!file) {
-      response
-        .writeHead(404, { "content-type": "text/plain; charset=utf-8" })
-        .end("não encontrado");
+      response.writeHead(404, { "content-type": "text/plain; charset=utf-8" }).end("not found");
       return;
     }
     response.writeHead(200, {

@@ -3,7 +3,7 @@ import { InertLink } from "./inert-link";
 
 type ButtonLinkProps = {
   children: ReactNode;
-  // Without a destination the button is a Lacuna and stays inert, as every button of the Home does.
+  // Without a destination the button stays inert: the design left every button of the Home open.
   href?: string;
   // The header's button is narrower and never wraps.
   variant?: "page" | "header";

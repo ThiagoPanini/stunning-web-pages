@@ -1,10 +1,10 @@
-// Fidelity against the Capturas de referência of the Origem (ADR 0007).
+// Fidelity against the reference captures of the origin (ADR 0007).
 //
-// The app is captured under the same conditions as the Puxada (scripts/capture.mjs): the Chromium of the
+// The app is captured under the same conditions as the pull (scripts/capture.mjs): the Chromium of the
 // same Playwright, deviceScaleFactor 1, reduced motion, no touch and a viewport as tall as the document.
 // Each block of the page carries data-block="<name>", the names of origin/captures.json; a band runs from
 // the top of one block to the bottom of another, edge to edge, and is compared with the same band cut
-// from the Captura de referência.
+// from the reference capture.
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -43,7 +43,7 @@ const INITIAL_VIEWPORT_HEIGHT = 100;
 const MAX_GROW_STEPS = 6;
 const SETTLE_MS = 500;
 
-// The limit of every comparison with a Captura de referência, calibrated on the whole Home (home.spec.ts)
+// The limit of every comparison with a reference capture, calibrated on the whole Home (home.spec.ts)
 // on 2026-11-22:
 //
 // - Measured: the whole Home matches its reference byte for byte at 1440 and at 390 px, in 20 runs out of
@@ -79,7 +79,7 @@ export async function readReference(width: Width): Promise<ReferenceRecord & { i
   return { ...record, image };
 }
 
-// The browser context of a Captura de referência, at the given width.
+// The browser context of a reference capture, at the given width.
 export function referenceContextOptions(width: number): BrowserContextOptions {
   return {
     viewport: { width, height: INITIAL_VIEWPORT_HEIGHT },
@@ -108,10 +108,10 @@ export async function loadAtReferenceConditions(page: Page, width: number, path:
     if (next === height) return;
     height = next;
   }
-  throw new Error(`a altura da página não estabilizou em ${width} px (última ${height} px)`);
+  throw new Error(`the page height did not settle at ${width} px (last ${height} px)`);
 }
 
-// Edges rounded to the nearest pixel, as the Puxada records the reference boxes.
+// Edges rounded to the nearest pixel, as the pull records the reference boxes.
 function pixelBox(rect: Box): Box {
   const x = Math.round(rect.x);
   const y = Math.round(rect.y);
@@ -125,7 +125,7 @@ function pixelBox(rect: Box): Box {
 
 async function boxOf(page: Page, selector: string): Promise<Box> {
   const locator = page.locator(selector);
-  await expect(locator, `${selector} precisa casar um único elemento`).toHaveCount(1);
+  await expect(locator, `${selector} must match exactly one element`).toHaveCount(1);
   const rect = await locator.evaluate((element) => {
     const { x, y, width, height } = element.getBoundingClientRect();
     return { x: x + window.scrollX, y: y + window.scrollY, width, height };
@@ -172,7 +172,7 @@ export async function expectImageToMatch(
     contentType: "image/png",
   });
   const { width, height } = expected;
-  expect({ width: actual.width, height: actual.height }, `tamanho de ${name}`).toEqual({
+  expect({ width: actual.width, height: actual.height }, `size of ${name}`).toEqual({
     width,
     height,
   });
@@ -186,11 +186,11 @@ export async function expectImageToMatch(
   const total = width * height;
   test.info().annotations.push({
     type: "diff",
-    description: `${name}: ${differing} de ${total} pixels diferem`,
+    description: `${name}: ${differing} of ${total} pixels differ`,
   });
   expect(
     differing / total,
-    `${differing} de ${total} pixels diferem em ${name}`,
+    `${differing} of ${total} pixels differ in ${name}`,
   ).toBeLessThanOrEqual(MAX_DIFF_PIXEL_RATIO);
 }
 
@@ -201,7 +201,7 @@ type BandOptions = {
 };
 
 // Compares the band of the page from the top of `from` to the bottom of `to` with the same band of the
-// Captura de referência: the band must start where the reference's starts, and its image must match the
+// reference capture: the band must start where the reference's starts, and its image must match the
 // reference's (expectImageToMatch).
 export async function expectBandToMatchReference(page: Page, options: BandOptions): Promise<void> {
   const { width, from, to = from } = options;
@@ -217,7 +217,7 @@ export async function expectBandToMatchReference(page: Page, options: BandOption
   expect
     .soft(
       { top: appTop, height: appHeight },
-      `posição e altura da faixa ${from}..${to} em ${width} px`,
+      `position and height of the ${from}..${to} band at ${width} px`,
     )
     .toEqual({ top: refTop, height: refHeight });
   const actual = PNG.sync.read(

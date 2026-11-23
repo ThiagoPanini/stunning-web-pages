@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title: "Responsible AI · Sistema de design",
 };
 
-// The Sistema de design of the Hélio, alive: every token of @theme with its name and value, read from
+// The Hélio's design system, alive: every token of @theme with its name and value, read from
 // app/globals.css when the route is built, and each component of the Home on its own, in its states.
 export default function DesignSystem() {
   const tokens = groupTokens(readThemeTokens());

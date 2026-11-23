@@ -35,7 +35,7 @@ Para ver o app rodando, siga [Como rodar](README.md#como-rodar) no README. A rot
 
 A pasta `origin/` e os testes em `web/tests/` são do Autor: guardam o design cru e comparam o app com ele. Você não precisa deles; o que eles dizem está nas Capturas e nestes documentos.
 
-Os comentários do código usam palavras do Autor. **Quadro** é um arquivo do design original no Claude Design: a Home inteira ou o logo. **Origem** é a pasta `origin/`. O **ADR 0004** citado em `globals.css` é uma decisão do repositório do catálogo, fora desta pasta: reproduzir o design como está, o que o `DESIGN.md` diz em "Nomear sem normalizar" e nas Observações.
+O código, comentários incluídos, está em inglês; só o texto da interface fica em português, como o design escreveu. Os comentários usam o vocabulário do catálogo. **board** é um arquivo do design original no Claude Design: a Home inteira ou o logo. **origin** é a pasta `origin/`. **screen** é uma página do design, como a Home. Os ADRs citados nos comentários são decisões do repositório do catálogo, fora desta pasta. O que importa aqui é o **ADR 0004**, citado em `globals.css`: reproduzir o design como está, o que o `DESIGN.md` diz em "Nomear sem normalizar" e nas Observações.
 
 ## O que vale manter
 

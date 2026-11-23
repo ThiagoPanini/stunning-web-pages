@@ -1,5 +1,5 @@
-// A text guard: the address of a Claude Artefato appears only in the Ponteiro, inside the Origem. No
-// other file of the Tema may cite one, because the Consumidor does not open the Artefato and the Tema
+// A text guard: the address of a Claude artifact appears only in the pointer, inside the origin. No
+// other file of the theme may cite one, because the consumer does not open the artifact and the theme
 // has to be complete on its own.
 
 import { execFileSync } from "node:child_process";
@@ -9,7 +9,7 @@ import { expect, test } from "./support/test";
 
 const THEME_DIR = join(import.meta.dirname, "..", "..");
 
-// An Artefato's address, in both forms the Claude app gives (the plain one and the one under code/), in
+// An artifact's address, in both forms the Claude app gives (the plain one and the one under code/), in
 // any case. Written as a pattern only, so this file does not cite an address itself.
 const ARTIFACT_ADDRESS = /claude\.ai\/(?:code\/)?artifacts?\//i;
 
@@ -24,7 +24,7 @@ function walk(dir: string): string[] {
   });
 }
 
-// The Tema's files git versions or would version: tracked plus untracked and not ignored. Outside a git
+// The theme's files git versions or would version: tracked plus untracked and not ignored. Outside a git
 // checkout, every file but the build and dependency folders.
 function themeFiles(): string[] {
   try {
@@ -39,11 +39,11 @@ function themeFiles(): string[] {
   }
 }
 
-test("nenhum arquivo do Tema fora da Origem cita o endereço de um Artefato", () => {
+test("no file of the theme outside the origin cites an artifact address", () => {
   const files = themeFiles().filter((file) => !file.startsWith("origin/"));
   expect(files).toContain("web/package.json");
   const citing = files.filter((file) =>
     ARTIFACT_ADDRESS.test(readFileSync(join(THEME_DIR, file), "latin1")),
   );
-  expect(citing, "arquivos que citam o endereço de um Artefato").toEqual([]);
+  expect(citing, "files that cite an artifact address").toEqual([]);
 });

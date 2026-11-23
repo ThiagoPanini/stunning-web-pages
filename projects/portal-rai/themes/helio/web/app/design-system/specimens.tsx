@@ -57,7 +57,8 @@ function Specimen({ name, file, about, children }: SpecimenProps) {
 }
 
 type StateProps = {
-  // repouso for the state at rest; otherwise the name of the state or the variant.
+  // The caption, as interface text: "repouso" for the state at rest, otherwise the name of the state
+  // or the variant. data-state carries it too, so a test finds a state by the caption it shows.
   label: string;
   // Draws the component hovered or focused.
   show?: "hover" | "focus";
