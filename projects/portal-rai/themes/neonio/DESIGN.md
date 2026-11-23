@@ -16,7 +16,7 @@ Os valores não estão aqui. A única fonte deles é o bloco `@theme` de [`web/a
 
 Uma página só, quase preta, que apresenta o time e os dois times dele. O fundo é `--color-page`, e o branco puro, `--color-white`, faz o contraste: os blocos do cabeçalho, os botões e os títulos. Os cinzas, com um leve tom violeta, separam o texto em camadas e desenham os filetes de 1 px que dividem tudo; nas grades, os filetes são os próprios vãos entre as células. A cor aparece em pontos: o quadrado de neon dos rótulos, violeta numa seção sem time, vermelho no Red Team e azul no Blue Team; as ilustrações das soluções e o gráfico de Dados, em vermelho, azul e lima; e o logo Ondas, com os vermelhos e azuis dele.
 
-Os títulos são leves, em Inter Tight, com as letras apertadas; o texto é Inter; o mono, JetBrains Mono, fica nos sobretítulos, nos rótulos, nos títulos dos cartões e nas ilustrações. Os cantos são retos, menos os dos sobretítulos, dos espaços reservados do bento, dos quadrados de neon e de alguns traços das ilustrações. A página quase não se move: a faixa de marcas rola, as abas do ciclo acompanham a rolagem, os hovers trocam o fundo ou a cor, e o logo Ondas anima, em caracteres, as ondas que chegam ao anel de guardrails em volta do agente e as que saem dele. Com movimento reduzido, tudo isso para, as transições também.
+Os títulos são leves, em Inter Tight, com as letras apertadas; o texto é Inter; o mono, JetBrains Mono, fica nos sobretítulos, nos rótulos, nos títulos dos cartões e nas ilustrações. Os cantos são retos, menos os dos sobretítulos, dos espaços reservados do bento, dos quadrados de neon e de alguns traços das ilustrações. A página quase não se move: a faixa de marcas rola, as abas do ciclo acompanham a rolagem, os hovers trocam o fundo ou a cor, e o logo Ondas anima, em caracteres, as ondas que chegam ao anel de guardrails em volta do agente e as que saem dele. Com movimento reduzido, a faixa, as transições e o logo param.
 
 A Home, de cima para baixo:
 
@@ -36,7 +36,7 @@ A página e o branco:
 
 | Token | Papel |
 |---|---|
-| `--color-page` | fundo da página, dos cartões, das colunas e das abas; texto sobre branco (blocos do cabeçalho, botão branco, linha bloqueada e etiqueta "atendimento" das ilustrações) |
+| `--color-page` | fundo da página, dos cartões, das colunas e das abas; texto sobre cor: nos blocos do cabeçalho, no botão branco, na linha bloqueada da tabela do Guardrail Antiataque e na etiqueta "atendimento" do Agente de Ataque |
 | `--color-white` | títulos, blocos do cabeçalho, botão branco e borda do contornado, abertura em negrito das legendas, aba atual, texto dos sobretítulos, anel de foco, link do rodapé em hover |
 | `--color-text` | cor de base do texto, na raiz da página |
 | `--color-nav-hover` | link da navegação em hover, sobre o bloco branco |
@@ -160,7 +160,7 @@ Os sobretítulos são o componente `Eyebrow`: uma etiqueta com borda, o quadrado
   - `upto-640:`, a 640 px ou menos: os cartões das soluções empilham, com menos respiro, e o bento fica numa coluna.
 - **O cabeçalho.** Os três blocos ficam numa fila que quebra quando não cabe. Só eles recebem o ponteiro: a caixa do cabeçalho deixa os cliques passarem para a página em volta deles.
 - **Camadas.** O cabeçalho fica por cima da página. A barra de abas gruda logo abaixo dele (`top-13.5`) e passa por cima das etapas; ao rolar até uma etapa, a âncora para abaixo do cabeçalho e da barra (`scroll-mt-29.5`; a 760 px ou menos, só abaixo da barra, `scroll-mt-16`).
-- **Alvos de toque.** Os blocos do cabeçalho, os links da navegação, os botões, as marcas e os links do rodapé têm 44 px de altura mínima (`min-h-11`); as abas têm mais.
+- **Alvos de toque.** Os blocos do cabeçalho, a marca, os links da navegação, os botões, as marcas de exemplo e os links do rodapé têm 44 px de altura mínima (`min-h-11`); as abas têm mais.
 
 ## Formas
 
@@ -246,9 +246,9 @@ O componente do logo é o mesmo arquivo nos Temas do Projeto que o desenham; só
 Fazer:
 
 - Usar só os tokens do `@theme`. Um valor novo entra lá primeiro, com nome.
-- Separar por filete, e não por superfície nem por sombra: nas grades, o vão de 1 px sobre `--color-rule`.
-- Escrever os títulos em `--font-display` e `--font-weight-light`, com a altura de linha e o espaçamento entre letras do papel deles.
-- Abrir as seções com o `Eyebrow` e o quadrado de neon na cor do time, ou violeta quando a seção não é de um time.
+- Separar seções, colunas e cartões por filete, e não por sombra: nas grades, o vão de 1 px sobre `--color-rule`.
+- Escrever os títulos de seção em `--font-display` e `--font-weight-light`, com a altura de linha e o espaçamento entre letras do papel deles.
+- Marcar um time com o quadrado de neon na cor dele, vermelho ou azul, como nos cabeçalhos dos times e nos rótulos das etapas; o `Eyebrow` de uma seção sem time leva o violeta.
 - Dar matiz só com sentido: vermelho para o Red Team, azul para o Blue Team, lima para os falsos positivos.
 - Deixar os cantos retos, fora dos três raios da tabela.
 - Parar a faixa de marcas, as transições e o logo quando o movimento é reduzido.
@@ -290,7 +290,7 @@ Inconsistências aparentes que o design carrega e o app reproduz como estão. Co
 19. **A legenda nomeia três das quatro camadas.** As respostas do agente ficam sem item: as válidas, em `--color-logo-gray`, e as inválidas, "ø" em `--color-logo-red`.
 20. **A cor de base do logo não aparece.** O logo declara `--color-logo-bright` como cor do texto, mas cada camada pinta com a própria cor, e nenhum caractere sai nela.
 21. **A regra da legenda pega o caractere.** A regra que alinha cada item da legenda do logo também pega o caractere dentro dele, que vira uma caixa flexível com vão. Sem efeito no desenho; o app reproduz.
-22. **Valores quase iguais.** Postos lado a lado: quatro alturas de linha de título (`--leading-1120`, `--leading-1125`, `--leading-1130`, `--leading-1140`); dois espaçamentos de título a meio centésimo de em (`--tracking-tight-15` e `--tracking-tight-20`); dois cinzas de hover sobre o branco (`--color-nav-hover` e `--color-white-hover`); e cinzas escuros a um ou dois níveis um do outro (`--color-ruling` e `--color-grid`; `--color-tab-current` e `--color-bar-bottom`). Cada papel tem o seu.
+22. **Valores quase iguais.** Postos lado a lado: quatro alturas de linha de título (`--leading-1120`, `--leading-1125`, `--leading-1130`, `--leading-1140`); dois espaçamentos de título a meio centésimo de em (`--tracking-tight-15` e `--tracking-tight-20`); dois cinzas de hover sobre o branco (`--color-nav-hover` e `--color-white-hover`); e cinzas escuros a um nível um do outro em cada canal (`--color-ruling` e `--color-grid`; `--color-tab-current` e `--color-bar-bottom`). Cada papel tem o seu.
 
 **No Sistema de design do app**
 

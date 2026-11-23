@@ -150,7 +150,7 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`. Para outro arranjo:
 
 - A linha `--*: initial` zera o tema padrão do projeto inteiro. Num projeto com tema próprio, deixe-a de fora e acrescente os tokens do Neônio ao lado dos seus.
 - Alguns nomes coincidem com os do tema padrão, com outro valor, e mudam o projeto todo: `--font-sans`, `--font-mono` e `--default-transition-timing-function`. `--color-white`, `--default-transition-duration`, os pesos `--font-weight-light`, `--font-weight-normal` e `--font-weight-medium` e a base `--spacing` coincidem com o mesmo valor.
-- As variantes `hover` e `focus-visible` redefinidas em `globals.css` valem para o projeto inteiro. Leve-as só se quiser o hover em qualquer ponteiro em todo lugar, e só com a rota que desenha os estados.
+- As variantes `hover` e `focus-visible` redefinidas em `globals.css` valem para o projeto inteiro. Leve a de `hover` só se quiser o hover em qualquer ponteiro em todo lugar; a de `focus-visible` só serve à rota que desenha os estados (Desvio 5).
 
 ## Fora do Next.js
 
