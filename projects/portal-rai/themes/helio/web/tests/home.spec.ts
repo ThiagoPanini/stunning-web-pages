@@ -87,18 +87,17 @@ for (const width of WIDTHS) {
     const page = await newWindow(width, { motion: "reduce" });
     await load(page, "/");
 
-    const logo = page.getByRole("img", { name: /versão Eclusa/ });
+    const logo = page.getByRole("img", { name: /versão Ondas/ });
     const first = await logo.screenshot();
     // 400 ms is almost 5 frames of the logo's drawing.
     await page.waitForTimeout(400);
     expect.soft((await logo.screenshot()).equals(first), "the logo stayed still").toBe(true);
 
     // Nothing waits for the scroll: no animation runs anywhere in the page, and nothing below the fold
-    // is hidden or faded. The parts of an SVG drawing carry their own opacity, as the logo's do.
+    // is hidden or faded.
     expect.soft(await page.evaluate(() => document.getAnimations().length), "animations").toBe(0);
     const faded = await page.locator(PAGE_ELEMENTS).evaluateAll((elements) =>
       elements
-        .filter((element) => !(element instanceof SVGElement && element.ownerSVGElement))
         .filter((element) => {
           const style = getComputedStyle(element);
           return style.opacity !== "1" || style.visibility !== "visible";

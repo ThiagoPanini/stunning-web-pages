@@ -50,7 +50,7 @@ const MAX_GROW_STEPS = 6;
 const SETTLE_MS = 500;
 
 // The limit of every comparison with a reference capture, the Hélio's (calibrated on its whole Home on
-// 2026-11-22), which the Neônio's whole Home holds again once every block is in place:
+// 2026-11-22), which the Neônio's whole Home holds too (home.spec.ts):
 //
 // - No pixel may differ. Any slack lets real changes through: on the Hélio, 0.01% was 521 pixels of the
 //   whole Home at 1440 px, and a section title 1 px lower, badges in another color, letter spacing off
@@ -97,13 +97,6 @@ export function referenceContextOptions(width: number): BrowserContextOptions {
 export type ReferenceLoadOptions = {
   // The path of the app to open; the Home by default.
   path?: string;
-  // Gives each empty block of the Home (one with no element inside, a block no ticket has filled yet)
-  // the height the reference has for it, so the blocks below start where the reference's do and their
-  // bands can be compared before the page is whole. The reference rounds its boxes to the pixel, so a
-  // block below one that stands in can sit up to half a pixel off and draw a few edges differently;
-  // the whole Home, compared once every block is filled, is the exact check. A filled block is left
-  // alone: when no block is empty, this does nothing.
-  standInForEmptyBlocks?: boolean;
 };
 
 // Loads a path of the app in a page opened with referenceContextOptions, then grows the viewport to the
@@ -111,11 +104,10 @@ export type ReferenceLoadOptions = {
 export async function loadAtReferenceConditions(
   page: Page,
   width: number,
-  { path = "/", standInForEmptyBlocks = false }: ReferenceLoadOptions = {},
+  { path = "/" }: ReferenceLoadOptions = {},
 ) {
   await page.goto(path, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
-  if (standInForEmptyBlocks) await standInForEmptyBlocksOf(page, width as Width);
   await page.waitForTimeout(SETTLE_MS);
 
   const documentHeight = () => page.evaluate(() => document.documentElement.scrollHeight);
@@ -130,22 +122,6 @@ export async function loadAtReferenceConditions(
     height = next;
   }
   throw new Error(`the page height did not settle at ${width} px (last ${height} px)`);
-}
-
-async function standInForEmptyBlocksOf(page: Page, width: Width) {
-  const { blocks } = await readReferenceRecord(width);
-  const heights = Object.fromEntries(
-    Object.entries(blocks).map(([name, box]) => [name, box.height]),
-  );
-  await page.evaluate((heightOf) => {
-    for (const [name, height] of Object.entries(heightOf)) {
-      const block = document.querySelector(`[data-block="${name}"]`);
-      if (block instanceof HTMLElement && block.childElementCount === 0) {
-        block.style.display = "block";
-        block.style.height = `${height}px`;
-      }
-    }
-  }, heights);
 }
 
 // Edges rounded to the nearest pixel, as the pull records the reference boxes.

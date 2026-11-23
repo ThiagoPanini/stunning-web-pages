@@ -61,8 +61,8 @@ const SETTLE_MS = 500;
 // - The match holds only for the Chromium of this Playwright on Linux, where the references were taken:
 //   another browser or system renders text differently, and no limit near zero survives that.
 //
-// A comparison that cannot be exact loosens its own limit, with the reason next to it, as logo.spec.ts
-// does.
+// A comparison that cannot be exact loosens its own limit, with the reason next to it; logo.spec.ts
+// says why it does not need to.
 
 // The per-pixel color distance (0 to 1) below which two pixels are equal. Anti-aliased pixels are
 // detected and ignored.
@@ -149,7 +149,7 @@ function crop(image: PNG, y: number, height: number): PNG {
 
 type ImageOptions = {
   // The per-pixel threshold, when a comparison needs another one than PIXEL_THRESHOLD; the reason goes
-  // next to the value, as in logo.spec.ts.
+  // next to the value.
   threshold?: number;
 };
 

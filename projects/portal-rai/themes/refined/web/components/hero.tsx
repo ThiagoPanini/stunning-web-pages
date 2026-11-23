@@ -27,7 +27,7 @@ export function Hero() {
         </div>
         <div className="enter-5 mt-logo-top flex w-150 max-w-full flex-col gap-4.5">
           <div data-region="logo" className="aspect-square w-full overflow-hidden">
-            <OndasLogo />
+            <OndasLogo background="var(--color-night)" />
           </div>
           <OndasCaption />
         </div>

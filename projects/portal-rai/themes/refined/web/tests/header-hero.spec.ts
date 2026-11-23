@@ -6,12 +6,10 @@ import { expectBandToMatchReference, readReference, regionBox, WIDTHS } from "./
 import { expect, type NewWindow, test } from "./support/test";
 
 for (const width of WIDTHS) {
-  test(`header and hero match the reference at ${width} px, the logo left out`, async ({
-    referencePage,
-  }) => {
+  test(`header and hero match the reference at ${width} px`, async ({ referencePage }) => {
     const page = await referencePage(width);
-    // The logo comes in its own ticket: its square is painted over in both images.
-    await expectBandToMatchReference(page, { width, from: "header", to: "hero", mask: ["logo"] });
+    // The logo included, drawn on its resting frame: tests/logo.spec.ts compares it on its own.
+    await expectBandToMatchReference(page, { width, from: "header", to: "hero" });
   });
 
   test(`the logo's place is where the reference has it at ${width} px`, async ({

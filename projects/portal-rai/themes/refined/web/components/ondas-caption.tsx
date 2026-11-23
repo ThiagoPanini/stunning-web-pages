@@ -1,9 +1,9 @@
 // The caption under the Ondas logo: the character that stands for each part of the drawing, in the color
 // the logo draws it with, and what it stands for.
 const ENTRIES = [
-  { mark: "×", color: "text-red", label: "ataque" },
-  { mark: ":", color: "text-blue", label: "guardrails" },
-  { mark: "*", color: "text-agent", label: "agente" },
+  { mark: "×", color: "text-logo-red", label: "ataque" },
+  { mark: ":", color: "text-logo-blue", label: "guardrails" },
+  { mark: "*", color: "text-logo-agent", label: "agente" },
 ];
 
 export function OndasCaption() {
