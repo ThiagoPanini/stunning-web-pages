@@ -1,0 +1,21 @@
+# dependências
+/node_modules
+
+# build e export do Next
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# resultados do Playwright
+/test-results/
+/playwright-report/
+
+# regras para agentes que o `next dev` escreve e reescreve; apontam para a doc dentro de node_modules
+AGENTS.md
+CLAUDE.md
+
+# sistema e ambiente
+.DS_Store
+.env*
+*.pem

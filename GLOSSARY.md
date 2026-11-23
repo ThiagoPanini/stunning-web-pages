@@ -29,7 +29,7 @@ _Em código_: `theme`
 _Avoid_: versão, skin, variação, variante
 
 **Versão**:
-A evolução de um mesmo Tema no tempo, de um Ciclo para o outro.
+A evolução de um mesmo Tema no tempo, de um Ciclo para o outro. Não é a versão de um Artefato nem a de uma dependência, que são o número que a ferramenta ou o pacote dá.
 _Avoid_: usar como sinônimo de Tema
 
 **Tela**:
@@ -46,12 +46,27 @@ _Avoid_: guia de estilo, UI kit
 O documento `HANDOFF.md` de um Tema: o briefing que o Consumidor entrega ao agente dele.
 _Avoid_: guia de implementação, passo a passo
 
+**Deck**:
+A apresentação de um Tema em HTML de arquivo único: mostra o Tema por Capturas e amostras e defende o layout.
+_Em código_: `presentation`
+_Avoid_: slides, PowerPoint
+
 ### Laço com a ferramenta de design
 
+**Artefato**:
+Uma publicação privada na conta do Autor no Claude, com endereço e versão. Um Artefato do tipo Design guarda os Quadros de onde os Temas saem; um do tipo Design System recebe a Subida de um Tema.
+_Em código_: `artifact`
+_Avoid_: projeto (é do Catálogo), link
+
 **Origem**:
-Os arquivos do design como saíram da ferramenta, guardados na pasta `origin/` do Tema, junto do ponteiro para o artefato e das Capturas de referência. É coisa do Autor: o Consumidor não precisa dela.
+Os arquivos do design como saíram da ferramenta, guardados na pasta `origin/` do Tema, junto do Ponteiro e das Capturas de referência. É coisa do Autor: o Consumidor não precisa dela.
 _Em código_: `origin`
 _Avoid_: fonte, source, export
+
+**Ponteiro**:
+O único arquivo da Origem que diz de onde ela veio: ferramenta, título, endereço e versão do Artefato, data da Puxada e lista de Quadros. É coisa do Autor, e nenhum documento do Tema depende dele.
+_Em código_: `pointer`
+_Avoid_: link, manifesto
 
 **Quadro**:
 Um arquivo de design do Claude Design (`.dc.html`): uma Tela ou um componente no canvas.
@@ -59,12 +74,12 @@ _Em código_: `board`
 _Avoid_: artboard, frame, tela (um Quadro pode ser só um componente)
 
 **Puxada**:
-Trazer os Quadros de um Tema do artefato para a Origem, gravando a versão do artefato e gerando as Capturas de referência.
+Trazer os Quadros de um Tema do Artefato para a Origem, gravando a versão do Artefato e gerando as Capturas de referência.
 _Em código_: `pull`
 _Avoid_: sincronização, importação, download
 
 **Subida**:
-Publicar o Sistema de design de um Tema, a partir do código, como artefato Design System no Claude, para a ferramenta desenhar as próximas Telas em cima dele.
+Publicar o Sistema de design de um Tema, a partir do código, como Artefato do tipo Design System, para a ferramenta desenhar as próximas Telas em cima dele.
 _Em código_: `publish`
 _Avoid_: sincronização, push (é do git)
 
@@ -79,19 +94,23 @@ _Em código_: `screenshot`
 _Avoid_: print
 
 **Desvio**:
-Uma diferença entre o app e a Origem que nasceu no código e ficou anotada.
+Uma diferença entre o app e a Origem que nasceu no código e ficou anotada no Handoff do Tema.
 _Avoid_: bug, ajuste, correção
 
 **Lacuna**:
 O que o design deixou em aberto e o app reproduz como está: um espaço reservado de mídia, um link para uma Tela que não existe.
 _Avoid_: pendência, TODO
 
+**Observação**:
+Uma inconsistência aparente que o design carrega e o app reproduz como está, anotada no `DESIGN.md` do Tema para o Consumidor decidir o que corrigir.
+_Avoid_: bug, correção, normalização
+
 ### Entrega
 
 **Ciclo**:
-Uma entrega coerente de um Projeto: uma spec com tickets, implementada numa branch, que termina num PR mesclado na `main`.
+Uma entrega coerente de um Projeto, ou só da raiz do Catálogo: uma spec com tickets, implementada numa branch, que termina num PR mesclado na `main`.
 _Avoid_: sprint, release, iteração
 
 **Tema pronto**:
-Um Tema que cumpre a lista de pronto do Catálogo e, por isso, o agente mescla sozinho.
+Um Tema que cumpre a lista de pronto do `AGENTS.md` e, por isso, o agente mescla sozinho.
 _Avoid_: finalizado, concluído
