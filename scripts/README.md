@@ -10,7 +10,7 @@ O laço com o Claude Design tem um veículo por sentido, e cada um tem aqui o se
 
 Cada ferramenta recebe o caminho de um Tema e tira dele o que é do Tema; nenhuma cita um Tema. O que mexe num Artefato (ler, listar, publicar) é feito pelo agente com a ferramenta Artifact, como dizem os passos abaixo.
 
-`scripts/` carrega as próprias dependências, sem workspace na raiz. Uma vez por máquina, da raiz do repositório: `pnpm --dir scripts install`, que instala o Playwright e o lightningcss fixados em `scripts/package.json`; se o navegador da versão não estiver em cache, `pnpm --dir scripts exec playwright install chromium`. Os testes das ferramentas rodam sem navegador: `pnpm --dir scripts test`.
+`scripts/` carrega as próprias dependências, sem workspace na raiz. Uma vez por máquina, da raiz do repositório: `pnpm --dir scripts install`, que instala o Playwright e o lightningcss fixados em `scripts/package.json`; se o navegador da versão não estiver em cache, `pnpm --dir scripts exec playwright install chromium`. Os testes das ferramentas rodam com `pnpm --dir scripts test`, sem servidor; só o da extração das prévias abre o Chromium do Playwright.
 
 ## Puxada
 
@@ -141,14 +141,14 @@ A árvore do Tema não guarda nada da Subida além do endereço no Ponteiro. O t
 | `design-system.json` | o título (`<projeto> · <nome>`, com o nome do `# ` do `README.md` do Tema), o `namespace` e o `lastChange` (do git e de `--note`) | todas as outras chaves do índice lido de volta |
 | qualquer outro arquivo | | como está: uma seção ou um arquivo que alguém acrescentou pela página, os tipos de um componente |
 
-A prévia de uma peça é o espécime que a rota `/design-system` mostra em `<article data-component="<Componente>">`, dentro de uma moldura com as classes da raiz da página. A de um bloco é o elemento da Tela em `/` cujo `data-block` o arquivo do componente nomeia, dentro dos elementos que o seguram na página. As prévias são estáticas: o HTML do app com o CSS do app, no estado de movimento reduzido, sem React. A altura de cada uma é medida no Chromium do Playwright de `scripts/`, numa moldura local igual à do Artefato, com as peças a 960 px e os blocos a 1440 px.
+A prévia de uma peça é o espécime que a rota `/design-system` mostra em `<article data-component="<Componente>">`, ou a célula `[data-component="<Componente>"]` de um espécime que mostra vários componentes, dentro de uma moldura com as classes da raiz da página. A de um bloco é o elemento da Tela em `/` cujo `data-block` o arquivo do componente nomeia, dentro dos elementos que o seguram na página. As prévias são estáticas: o HTML do app com o CSS do app, no estado de movimento reduzido, sem React. A altura de cada uma é medida no Chromium do Playwright de `scripts/`, numa moldura local igual à do Artefato, com as peças a 960 px e os blocos a 1440 px.
 
 ### O que o Tema precisa ter
 
 - O `README.md` do Tema começa com `# <nome do Tema>`.
 - O `@theme` do app tem só namespaces que `publish.mjs` sabe pôr numa família do tipo. Os de movimento, os apelidos `--default-*` e os fundos desenhados (`--background-image-*`, que citam outros tokens com `var()`, e o tipo não aceita `var()` nem `url()` num valor) ficam de fora, porque o tipo não tem lugar para eles: o livro da marca dá esses valores em prosa. Um namespace desconhecido para a montagem com o nome do token; acrescente-o à tabela `PLACEMENT` de `publish.mjs`.
 - `web/app/fonts.ts` declara cada face num `localFont({...})` com `src: "../fonts/<arquivo>"`, `weight`, `style` quando não for `normal`, e `declarations` com o `font-family` do design e, se houver, o `unicode-range`. As fontes ficam em `web/fonts/`, com a licença ao lado.
-- Cada componente que sobe é exportado por um arquivo de `web/components/` (`export function <Componente>`). Uma peça aparece na rota `/design-system` num `<article data-component="<Componente>">` cujo último filho é o espécime, com os estados marcados por `data-state`; um bloco tem um `data-block` só no arquivo dele.
+- Cada componente que sobe é exportado por um arquivo de `web/components/` (`export function <Componente>`). Uma peça aparece na rota `/design-system` num `<article data-component="<Componente>">` cujo último filho é o espécime, com os estados marcados por `data-state`, ou numa célula com `data-component="<Componente>"` dentro do espécime de vários; um bloco tem um `data-block` só no arquivo dele.
 - O export estático está montado (`pnpm build` no `web/`) e tem um único arquivo CSS em `out/_next/static/chunks/`.
 
 ### A fonte de uma primeira publicação

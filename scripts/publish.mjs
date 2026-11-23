@@ -511,10 +511,10 @@ body {
 const stripComments = (html) => html.replace(/<!--[\s\S]*?-->/g, '');
 
 // The markup of each component, from the static export: a piece is the specimen the /design-system route
-// shows in its <article data-component="<Name>">, inside a frame with the classes of that page's root; a
-// block is the element of the screen at / whose data-block its component file names, inside the elements
+// shows in its <article data-component="<Name>">, or the cell [data-component="<Name>"] of a specimen that
+// shows several, inside a frame with the classes of that page's root; a block is the element of the screen at / whose data-block its component file names, inside the elements
 // that hold it on the page, with their classes.
-async function extractMarkup(browser, theme, components, files) {
+export async function extractMarkup(browser, theme, components, files) {
   const page = await browser.newPage();
   const out = join(theme.web, 'out');
   await page.setContent(readFileSync(join(out, 'design-system.html'), 'utf8'), { waitUntil: 'domcontentloaded' });
@@ -522,8 +522,12 @@ async function extractMarkup(browser, theme, components, files) {
   const blocks = [];
   for (const { name } of components) {
     const piece = await page.evaluate((component) => {
-      const article = document.querySelector(`article[data-component="${component}"]`);
-      return article && { markup: article.lastElementChild.outerHTML, root: article.closest('body > *').className };
+      const shown = document.querySelector(`[data-component="${component}"]`);
+      if (!shown) return null;
+      // An article is the specimen of a component, the last child its states; any other element is one
+      // cell of a specimen that shows several components.
+      const specimen = shown.localName === 'article' ? shown.lastElementChild : shown;
+      return { markup: specimen.outerHTML, root: shown.closest('body > *').className };
     }, name);
     if (piece) result.set(name, { kind: 'piece', body: `<div class="ds-preview ${piece.root}">\n${stripComments(piece.markup)}\n</div>` });
     else blocks.push(name);
