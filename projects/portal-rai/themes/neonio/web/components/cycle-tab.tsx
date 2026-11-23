@@ -19,7 +19,7 @@ export function CycleTab({ href, icon, children, current, onClick }: CycleTabPro
       href={href}
       aria-current={current ? "step" : "false"}
       onClick={onClick}
-      className={`flex flex-auto items-center justify-center gap-2.5 whitespace-nowrap px-4 text-18 tracking-tight-10 transition-[color,background-color] hover:text-white focus-visible:outline-offset-inset min-h-15.75 ${current ? "bg-tab-current text-white" : "text-muted"}`}
+      className={`flex min-h-15.75 flex-auto items-center justify-center gap-2.5 whitespace-nowrap px-4 text-18 tracking-tight-10 transition-[color,background-color] hover:text-white focus-visible:outline-offset-inset ${current ? "bg-tab-current text-white" : "text-muted"}`}
     >
       {icon}
       {children}

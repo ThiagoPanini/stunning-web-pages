@@ -1,11 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import {
-  AttackIcon,
-  DevelopIcon,
-  DiscoverIcon,
-  MeasureIcon,
-  ProtectIcon,
-} from "./cycle-icons";
+import { AttackIcon, DevelopIcon, DiscoverIcon, MeasureIcon, ProtectIcon } from "./cycle-icons";
 import { CycleTabs } from "./cycle-tabs";
 import { Eyebrow } from "./eyebrow";
 import { Lead } from "./lead";
