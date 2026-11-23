@@ -17,5 +17,13 @@
       "title": "Lab 1 · Ondas",
       "sha256": "4ece8b634b8ba3be530e4ad08141332260e1d457d815f72a7856d67253449c3b"
     }
-  ]
+  ],
+  "designSystem": {
+    "tool": "Claude Design",
+    "type": "Design System",
+    "title": "portal-rai · Neônio",
+    "url": "https://claude.ai/artifact/D1CQbxQ7X4cTN9LyTGhuDK",
+    "version": "1795453354-566a",
+    "publishedAt": "2026-11-23"
+  }
 }
