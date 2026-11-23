@@ -36,18 +36,18 @@ function fail(message) {
   process.exit(1);
 }
 
-async function readManifest(originDir) {
+async function readRecipe(originDir) {
   const path = join(originDir, 'captures.json');
-  let manifest;
+  let recipe;
   try {
-    manifest = JSON.parse(await readFile(path, 'utf8'));
+    recipe = JSON.parse(await readFile(path, 'utf8'));
   } catch (error) {
     fail(`não consegui ler ${path}: ${error.message}`);
   }
-  if (!Array.isArray(manifest.captures) || manifest.captures.length === 0) {
+  if (!Array.isArray(recipe.captures) || recipe.captures.length === 0) {
     fail(`${path} precisa de uma lista "captures" não vazia`);
   }
-  for (const entry of manifest.captures) {
+  for (const entry of recipe.captures) {
     if (typeof entry.board !== 'string' || !entry.board.endsWith('.dc.html')) {
       fail(`cada captura precisa de "board" com um arquivo .dc.html (veio ${JSON.stringify(entry.board)})`);
     }
@@ -55,7 +55,7 @@ async function readManifest(originDir) {
       fail(`${entry.board}: "widths" precisa ser uma lista de inteiros`);
     }
   }
-  return manifest;
+  return recipe;
 }
 
 // Serves only the files directly inside boardsDir, plus the runtime as /support.js.
@@ -216,8 +216,8 @@ async function main() {
   const runtimePath = resolve(values.runtime);
   await access(runtimePath).catch(() => fail(`runtime não encontrado: ${runtimePath}`));
   const boardsDir = join(originDir, 'boards');
-  const manifest = await readManifest(originDir);
-  for (const entry of manifest.captures) {
+  const recipe = await readRecipe(originDir);
+  for (const entry of recipe.captures) {
     await access(join(boardsDir, entry.board)).catch(() => fail(`Quadro não encontrado: ${join(boardsDir, entry.board)}`));
   }
   await mkdir(join(originDir, 'reference'), { recursive: true });
@@ -226,7 +226,7 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
   let failed = false;
   try {
-    for (const entry of manifest.captures) {
+    for (const entry of recipe.captures) {
       for (const width of entry.widths) {
         try {
           const result = await captureBoard(browser, base, { ...entry, originDir }, width);
