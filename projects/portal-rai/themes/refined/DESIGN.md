@@ -203,7 +203,7 @@ O texto da Home fica nos blocos.
 | `BrandMark` | `brand-mark.tsx` | `variant`: `header` (padrão) ou `footer` | cabeçalho, rodapé |
 | `NavPill` | `nav-pill.tsx` | `label`, o nome acessível; `children`, os links | |
 | `NavLink` | `nav-link.tsx` | `href?`, `current?` | repouso, hover, foco, atual; sem `href`, inerte |
-| `ButtonLink` | `button-link.tsx` | `href?`; `variant`: `primary` (padrão, o creme), `secondary` (o escuro) ou `header`; `className?`, para o lugar | repouso, hover, foco, em cada variante; sem `href`, inerte. `buttonClassName(variant, extra)` dá as mesmas classes a um `<button>` |
+| `ButtonLink` | `button-link.tsx` | `variant`: `primary` (padrão, o creme), `secondary` (o escuro) ou `header`; `className?`, para o lugar | repouso, hover, foco, em cada variante; sempre inerte. `buttonClassName(variant, extra)` dá as mesmas classes a um `<button>` |
 | `ScrollProgress` | `scroll-progress.tsx` | nenhuma; a moldura dela é posicionada | cresce com o scroll; parada em zero com movimento reduzido |
 | `ChipStrip` | `chip-strip.tsx` | `className?`, para o movimento de entrada | correndo, pausada sob o ponteiro |
 | `SectionHeader` | `section-header.tsx` | `id`, do título; `title`; `count?`; `link?`, com `label` e `href` | com contagem e link (repouso, hover, foco do link), sem contagem |
