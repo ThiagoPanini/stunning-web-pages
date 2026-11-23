@@ -63,7 +63,7 @@ export default function DesignSystem() {
           number="01"
           label="Cores"
           title="Cores."
-          lead="Neutros do escuro ao claro, o vermelho do ataque e do Red Team, o azul do guardrail e do Blue Team, e as cores translúcidas, nomeadas pelo alfa em centésimos."
+          lead="Neutros do escuro ao claro, o vermelho do ataque e do Red Team, o azul do guardrail e do Blue Team, as cores do logo Ondas e as cores translúcidas, nomeadas pelo alfa em centésimos."
         >
           <ColorTokens tokens={tokens.colors} />
         </DesignSection>
@@ -72,7 +72,7 @@ export default function DesignSystem() {
           number="02"
           label="Tipografia"
           title="Tipografia."
-          lead="Geist para o texto e Geist Mono para rótulos e painéis. Os tamanhos fixos são nomeados em px; os fluidos, do mínimo ao máximo. Espaçamento entre letras em milésimos de em, alturas de linha em centésimos."
+          lead="Geist para o texto e Geist Mono para rótulos, painéis e o logo. Os tamanhos fixos são nomeados em px; os fluidos, do mínimo ao máximo; o do logo acompanha a largura dele. Espaçamento entre letras em milésimos de em, alturas de linha em centésimos; os tokens do logo têm os nomes do componente dele, o mesmo arquivo nos três Temas."
         >
           <DesignGroup title="Famílias">
             <FamilyTokens tokens={tokens.families} />
