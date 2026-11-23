@@ -105,6 +105,55 @@ test('a token in no known family stops the build', () => {
   assert.throws(() => buildTokens({ theme, faces: FACES, source: SOURCE, meta: META }), /--aspect-video/);
 });
 
+test('a grid of auto columns goes to the layout family, with the named grids', () => {
+  const theme = readTheme(
+    makeTheme(tempDir(), {
+      'web/app/globals.css': `@theme {
+  --color-ink: #101010;
+  --grid-template-columns-hero: minmax(0, 1fr) minmax(0, 600px);
+  --grid-auto-columns-tabs: minmax(136px, 1fr);
+}
+`,
+    }),
+  );
+  const source = {
+    ...SOURCE,
+    layout: {
+      tokens: [
+        { name: 'grid-template-columns-hero', usage: 'Hero.' },
+        { name: 'grid-auto-columns-tabs', usage: 'Tabs.' },
+      ],
+    },
+  };
+  const { tokens } = buildTokens({ theme, faces: FACES, source, meta: META });
+  assert.deepEqual(tokens.layout, {
+    tokens: [
+      { name: 'grid-template-columns-hero', value: 'minmax(0, 1fr) minmax(0, 600px)', usage: 'Hero.' },
+      { name: 'grid-auto-columns-tabs', value: 'minmax(136px, 1fr)', usage: 'Tabs.' },
+    ],
+  });
+});
+
+test('a drawn background is left out, as the type takes no var() or url() in a value', () => {
+  const theme = readTheme(
+    makeTheme(tempDir(), {
+      'web/app/globals.css': `@theme {
+  --color-ink: #101010;
+  --background-image-hatch: repeating-linear-gradient(
+    135deg,
+    var(--color-ink) 0 1px,
+    transparent 1px 9px
+  );
+}
+`,
+    }),
+  );
+  const { tokens, leftOut } = buildTokens({ theme, faces: FACES, source: SOURCE, meta: META });
+  assert.deepEqual(leftOut, ['--background-image-hatch']);
+  assert.deepEqual(tokens.color.tokens, [{ name: 'color-ink', value: '#101010', usage: 'Page.' }]);
+  assert.equal(JSON.stringify(tokens).includes('background-image'), false);
+});
+
 test('the font faces are the localFont calls of fonts.ts, with the family the app declares', () => {
   const fontsTs = `import localFont from "next/font/local";
 
