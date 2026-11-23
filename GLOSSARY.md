@@ -8,14 +8,17 @@ Catálogo público de interfaces web exploratórias do Autor. Este glossário fi
 
 **Catálogo**:
 O repositório inteiro: Projetos, cada um com seus Temas, guardados para consulta e para servir de base a implementações em projetos reais.
+_Em código_: `catalog`
 _Avoid_: produto, biblioteca, template
 
 **Autor**:
 Quem idealiza os designs e mantém o Catálogo.
+_Em código_: `author`
 _Avoid_: dono, usuário
 
 **Consumidor**:
 Quem consulta um Tema para reimplementá-lo no próprio projeto, quase sempre com um agente de código. Ele lê a pasta do Tema como referência; não a copia como ponto de partida.
+_Em código_: `consumer`
 _Avoid_: usuário, cliente, terceiro
 
 **Projeto**:
@@ -30,6 +33,7 @@ _Avoid_: versão, skin, variação, variante
 
 **Versão**:
 A evolução de um mesmo Tema no tempo, de um Ciclo para o outro. Não é a versão de um Artefato nem a de uma dependência, que são o número que a ferramenta ou o pacote dá.
+_Em código_: `version`
 _Avoid_: usar como sinônimo de Tema
 
 **Tela**:
@@ -44,6 +48,7 @@ _Avoid_: guia de estilo, UI kit
 
 **Handoff**:
 O documento `HANDOFF.md` de um Tema: o briefing que o Consumidor entrega ao agente dele.
+_Em código_: `handoff`
 _Avoid_: guia de implementação, passo a passo
 
 **Deck**:
@@ -95,22 +100,27 @@ _Avoid_: print
 
 **Desvio**:
 Uma diferença entre o app e a Origem que nasceu no código e ficou anotada no Handoff do Tema.
+_Em código_: `deviation`
 _Avoid_: bug, ajuste, correção
 
 **Lacuna**:
 O que o design deixou em aberto e o app reproduz como está: um espaço reservado de mídia, um link para uma Tela que não existe.
+_Em código_: `design gap`
 _Avoid_: pendência, TODO
 
 **Observação**:
 Uma inconsistência aparente que o design carrega e o app reproduz como está, anotada no `DESIGN.md` do Tema para o Consumidor decidir o que corrigir.
+_Em código_: `observation`
 _Avoid_: bug, correção, normalização
 
 ### Entrega
 
 **Ciclo**:
 Uma entrega coerente de um Projeto, ou só da raiz do Catálogo: uma spec com tickets, implementada numa branch, que termina num PR mesclado na `main`.
+_Em código_: `cycle`
 _Avoid_: sprint, release, iteração
 
 **Tema pronto**:
 Um Tema que cumpre a lista de pronto do `AGENTS.md` e, por isso, o agente mescla sozinho.
+_Em código_: `ready theme`
 _Avoid_: finalizado, concluído
