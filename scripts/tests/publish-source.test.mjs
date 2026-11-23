@@ -34,6 +34,20 @@ test('the source lists its components in the order tokens.json records, then the
   assert.equal(source.index, undefined);
 });
 
+test('what the build does not make is kept from the source, except fonts the app no longer has', () => {
+  const dir = writeTree(tempDir(), {
+    'project/README.md': 'Brand book.\n',
+    'project/tokens.json': '{}',
+    'project/voice.md': '# Voz\n',
+    'project/fonts/old.woff2': 'old',
+    'project/components/Card/README.md': '# Card\n',
+    'project/components/Card/Card.d.ts': 'export interface CardProps {}\n',
+    'project/archived/README.md': 'old\n',
+  });
+  const built = new Set(['README.md', 'tokens.json', 'components/Card/README.md', 'components/Card/preview.html']);
+  assert.deepEqual(readSource(dir).keep(built), ['archived/README.md', 'components/Card/Card.d.ts', 'voice.md']);
+});
+
 test('a source without the brand book or tokens.json is refused', () => {
   assert.throws(() => readSource(writeTree(tempDir(), { 'project/tokens.json': '{}' })), /project\/README\.md/);
   assert.throws(() => readSource(writeTree(tempDir(), { 'project/README.md': 'x' })), /project\/tokens\.json/);

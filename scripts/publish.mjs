@@ -171,6 +171,9 @@ export function readSource(fromDir) {
       group: has(`components/${name}/preview.html`) ? markerGroup(read(`components/${name}/preview.html`)) : undefined,
     })),
     assets: listFiles(join(project, 'assets')).map((path) => `assets/${path}`),
+    // The files of the source the build did not make (a section or a file someone added on the page, a
+    // component's types), which go up as they are. Fonts are the app's: one it no longer has is dropped.
+    keep: (built) => listFiles(project).filter((path) => !built.has(path) && !path.startsWith('fonts/')),
   };
 }
 
@@ -562,9 +565,11 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
 
   rmSync(outDir, { recursive: true, force: true });
   const project = join(outDir, 'project');
+  const written = new Set();
   const write = (path, content) => {
     mkdirSync(dirname(join(project, path)), { recursive: true });
     writeFileSync(join(project, path), content);
+    written.add(path);
   };
   const warnings = dropped.map((name) => `${name}: has a usage note in the source but is no longer in @theme; dropped`);
 
@@ -638,10 +643,13 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
     await browser.close();
   }
 
+  const kept = source.keep(new Set([...written, 'design-system.json']));
+  for (const path of kept) write(path, readFileSync(join(fromDir, 'project', path)));
+
   const lastChange = { by: info.user, at: now, via: `GitHub · ${info.repo}@${label.split('@').pop()}`, note };
   write('design-system.json', `${JSON.stringify(buildIndex({ index: source.index, theme, groups, lastChange, now }), null, 2)}\n`);
 
-  const summary = { title: theme.title, ref: label, components: source.components.length, leftOut, heights, warnings };
+  const summary = { title: theme.title, ref: label, components: source.components.length, leftOut, kept, heights, warnings };
   writeFileSync(join(outDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
   return summary;
 }
@@ -664,6 +672,7 @@ async function main(argv) {
     const summary = await build({ themeDir: rest[0], fromDir: values.from, outDir: values.out, note: values.note, ref: values.ref });
     console.log(`built ${summary.title} at ${summary.ref}: ${summary.components} components, in ${join(values.out, 'project')}`);
     console.log(`left out of tokens.json (no place in the type): ${summary.leftOut.join(', ') || 'none'}`);
+    console.log(`kept from the source as they are: ${summary.kept.join(', ') || 'none'}`);
     for (const [name, height] of Object.entries(summary.heights)) console.log(`  ${name}: ${height} px`);
     for (const warning of summary.warnings) console.log(`warning: ${warning}`);
     return 0;
