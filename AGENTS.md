@@ -10,7 +10,7 @@ As decisões por trás deste padrão, cada uma com a alternativa que venceu, est
 stunning-web-pages/
 ├── README.md · AGENTS.md · CLAUDE.md · GLOSSARY.md · LICENSE · .gitignore · mise.toml
 ├── docs/adr/ · docs/agents/
-├── scripts/                  captura do original para as Capturas de referência; passo a passo da Puxada
+├── scripts/                  a Puxada, a Subida e o conferidor de documentos, com o passo a passo de cada um
 └── projects/<project>/
     ├── README.md             contexto, Telas, tabela de Temas com uma Captura de cada
     └── themes/<theme>/

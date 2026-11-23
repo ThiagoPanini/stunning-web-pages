@@ -12,6 +12,9 @@
 support.js
 dc-runtime.js
 
+# referência do tipo Design System, do publicador do tipo: baixada a cada Subida, nunca versionada
+artifact-type/
+
 # dependências, build do Next e resultados do Playwright
 node_modules/
 .next/
