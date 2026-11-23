@@ -1,0 +1,9 @@
+{
+  "name": "stunning-web-pages-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Captura de referência dos Quadros na Puxada. Dependências próprias, sem workspace na raiz.",
+  "dependencies": {
+    "playwright": "1.65.1"
+  }
+}
