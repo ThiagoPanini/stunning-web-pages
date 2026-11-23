@@ -1,22 +1,22 @@
 # Hélio
 
-Um Tema do Projeto [`portal-rai`](../../README.md): a Home do portal de um time de Responsible AI, escura, com só dois acentos (o vermelho do ataque e o azul do guardrail) e o logo Eclusa animado.
+Um Tema do Projeto [`portal-rai`](../../README.md): a Home do portal de um time de Responsible AI, escura, com só dois acentos (o vermelho do ataque e o azul do guardrail) e o logo Ondas, desenhado e animado em caracteres.
 
 ![Captura da Home do Hélio](screenshots/home-1440.png)
 
 | | |
 |---|---|
 | Telas cobertas | Home. O app tem também a rota do Sistema de design, `/design-system`. |
-| Implementado em | 22/11/2026 |
-| Design de origem | Claude Design, puxado em 22/11/2026 |
+| Implementado em | 23/11/2026 |
+| Design de origem | Claude Design, puxado em 23/11/2026 |
 | Framework | Next.js 16.4.6, com export estático |
 | Capturas | Home em [1440 px](screenshots/home-1440.png) e [390 px](screenshots/home-390.png); Sistema de design em [1440 px](screenshots/design-system-1440.png) e [390 px](screenshots/design-system-390.png) |
 
-Para entender o Sistema de design, leia o [`DESIGN.md`](DESIGN.md). Para reimplementar o Tema no seu projeto com um agente, entregue a ele o [`HANDOFF.md`](HANDOFF.md). Para apresentar o Tema, abra o Deck, [`presentation.html`](presentation.html), no navegador: é um arquivo só e abre sem servidor.
+Para entender o Sistema de design, leia o [`DESIGN.md`](DESIGN.md). Para reimplementar o Tema no seu projeto com um agente, entregue a ele o [`HANDOFF.md`](HANDOFF.md).
 
 ## Versões
 
-As dependências ficam congeladas na data da implementação. A fonte é o manifesto, [`web/package.json`](web/package.json), com o lockfile ao lado.
+As dependências ficam congeladas nestas versões. A fonte é o manifesto, [`web/package.json`](web/package.json), com o lockfile ao lado.
 
 | Ferramenta | Versão |
 |---|---|
@@ -61,7 +61,7 @@ Antes do primeiro `pnpm test`, instale o navegador da versão fixada: `pnpm exec
 
 - **A Home bate byte a byte com o design original**, em 1440 e em 390 px. `screenshots/home-1440.png` e `screenshots/home-390.png` têm o mesmo `sha256` das Capturas de referência.
 - **O limite é nenhum pixel diferente**, com limiar por pixel de 0,02 do `pixelmatch`. A razão está junto de `MAX_DIFF_PIXEL_RATIO`, em [`web/tests/support/reference.ts`](web/tests/support/reference.ts).
-- **O logo isolado tem outro limiar.** [`web/tests/logo.spec.ts`](web/tests/logo.spec.ts) compara duas renderizações diferentes, o design do logo sozinho e o logo recortado da Home, cujas bordas diferem alguns níveis; por isso ele usa o limiar 0,1, com a razão ao lado. As cores do logo ficam conferidas pela Home inteira.
+- **O logo também é conferido sozinho.** [`web/tests/logo.spec.ts`](web/tests/logo.spec.ts) recorta o logo da Home a 1324 px de largura, onde ele mede 560 px, e o compara com a Captura de referência do design do logo sozinho, com o mesmo limiar de 0,02 e a razão ao lado. Com movimento normal, ele confere que o logo muda de um instante para o outro e para quando o movimento é reduzido.
 - **A comparação só vale no Chromium do Playwright fixado, em Linux**, onde as referências foram tiradas. Outro navegador ou outro sistema desenha o texto de outro jeito, e a comparação falha sem que a página esteja errada.
 - **O teste não grava nada no repositório.** Ele confere que cada Captura de `screenshots/`, a da Home e a do Sistema de design, é byte a byte o que o app desenha agora, e falha se não for. Depois de mudar a página de propósito, regrave as Capturas com `pnpm test --update-snapshots`, que só reescreve as que mudaram; a da Home só é gravada depois de bater com a Captura de referência.
 
@@ -72,7 +72,6 @@ helio/
 ├── README.md           esta página
 ├── DESIGN.md           o Sistema de design, em seções
 ├── HANDOFF.md          o briefing para o agente que vai reimplementar o Tema
-├── presentation.html   o Deck do Tema
 ├── screenshots/        Capturas do app: Home e Sistema de design, em 1440 e 390 px
 ├── web/                o app
 │   ├── app/            a Home (page.tsx), a rota design-system/, o layout,

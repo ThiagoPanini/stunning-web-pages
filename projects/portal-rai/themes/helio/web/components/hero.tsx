@@ -1,11 +1,12 @@
 import { ButtonLink } from "./button-link";
-import { EclusaCaption } from "./eclusa-caption";
-import { EclusaLogo } from "./eclusa-logo";
+import { OndasCaption } from "./ondas-caption";
+import { OndasLogo } from "./ondas-logo";
 import { SectionLabel } from "./section-label";
 import { TextLink } from "./text-link";
 
-// The opening of the Home, in two columns that stack when narrow: the pitch on one side, the logo and
-// its caption on the other. The pitch enters on load; the logo fades as it leaves the view.
+// The opening of the Home, in two columns that stack when narrow: the pitch on one side, the Ondas logo,
+// on the page color, and its caption on the other. The pitch enters on load; the logo fades as it leaves
+// the view.
 export function Hero() {
   return (
     <section data-block="hero" className="flex flex-wrap items-end gap-x-12 gap-y-10 pt-12 pb-24">
@@ -30,9 +31,9 @@ export function Hero() {
       </div>
       <div className="fade-on-exit mx-auto flex min-w-0 max-w-150 grow basis-105 flex-col gap-3.5">
         <div data-region="logo" className="aspect-square w-full overflow-hidden">
-          <EclusaLogo />
+          <OndasLogo background="var(--color-night)" />
         </div>
-        <EclusaCaption />
+        <OndasCaption />
       </div>
     </section>
   );

@@ -1,0 +1,27 @@
+{
+  "captures": [
+    {
+      "board": "HomeRefined.dc.html",
+      "widths": [1440, 390],
+      "blocks": {
+        "header": "header.rf-hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "teams": "main > section:nth-of-type(2)",
+        "cycle": "main > section:nth-of-type(3)",
+        "solutions": "main > section:nth-of-type(4)",
+        "practice": "main > section:nth-of-type(5)",
+        "portal": "main > section:nth-of-type(6)",
+        "faq": "main > section:nth-of-type(7)",
+        "contact": "main > section:nth-of-type(8)",
+        "footer": "footer"
+      },
+      "regions": {
+        "logo": ".rf-in5 > div:first-child"
+      }
+    },
+    {
+      "board": "LogoLab1.dc.html",
+      "widths": [560]
+    }
+  ]
+}

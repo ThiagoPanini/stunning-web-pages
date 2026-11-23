@@ -15,6 +15,6 @@ Cada app de Tema fixa as versões exatas das dependências na data em que foi im
 ## Consequences
 
 - Cada app fixa versões exatas no manifesto e tem lockfile próprio.
-- Um Tema antigo só é atualizado num Ciclo novo nele, que gera uma nova Versão do Tema.
+- Um Tema só muda num Ciclo sobre ele, e a mudança o sobrescreve: o estado anterior fica só no histórico do git, e a data do README do Tema passa a ser a do último Ciclo que o mudou ([spec #21](https://github.com/ThiagoPanini/stunning-web-pages/issues/21)).
 - A raiz fixa só as versões maiores de Node (24) e pnpm (11), no `mise.toml`, para todo Tema nascer no mesmo ambiente. O resto fica no app, que é o que congela.
 - Temas de datas diferentes convivem com versões diferentes da mesma dependência. Isso só é possível porque cada Tema é um app autossuficiente (ADR 0001).

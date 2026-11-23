@@ -1,0 +1,180 @@
+// The Home as a whole: the blocks in the board's order, the whole page against the reference capture,
+// the page's health, and reduced motion: the logo, the chip strip and the scroll progress bar still, and
+// every block in its final state. The Home's screenshots come from here: each comparison checks that its
+// own, in screenshots/, is the Home as it is now; `pnpm test --update-snapshots` rewrites it.
+
+import type { Locator, Page } from "@playwright/test";
+import { PNG } from "pngjs";
+import { spilledElements } from "./support/overflow";
+import { BLOCKS, expectImageToMatch, readReference, WIDTHS } from "./support/reference";
+import { expectSavedScreenshot } from "./support/screenshots";
+import { expect, load, type Motion, scrollThrough, test } from "./support/test";
+
+// The blocks of the Home and everything in them; not what Next adds to the body, such as its hidden
+// route announcer.
+const PAGE_ELEMENTS = "[data-block], [data-block] *";
+
+const MOTIONS: [Motion, string][] = [
+  ["no-preference", "with motion"],
+  ["reduce", "with reduced motion"],
+];
+
+test("the Home lays out its blocks in the board's order", async ({ page }) => {
+  await page.goto("/");
+  const blocks = await page
+    .locator("[data-block]")
+    .evaluateAll((elements) => elements.map((element) => element.getAttribute("data-block")));
+  expect(blocks).toEqual([...BLOCKS]);
+});
+
+for (const width of WIDTHS) {
+  // The limit and its reason are next to MAX_DIFF_PIXEL_RATIO, in support/reference.ts.
+  test(`the whole Home matches the reference capture at ${width} px`, async ({ referencePage }) => {
+    // The heaviest test of the suite: a window as tall as the page, its picture (12.6 million pixels at
+    // 1440 px) decoded and compared with the reference's, and the three images attached. About 7 s on
+    // an idle machine; past the default 30 s when other suites load it. Triple time, the same check.
+    test.slow();
+    const page = await referencePage(width);
+    const reference = await readReference(width);
+    const screenshot = await page.screenshot({ fullPage: true, animations: "disabled" });
+    await expectImageToMatch(`home-${width}`, PNG.sync.read(screenshot), reference.image);
+    // Only a screenshot that matched the reference is kept.
+    await expectSavedScreenshot(`home-${width}`, screenshot);
+  });
+
+  for (const [motion, label] of MOTIONS) {
+    test(`the Home is healthy at ${width} px ${label}`, async ({ newWindow, baseURL }) => {
+      const origin = new URL(baseURL ?? "").origin;
+      const page = await newWindow(width, { motion });
+      const consoleErrors: string[] = [];
+      const failed: string[] = [];
+      const outside: string[] = [];
+      page.on("console", (message) => {
+        if (message.type() === "error") consoleErrors.push(message.text());
+      });
+      page.on("pageerror", (error) => consoleErrors.push(error.message));
+      page.on("requestfailed", (request) =>
+        failed.push(`${request.url()} (${request.failure()?.errorText})`),
+      );
+      page.on("response", (response) => {
+        if (response.status() >= 400) failed.push(`${response.url()} (${response.status()})`);
+      });
+      page.on("request", (request) => {
+        const url = new URL(request.url());
+        if (url.protocol !== "data:" && url.origin !== origin) outside.push(request.url());
+      });
+
+      await load(page, "/");
+      await scrollThrough(page);
+      await page.waitForLoadState("networkidle");
+
+      // Soft: a sick page reports every problem at once.
+      expect.soft(consoleErrors, "console errors").toEqual([]);
+      expect.soft(failed, "failed requests").toEqual([]);
+      expect.soft(outside, "requests outside the local server").toEqual([]);
+      expect
+        .soft(
+          await page.evaluate(() =>
+            [...document.fonts].some(
+              (face) =>
+                face.family.replace(/"/g, "") === "Instrument Sans" && face.status === "loaded",
+            ),
+          ),
+          "Instrument Sans loaded from the local server",
+        )
+        .toBe(true);
+      // After the scroll left every reveal in its final place.
+      expect
+        .soft(await spilledElements(page, width), "elements outside the page width")
+        .toEqual([]);
+      expect
+        .soft(await page.evaluate(() => document.documentElement.scrollWidth), "scrollable width")
+        .toBe(width);
+    });
+  }
+
+  test(`with reduced motion, the logo and the chip strip stand still, the progress bar stays hidden and the Home shows its final state (${width} px)`, async ({
+    newWindow,
+  }) => {
+    const page = await newWindow(width, { motion: "reduce" });
+    await load(page, "/");
+
+    // 400 ms is almost 5 frames of the logo's drawing, and a fair stretch of the strip's run with motion
+    // (see the test below).
+    const [before, after] = await twoInstants(page, 400, logo(page), chipStrip(page));
+    expect.soft(after[0].equals(before[0]), "the logo stayed still").toBe(true);
+    expect.soft(after[1].equals(before[1]), "the chip strip stayed still").toBe(true);
+
+    await page.evaluate(() =>
+      window.scrollTo({ top: document.documentElement.scrollHeight / 2, behavior: "instant" }),
+    );
+    expect.soft(await progressWidth(page), "width of the progress bar halfway down").toBe(0);
+
+    // Nothing waits for the scroll: no animation runs anywhere in the page, and nothing below the fold
+    // is hidden or faded.
+    expect.soft(await page.evaluate(() => document.getAnimations().length), "animations").toBe(0);
+    const faded = await page.locator(PAGE_ELEMENTS).evaluateAll((elements) =>
+      elements
+        .filter((element) => {
+          const style = getComputedStyle(element);
+          return style.opacity !== "1" || style.visibility !== "visible";
+        })
+        .map((element) => element.outerHTML.slice(0, 80)),
+    );
+    expect(faded, "faded or hidden elements").toEqual([]);
+  });
+
+  test(`with normal motion, the chip strip runs and the progress bar grows with the scroll (${width} px)`, async ({
+    newWindow,
+  }) => {
+    const page = await newWindow(width, { motion: "no-preference" });
+    await load(page, "/");
+
+    const [before, after] = await twoInstants(page, 400, chipStrip(page));
+    expect.soft(after[0].equals(before[0]), "the chip strip stayed still").toBe(false);
+    // Under the pointer the strip pauses.
+    await chipStrip(page).hover();
+    const [hovered, stillHovered] = await twoInstants(page, 400, chipStrip(page));
+    expect
+      .soft(stillHovered[0].equals(hovered[0]), "the hovered chip strip stayed still")
+      .toBe(true);
+    await page.mouse.move(0, 0);
+
+    expect.soft(await progressWidth(page), "width of the progress bar at the top").toBe(0);
+    await page.evaluate(() =>
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }),
+    );
+    await expect.poll(() => progressWidth(page), "width at the bottom").toBe(width);
+  });
+}
+
+function logo(page: Page): Locator {
+  return page.getByRole("img", { name: /versão Ondas/ });
+}
+
+function chipStrip(page: Page): Locator {
+  return page.getByRole("group", { name: "O que os guardrails avaliam" });
+}
+
+// A picture of each target, and another of each the given time later.
+async function twoInstants(
+  page: Page,
+  gapMs: number,
+  ...targets: Locator[]
+): Promise<[Buffer[], Buffer[]]> {
+  const pictures = async () => {
+    const taken: Buffer[] = [];
+    for (const target of targets) taken.push(await target.screenshot());
+    return taken;
+  };
+  const first = await pictures();
+  await page.waitForTimeout(gapMs);
+  return [first, await pictures()];
+}
+
+// The drawn width of the header's progress bar, in whole pixels.
+function progressWidth(page: Page): Promise<number> {
+  return page
+    .locator('[data-block="header"] > [aria-hidden="true"]')
+    .evaluate((bar) => Math.round(bar.getBoundingClientRect().width));
+}

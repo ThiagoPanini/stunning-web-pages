@@ -1,0 +1,26 @@
+{
+  "captures": [
+    {
+      "board": "HomeUnkey.dc.html",
+      "widths": [1440, 390],
+      "blocks": {
+        "header": "header.uk-hdr",
+        "hero": "section[aria-labelledby=\"uk-h1\"]",
+        "brands": "section[aria-label=\"Marcas\"]",
+        "solutions": "section#solucoes",
+        "cycle": "section#ciclo",
+        "integrations": "section#integracoes",
+        "data": "section#dados",
+        "cta": "section[aria-labelledby=\"uk-cta\"]",
+        "footer": "footer#contato"
+      },
+      "regions": {
+        "logo": ".uk-hero-logo > div:first-child"
+      }
+    },
+    {
+      "board": "LogoLab1.dc.html",
+      "widths": [560]
+    }
+  ]
+}

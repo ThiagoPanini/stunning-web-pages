@@ -6,9 +6,11 @@ Cada Projeto reúne um ou mais Temas. Um Tema é um design criado numa ferrament
 
 ## Índice
 
-| Projeto | Tema | Captura | Telas cobertas | Stack |
-|---|---|---|---|---|
-| [`portal-rai`](projects/portal-rai/README.md): o portal de um time de Responsible AI | [Hélio](projects/portal-rai/themes/helio/README.md) | <img src="projects/portal-rai/themes/helio/screenshots/home-1440.png" alt="Captura da Home do Hélio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático |
+| Projeto | Tema | Captura | Telas cobertas | Stack | Implementado em |
+|---|---|---|---|---|---|
+| [`portal-rai`](projects/portal-rai/README.md): o portal de um time de Responsible AI | [Hélio](projects/portal-rai/themes/helio/README.md) | <img src="projects/portal-rai/themes/helio/screenshots/home-1440.png" alt="Captura da Home do Hélio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
+| | [Neônio](projects/portal-rai/themes/neonio/README.md) | <img src="projects/portal-rai/themes/neonio/screenshots/home-1440.png" alt="Captura da Home do Neônio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
+| | [Refined](projects/portal-rai/themes/refined/README.md) | <img src="projects/portal-rai/themes/refined/screenshots/home-1440.png" alt="Captura da Home do Refined" width="240"> | Home | Next.js 16, Tailwind CSS 4, Base UI, export estático | 23/11/2026 |
 
 ## Como usar um Tema
 
@@ -18,4 +20,8 @@ O vocabulário do Catálogo está em [`GLOSSARY.md`](GLOSSARY.md). O padrão que
 
 ## Licença
 
-O código é MIT, pela [`LICENSE`](LICENSE). As fontes que um Tema traz dentro do app têm licença própria, num arquivo ao lado delas em `web/fonts/`: as Geist e Geist Mono do Hélio são da SIL Open Font License 1.1, em [`OFL.txt`](projects/portal-rai/themes/helio/web/fonts/OFL.txt).
+O código é MIT, pela [`LICENSE`](LICENSE). As fontes que um Tema traz dentro do app têm licença própria, num arquivo ao lado delas em `web/fonts/`, e todas as de hoje são da SIL Open Font License 1.1:
+
+- as Geist e Geist Mono do Hélio, em [`OFL.txt`](projects/portal-rai/themes/helio/web/fonts/OFL.txt);
+- as Inter Tight, Inter, JetBrains Mono e Geist Mono do Neônio, cada uma no seu arquivo: [`OFL-inter-tight.txt`](projects/portal-rai/themes/neonio/web/fonts/OFL-inter-tight.txt), [`OFL-inter.txt`](projects/portal-rai/themes/neonio/web/fonts/OFL-inter.txt), [`OFL-jetbrains-mono.txt`](projects/portal-rai/themes/neonio/web/fonts/OFL-jetbrains-mono.txt) e [`OFL-geist-mono.txt`](projects/portal-rai/themes/neonio/web/fonts/OFL-geist-mono.txt);
+- as Instrument Sans e Geist Mono do Refined, em [`OFL.txt`](projects/portal-rai/themes/refined/web/fonts/OFL.txt).

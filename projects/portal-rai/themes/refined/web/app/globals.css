@@ -1,0 +1,349 @@
+/*
+ * The Refined's design system.
+ *
+ * The @theme block below is the only source of the tokens: every value the origin uses (the Home board
+ * and the Ondas logo board) has a name here, named as found. Close values stay separate (ADR 0004).
+ * Tailwind's own theme is reset, so its palette, type scale, radii, shadows, breakpoints and the rest do
+ * not exist as classes; only its spacing scale comes back, and it names every fixed length in px
+ * (gap-2.5 is 10px, max-w-140 is 560px).
+ *
+ * Naming: a color or a length with one job is named after the job (night, gutter); a value that belongs
+ * to a scale is named after its value (text-15 is 15px, text-46-96 grows from 46 to 96px, leading-150 is
+ * 1.5, tracking-tight-45 is -0.045em, radius-12 is 12px, aspect-21-9 is 21 / 9).
+ *
+ * Left out on purpose: the captions of the Selo and Eclusa logos, which the board shows only for those
+ * logos (the Home shows the Ondas), with the 11px size and the 0.12em spacing of the Selo's, and the
+ * drawing of the brand mark, the icons and the logo (stroke widths and coordinates stay in the SVG and in
+ * the components). The motion keeps its own geometry too: the distance of the rise, the strip's run and
+ * the ranges of the scroll-driven animations stay in the keyframes and utilities below, and the fade of
+ * the chip strip's sides stays in its mask; durations and curves are tokens.
+ */
+
+@import "tailwindcss";
+
+/* The board's :hover rules apply to any pointer; Tailwind's own hover waits for (hover: hover).
+   Inside data-show-state="hover" a component is drawn hovered: the /design-system route shows the state
+   that way, with no pointer over it. */
+@custom-variant hover (&:is(:hover, [data-show-state="hover"] *));
+
+/* The same for the keyboard focus: inside data-show-state="focus" a component is drawn focused, as the
+   focus ring of the base rules below is. */
+@custom-variant focus-visible (&:is(:focus-visible, [data-show-state="focus"] *));
+
+/* The board's breakpoints. At 760px and below the header stops sticking, the nav gets a row, and the
+   grids take one column; at 480px and below the section titles and the cycle steps shrink. */
+@custom-variant narrow (@media (max-width: 760px));
+@custom-variant compact (@media (max-width: 480px));
+
+@theme static {
+  --*: initial;
+  --spacing: 0.25rem;
+
+  /* Families, with the boards' fallbacks: Instrument Sans for the page, Geist Mono for the logo. */
+  --font-sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-logo: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-logo);
+
+  /* Warm neutrals, from dark to light. */
+  --color-night: #0d0d0c; /* page, text on the cream button, bezel cores, FAQ icon, logo background */
+  --color-surface: #151514; /* media placeholders, FAQ items, form panel */
+  --color-raised: #1b1b1a; /* bezel frames, dark button, action tags, icon discs */
+  --color-field: #1f1f1e; /* form fields */
+  --color-raised-hover: #262624; /* dark button hover */
+  --color-field-border: #33332f; /* form field border on hover */
+  --color-unlit: #86847e; /* first line of the hero title and of the footer signature, cycle phrase,
+     cycle step titles before they light up */
+  --color-mark: #8c8a84; /* media placeholder marks, field placeholders */
+  --color-muted: #9a978f; /* paragraphs, counts, labels, footer links, logo caption */
+  --color-subtle: #a8a59e; /* nav links, footer brand mark */
+  --color-pale: #c9c6bf; /* text on media, footer brand name */
+  --color-icon: #d9d6cf; /* icon glyphs on their discs */
+  --color-chip: #e7e4dd; /* hero chips */
+  --color-cream: #e8dcc8; /* accent: buttons, inline links, "Ver o ciclo", focus ring, scroll bar */
+  --color-bright: #f3f1ec; /* main text, brand mark */
+
+  /* Red is attack and the Red Team, blue is guardrail and the Blue Team, in the dots, icons and results of
+     the sections; the logo draws with the same two values, under names of its own below. */
+  --color-red: #ec5b48;
+  --color-blue: #5a90f8;
+
+  /* The Ondas logo's colors, under the names its component brings from the Neônio (every theme copies the
+     file as it is): the layers of its drawing, whose marks the caption shows in the same colors, its base
+     color, and its board's own background, which the Home replaces with night. */
+  --color-logo-red: #ec5b48; /* attack */
+  --color-logo-blue: #5a90f8; /* guardrails */
+  --color-logo-agent: #c9d1d6; /* agent */
+  --color-logo-gray: #87949c; /* valid answers */
+  --color-logo-bright: #eef1f2; /* the logo's base color */
+  --color-logo-night: #0a0d0f; /* the logo board's own background */
+
+  /* Translucent colors, named after their alpha in hundredths. */
+  --color-header: rgba(13, 13, 12, 0.82);
+  --color-night-55: rgba(13, 13, 12, 0.55); /* pill on media */
+  --color-white-4: rgba(255, 255, 255, 0.04); /* nav pill */
+  --color-white-6: rgba(255, 255, 255, 0.06); /* nav link hover */
+  --color-white-7: rgba(255, 255, 255, 0.07); /* header bottom rule */
+  --color-white-9: rgba(255, 255, 255, 0.09); /* nav pill border */
+  --color-white-10: rgba(255, 255, 255, 0.1); /* current nav link */
+  --color-bright-8: rgba(243, 241, 236, 0.08); /* pills and chips */
+  --color-bright-9: rgba(243, 241, 236, 0.09); /* rules */
+
+  /* Font sizes: fixed ones in px, fluid ones from their minimum to their maximum. */
+  --text-12: 12px; /* media placeholder marks */
+  --text-13: 13px; /* logo caption, field labels */
+  --text-14: 14px; /* nav, header button, chips, pills, counts, labels, footer bar */
+  --text-15: 15px; /* brand, checklist, footer columns */
+  --text-16: 16px; /* page base, buttons, paragraphs, questions */
+  --text-18: 18px; /* cycle step titles at 480px and below */
+  --text-20: 20px; /* cycle step titles, card names */
+  --text-24: 24px; /* solution names */
+  --text-26: 26px; /* section titles at 480px and below */
+  --text-28: 28px; /* team names, solution numbers */
+  --text-32: 32px; /* section titles, results, contact title */
+  --text-17-20: clamp(17px, 1.5vw, 20px); /* hero paragraph */
+  --text-24-30: clamp(24px, 2.6vw, 30px); /* cycle phrase */
+  --text-34-48: clamp(34px, 4vw, 48px); /* footer signature */
+  --text-46-96: clamp(46px, 6.7vw, 96px); /* hero title */
+  --text-logo: 2.604cqw; /* the logo's characters: 64 columns across its frame */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+
+  /* Letter spacing, in thousandths of an em. */
+  --tracking-wide-140: 0.14em; /* media placeholder marks, in capitals */
+  --tracking-0: 0; /* section counts */
+  --tracking-tight-10: -0.01em; /* brand, buttons, chips, pills, paragraphs, questions */
+  --tracking-tight-20: -0.02em; /* hero paragraph, cycle step titles, card names */
+  --tracking-tight-30: -0.03em; /* section titles, team and solution names, cycle phrase */
+  --tracking-tight-35: -0.035em; /* results */
+  --tracking-tight-40: -0.04em; /* solution numbers, footer signature */
+  --tracking-tight-45: -0.045em; /* hero title */
+
+  /* Line heights, in hundredths. */
+  --leading-94: 0.94; /* hero title */
+  --leading-100: 1; /* section counts, solution numbers */
+  --leading-102: 1.02; /* footer signature */
+  --leading-110: 1.1; /* section titles */
+  --leading-115: 1.15; /* team names, results, contact title */
+  --leading-120: 1.2; /* cycle phrase, solution names */
+  --leading-125: 1.25; /* card names */
+  --leading-130: 1.3; /* cycle step titles */
+  --leading-145: 1.45; /* checklist */
+  --leading-150: 1.5; /* page base, paragraphs */
+  --leading-155: 1.55; /* FAQ answers */
+  /* The logo's rows: the same 1.2, under the name its component brings from the Neônio, whose scale is in
+     thousandths. */
+  --leading-1200: 1.2;
+
+  /* Fluid spacing and the widths of the page. */
+  --spacing-gutter: clamp(20px, 4vw, 48px); /* side padding of the header */
+  --spacing-hero-top: clamp(64px, 7vw, 104px); /* above the hero */
+  --spacing-logo-top: clamp(48px, 6vw, 80px); /* above the logo */
+  --spacing-section-top: clamp(112px, 13vw, 168px); /* above each section and the footer */
+  --spacing-footer-links-top: clamp(80px, 10vw, 120px); /* above the footer's link columns */
+  --container-page: 1344px; /* the header row */
+  --container-column: 880px; /* the column of every section and of the footer */
+
+  /* Grids: columns of equal width that may shrink below their content. */
+  --grid-template-columns-1: minmax(0, 1fr); /* every grid at 760px and below */
+  --grid-template-columns-2: repeat(2, minmax(0, 1fr)); /* solutions, practice, portal, contact */
+  --grid-template-columns-3: repeat(3, minmax(0, 1fr)); /* footer columns */
+
+  /* The proportions of the media placeholders, named after their ratio. */
+  --aspect-16-10: 16 / 10; /* team videos */
+  --aspect-21-9: 21 / 9; /* the first portal card, across the row */
+  --aspect-4-3: 4 / 3; /* the other two portal cards */
+
+  --radius-9: 9px; /* bezel cores */
+  --radius-10: 10px; /* header button, form fields */
+  --radius-12: 12px; /* buttons */
+  --radius-16: 16px; /* media, bezels, FAQ items and questions, form panel */
+  --radius-pill: 999px; /* nav pill and links, chips, pills, action tags */
+  --radius-circle: 50%; /* brand mark, dots, icon discs */
+
+  /* The cream glows of the buttons, named after their alpha in hundredths. */
+  --shadow-glow-16: 0 8px 28px rgba(232, 220, 200, 0.16); /* cream button */
+  --shadow-glow-22: 0 8px 28px rgba(232, 220, 200, 0.22); /* header button hover */
+  --shadow-glow-28: 0 12px 36px rgba(232, 220, 200, 0.28); /* cream button hover */
+  --blur-10: 10px; /* pill on media */
+  --blur-16: 16px; /* header backdrop */
+
+  /* The keyboard focus ring, in --color-cream; form fields keep it closer. */
+  --outline-width-focus: 2px;
+  --outline-offset-focus: 3px;
+  --outline-offset-field: 1px;
+
+  /* Motion. Hover transitions take .2s with the default ease; the media fill and the FAQ icon, .25s. */
+  --default-transition-duration: 0.2s;
+  --default-transition-timing-function: ease;
+  --transition-duration-slow: 0.25s;
+  --ease-enter: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --duration-enter: 0.9s;
+  --delay-enter-2: 0.06s;
+  --delay-enter-3: 0.12s;
+  --delay-enter-4: 0.18s;
+  --delay-enter-5: 0.3s;
+  --duration-marquee: 36s;
+  /* Scroll-driven animations run on a timeline; the duration only has to be non-zero. */
+  --duration-timeline: 1ms;
+  --animate-enter: rf-up var(--duration-enter) var(--ease-enter) both;
+  --animate-marquee: rf-marquee var(--duration-marquee) linear infinite;
+}
+
+/* The board's keyframes, with its names. */
+@keyframes rf-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rf-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes rf-lit {
+  from {
+    color: var(--color-unlit);
+  }
+  to {
+    color: var(--color-bright);
+  }
+}
+
+@keyframes rf-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* The page scrolls smoothly to its anchors, and the focus ring of every focusable element, from the
+   board's :focus-visible rule. Inside data-show-state="focus", drawn focused: the /design-system route
+   shows the state that way. */
+@layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  :focus-visible,
+  [data-show-state="focus"] :is(a, button, input, textarea) {
+    outline: var(--outline-width-focus) solid var(--color-cream);
+    outline-offset: var(--outline-offset-focus);
+  }
+}
+
+/* The chip strip's frame fades at both sides: rf-tags. */
+@utility fade-sides {
+  mask-image: linear-gradient(90deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+}
+
+/*
+ * Motion utilities, one per class of the board (in its own words: rf-in1 to rf-in5, rf-tags-track,
+ * rf-prog, rf-lit, rf-rise). Every animation waits for prefers-reduced-motion: no-preference; the
+ * scroll-driven ones also wait for animation-timeline support. Anywhere else the content shows in its
+ * final state, the chip strip stands still, and the scroll progress bar stays at zero width.
+ */
+
+/* Entrance on load, staggered: rf-in1 to rf-in5. */
+@utility enter-1 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+  }
+}
+
+@utility enter-2 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+    animation-delay: var(--delay-enter-2);
+  }
+}
+
+@utility enter-3 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+    animation-delay: var(--delay-enter-3);
+  }
+}
+
+@utility enter-4 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+    animation-delay: var(--delay-enter-4);
+  }
+}
+
+@utility enter-5 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+    animation-delay: var(--delay-enter-5);
+  }
+}
+
+/* The chip strip: two copies of the chips side by side that run left by one copy, over and over, and
+   pause while the pointer is over the strip's frame, marked as the group: rf-tags-track. Inside
+   data-show-state="hover" the strip is drawn paused, as the hover variant draws a component hovered. */
+@utility marquee {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-marquee);
+    &:is(:where(.group):is(:hover, [data-show-state="hover"] *) *) {
+      animation-play-state: paused;
+    }
+  }
+}
+
+/* Rise into place as the element enters the view: rf-rise. */
+@utility rise {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rf-up linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+  }
+}
+
+/* Text that lights up as it enters the view: rf-lit. Inside data-show-state="unlit" it is drawn before it
+   lights up, with no motion: the /design-system route shows that state. */
+@utility light-up {
+  &:is([data-show-state="unlit"] *) {
+    color: var(--color-unlit);
+    animation: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rf-lit linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: view();
+      animation-range: entry 40% cover 45%;
+    }
+  }
+}
+
+/* The header bar that grows with the page scroll: rf-prog. At rest it has zero width. */
+@utility scroll-progress {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rf-grow linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: scroll();
+    }
+  }
+}
