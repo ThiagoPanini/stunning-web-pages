@@ -245,6 +245,23 @@ export function RadiusTokens({ tokens }: { tokens: Token[] }) {
   );
 }
 
+// A box in the token's proportion, at a fixed height that keeps the route on whole pixels: its width
+// follows the ratio.
+export function AspectTokens({ tokens }: { tokens: Token[] }) {
+  return (
+    <TokenGrid min="wide">
+      {tokens.map((token) => (
+        <TokenCell key={token.name} token={token}>
+          <Sample
+            className="h-24 max-w-full self-start border border-rule-strong bg-placeholder"
+            style={{ aspectRatio: variable(token) }}
+          />
+        </TokenCell>
+      ))}
+    </TokenGrid>
+  );
+}
+
 // The blur of the neon squares: a square of light blurred by the token, the sharp square on top.
 export function BlurTokens({ tokens }: { tokens: Token[] }) {
   return (

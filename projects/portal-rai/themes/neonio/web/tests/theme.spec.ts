@@ -122,6 +122,10 @@ function originValues(): Use[] {
         add("grid", value, /^--grid-template-columns-/);
       }
       if (property === "grid-auto-columns") add("grid", value, /^--grid-auto-columns-/);
+      // The proportions of the media and of the drawings; 1 / 1 is Tailwind's own aspect-square.
+      if (property === "aspect-ratio" && normalize(value) !== "1 / 1") {
+        add("aspect ratio", value, /^--aspect-/);
+      }
       if (property === "outline") {
         for (const [length] of value.matchAll(/\b\d*\.?\d+px\b/g)) {
           add("outline width", length, /^--outline-width-/);
@@ -157,17 +161,23 @@ test("every value the origin uses has a name in @theme", () => {
   expect([...unnamed], "origin values with no name in @theme").toEqual([]);
 });
 
-// The numbers of a CSS value that are a design's choice: a length, a time, an angle, a decimal. A whole
-// number with no unit is a step of Tailwind's own (flex-[1_1_0] grows by 1), and 0 and 100% are none
-// and all; none of them is a choice of the board.
+// The numbers of a CSS value that are a design's choice: a length, a time, an angle, a decimal, a ratio
+// (21/9). A whole number with no unit is a step of Tailwind's own (flex-[1_1_0] grows by 1), and 0 and
+// 100% are none and all; none of them is a choice of the board.
 function literalValues(value: string): string[] {
-  return [...value.matchAll(/(\d*\.?\d+)([a-z%]*)/g)]
+  const ratios = [...value.matchAll(/\d+\/\d+/g)].map(([ratio]) => ratio);
+  const numbers = [...value.matchAll(/(\d*\.?\d+)([a-z%]*)/g)]
     .filter(([, number, unit]) => {
       if (unit === "" || unit === "fr") return !Number.isInteger(Number(number));
       return !(Number(number) === 0 || (unit === "%" && number === "100"));
     })
     .map(([literal]) => literal);
+  return [...ratios, ...numbers];
 }
+
+// A proportion written in Tailwind's fraction syntax, with no brackets: aspect-16/10. The other
+// fractions of the components (left-1/2, -translate-x-1/2) are Tailwind's own halves, which center.
+const ASPECT_FRACTION = /[\w:-]*\baspect-(\d+\/\d+)/g;
 
 // Drawings keep their geometry in their own file, as globals.css explains: an illustration's positions
 // in % and an icon's strokes. A component file named *-illustration.tsx is one: its arbitrary values may
@@ -191,13 +201,16 @@ test("no component or base rule writes a design value outside @theme", () => {
   const found: string[] = [];
   for (const file of readdirSync(dir).filter((name) => name.endsWith(".tsx"))) {
     const source = readFileSync(join(dir, file), "utf8");
-    // Arbitrary values of classes (grow-[1.2], grid-cols-[…]), and colors written out anywhere: in a
-    // class, a style or an SVG attribute.
+    // Arbitrary values of classes (grow-[1.2], grid-cols-[…]) and proportions as fractions, and colors
+    // written out anywhere: in a class, a style or an SVG attribute.
     for (const [className, value] of source.matchAll(/[\w:-]+-\[([^\]\s"'`]+)\]/g)) {
       const literals = literalValues(value);
       if (literals.length > 0 && !DRAWING.test(file)) {
         found.push(`${file}: ${className} (${literals.join(", ")})`);
       }
+    }
+    for (const [className, ratio] of source.matchAll(ASPECT_FRACTION)) {
+      if (!DRAWING.test(file)) found.push(`${file}: ${className} (${ratio})`);
     }
     for (const [color] of source.matchAll(/#[0-9A-Fa-f]{3,8}\b|rgba?\([^)]*\)/g)) {
       found.push(`${file}: ${color}`);

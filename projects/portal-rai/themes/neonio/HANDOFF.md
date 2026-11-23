@@ -28,7 +28,7 @@ Reimplementar fiel é o ponto de partida. O que corrigir no design é decisão d
 
 1. Este arquivo, até o fim.
 2. [`DESIGN.md`](DESIGN.md): o Sistema de design papel por papel (cores, tipografia, layout, formas, movimento, componentes) e as Observações.
-3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor e cada peça isolada, nos seus estados. As Capturas são altas: a da Home em 390 px tem 12.113 px, e a do Sistema de design em 1440 px, 19.924 px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar, ou compare pixel a pixel. Os valores vêm de `globals.css`, não da imagem.
+3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor e cada peça isolada, nos seus estados. As Capturas são altas: a da Home em 390 px tem 12.113 px, e a do Sistema de design em 1440 px, 20.210 px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar, ou compare pixel a pixel. Os valores vêm de `globals.css`, não da imagem.
 4. [`web/app/globals.css`](web/app/globals.css): o `@theme` com todos os valores, as variantes próprias (`hover`, `focus-visible` e as quatro quebras `upto-*`), o keyframe da faixa de marcas, a regra de foco e as utilidades de movimento.
 5. [`web/app/fonts.ts`](web/app/fonts.ts) e a pasta [`web/fonts/`](web/fonts/): as quatro fontes, o subconjunto e as licenças.
 6. [`web/app/layout.tsx`](web/app/layout.tsx) e [`web/app/page.tsx`](web/app/page.tsx): a Home montada a partir dos blocos, com a moldura de filetes em volta de quatro deles.
@@ -133,7 +133,7 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`. Para outro arranjo:
   | `grid-cols-hero`, `auto-cols-tabs` | `grid-template-columns: var(--grid-template-columns-…)` e `grid-auto-columns: var(--grid-auto-columns-tabs)` |
   | `bg-ruled`, `bg-hatch`, `bg-chart-bar` | `background-image: var(--background-image-…)` |
   | `outline-offset-inset`, `outline-page` | `outline-offset: var(--outline-offset-inset)` e `outline-color: var(--color-page)` |
-  | `aspect-324/255`, `aspect-16/10` | `aspect-ratio: 324 / 255` e assim por diante |
+  | `aspect-324-255`, `aspect-16-10` | `aspect-ratio: var(--aspect-…)` |
   | `top-[58%]`, `h-[46%]`, `tracking-[normal]` | o valor entre colchetes |
   | `border`, `border-t`, `border-x` | um filete de `1px solid`, na cor da classe `border-*` ao lado |
   | `gap-px` | `gap: 1px`, o vão que vira filete nas grades |

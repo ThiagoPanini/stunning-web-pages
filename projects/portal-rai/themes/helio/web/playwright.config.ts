@@ -8,6 +8,9 @@ export default defineConfig({
   globalSetup: "./tests/support/global-setup.ts",
   forbidOnly: true,
   fullyParallel: true,
+  // Two browsers at a time: the default, half the CPU cores, opens more Chromiums than a machine with
+  // 8 GB of RAM holds, and the OOM killer ends some of them when several suites run together.
+  workers: 2,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     browserName: "chromium",

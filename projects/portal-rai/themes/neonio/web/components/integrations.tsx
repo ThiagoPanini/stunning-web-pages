@@ -28,7 +28,7 @@ function BentoCard({ lead, children, media, tall = false }: BentoCardProps) {
 }
 
 function WideMedia() {
-  return <MediaPlaceholder label="inserir gif · 16:10" className="aspect-16/10" />;
+  return <MediaPlaceholder label="inserir gif · 16:10" className="aspect-16-10" />;
 }
 
 // Integrations: the centered title and a bento of five cards in three columns, ruled by its 1px gaps,
