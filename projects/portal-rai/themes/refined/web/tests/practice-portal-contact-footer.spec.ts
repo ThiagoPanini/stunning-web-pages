@@ -9,6 +9,7 @@ import { test } from "./support/test";
 const BANDS: [BlockName, string][] = [
   ["practice", "Na prática"],
   ["portal", "No portal"],
+  ["contact", "Contato"],
 ];
 
 for (const width of WIDTHS) {
