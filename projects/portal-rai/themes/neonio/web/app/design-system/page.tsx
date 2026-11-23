@@ -8,6 +8,7 @@ import { DesignGroup, DesignSection } from "./parts";
 import { ComponentSpecimens } from "./specimens";
 import { groupTokens, readThemeTokens } from "./theme-tokens";
 import {
+  AspectTokens,
   BlurTokens,
   ColorTokens,
   FamilyTokens,
@@ -134,11 +135,14 @@ export default function DesignSystem() {
           <DesignSection
             number="04"
             label="Formas"
-            title="Raios, desfoque, fundos e foco."
-            lead="Raios de 2 e 6 px e o círculo; o desfoque dos quadrados neon; os fundos desenhados por gradiente, das pautas, das barras e da hachura; e o anel do foco de teclado, branco por fora e, sobre o branco, escuro por dentro."
+            title="Raios, proporções, desfoque, fundos e foco."
+            lead="Raios de 2 e 6 px e o círculo; as proporções dos desenhos das soluções e da mídia do bento, nomeadas pela razão; o desfoque dos quadrados neon; os fundos desenhados por gradiente, das pautas, das barras e da hachura; e o anel do foco de teclado, branco por fora e, sobre o branco, escuro por dentro."
           >
             <DesignGroup title="Raios">
               <RadiusTokens tokens={tokens.radii} />
+            </DesignGroup>
+            <DesignGroup title="Proporções">
+              <AspectTokens tokens={tokens.aspects} />
             </DesignGroup>
             <DesignGroup title="Desfoque">
               <BlurTokens tokens={tokens.effects} />

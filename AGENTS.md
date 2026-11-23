@@ -10,7 +10,7 @@ As decisões por trás deste padrão, cada uma com a alternativa que venceu, est
 stunning-web-pages/
 ├── README.md · AGENTS.md · CLAUDE.md · GLOSSARY.md · LICENSE · .gitignore · mise.toml
 ├── docs/adr/ · docs/agents/
-├── scripts/                  a Puxada, a Subida e o conferidor de documentos, com o passo a passo de cada um
+├── scripts/                  a Puxada, a Subida, o conferidor de documentos e a conferência de um Tema, com o passo a passo de cada um
 └── projects/<project>/
     ├── README.md             contexto, Telas, tabela de Temas com uma Captura de cada
     └── themes/<theme>/
@@ -62,7 +62,7 @@ Um Tema está pronto, e o agente mescla o Ciclo sozinho, quando tudo isto vale:
 
 ### Issue tracker
 
-Issues e specs vivem no GitHub Issues em `ThiagoPanini/stunning-web-pages` (pelo `gh`), e os tickets são fatiados para o `/implement-spec`. Veja `docs/agents/issue-tracker.md`.
+Issues e specs vivem no GitHub Issues em `ThiagoPanini/stunning-web-pages` (pelo `gh`), e os tickets são fatiados para o `/implement-spec`. Veja `docs/agents/issue-tracker.md` e, para executá-los, `docs/agents/implement-spec.md`.
 
 ### Etiquetas de triagem
 

@@ -49,3 +49,6 @@ Aqui as specs são construídas pelo `/implement-spec`: cada ticket chega a uma 
 - **Costuras**: cada ticket nomeia a sua costura de teste. Num Tema, a costura é a página renderizada no navegador, comparada com as Capturas de referência da Origem dele.
 - **Folhas**: um ticket que pode parar à espera de decisão do Autor não bloqueia nada.
 - **Ferramentas**: um ticket que traz um CLI ou uma extensão que o agente ainda não rodou neste repositório a nomeia, e a sessão de fatiamento a roda uma vez no modo de permissão do agente, lendo o que ela escreve. Uma ferramenta que continua barrada vira passo da preparação única do Autor, e o ticket dela não bloqueia nada.
+- **Publicação**: um ticket que publica num Artefato diz isso no corpo, e as notas de handoff da spec pedem ao Autor a autorização dessas publicações na chamada do `/implement-spec`. O modo automático pode negar a publicação a um subagente mesmo depois de ela ter passado num Ciclo anterior.
+
+Para executar os tickets, o briefing do condutor, do implementador e do merger está em `docs/agents/implement-spec.md`.
