@@ -10,7 +10,7 @@ const variable = (token: Token) => `var(${token.name})`;
 function TokenGrid({ min, children }: { min: "narrow" | "wide"; children: ReactNode }) {
   const columns =
     min === "narrow"
-      ? "grid-cols-[repeat(auto-fill,minmax(min(200px,100%),1fr))]"
+      ? "grid-cols-[repeat(auto-fill,minmax(min(160px,100%),1fr))]"
       : "grid-cols-[repeat(auto-fill,minmax(min(300px,100%),1fr))]";
   return <ul className={`grid gap-x-6 gap-y-8 ${columns}`}>{children}</ul>;
 }
@@ -80,7 +80,7 @@ export function FamilyTokens({ tokens }: { tokens: Token[] }) {
             <span className="font-light text-28-42 leading-110 tracking-tight-25">
               Atacamos primeiro. Protegemos sempre.
             </span>
-            <span className="break-all text-15 text-muted">
+            <span className="wrap-anywhere text-15 text-muted">
               ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789
             </span>
           </Sample>

@@ -4,6 +4,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Locator } from "@playwright/test";
+import { PNG } from "pngjs";
 import { WIDTHS } from "./support/reference";
 import { expect, test } from "./support/test";
 
@@ -245,3 +246,22 @@ test("com movimento normal o logo animado muda e o parado não", async ({ browse
   expect(stoppedLater.equals(stopped), "o logo parado ficou igual").toBe(true);
   await context.close();
 });
+
+// The Capturas of the route, in the Tema's screenshots/, taken under the conditions of the Capturas de
+// referência: reduced motion, so both logos rest on the same frame, and a viewport as tall as the
+// document. Every run rewrites them, so they show the route as it is.
+const SCREENSHOTS_DIR = join(import.meta.dirname, "..", "..", "screenshots");
+
+for (const width of WIDTHS) {
+  test(`guarda a Captura da rota em ${width} px`, async ({ referencePage }) => {
+    const page = await referencePage(width, ROUTE);
+    const path = join(SCREENSHOTS_DIR, `design-system-${width}.png`);
+    await page.screenshot({ path, animations: "disabled" });
+    const height = await page.evaluate(() => document.documentElement.scrollHeight);
+    const capture = PNG.sync.read(readFileSync(path));
+    expect({ width: capture.width, height: capture.height }, "a Captura é a rota inteira").toEqual({
+      width,
+      height,
+    });
+  });
+}

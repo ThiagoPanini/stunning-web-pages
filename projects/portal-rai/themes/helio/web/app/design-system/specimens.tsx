@@ -53,13 +53,18 @@ type StateProps = {
   children: ReactNode;
 };
 
-const cellBasis = { small: "basis-50", medium: "basis-80", large: "basis-110" };
+// Medium and large cells stop growing near the width the component has on the Home.
+const cellSize = {
+  small: "basis-50",
+  medium: "basis-80 max-w-160",
+  large: "basis-110 max-w-180",
+};
 
 function State({ label, show, size = "small", children }: StateProps) {
   return (
     <figure
       data-state={label}
-      className={`flex min-w-0 grow flex-col gap-5 rounded-16 border border-rule p-6 ${cellBasis[size]}`}
+      className={`flex min-w-0 grow flex-col gap-5 rounded-16 border border-rule p-6 ${cellSize[size]}`}
     >
       <figcaption className="font-mono text-12 text-subtle uppercase tracking-wide-80">
         {label}
@@ -128,12 +133,12 @@ export function ComponentSpecimens() {
         }
       >
         <State label="animado" size="medium">
-          <div className="w-full max-w-80">
+          <div className="mx-auto w-full max-w-80">
             <EclusaLogo />
           </div>
         </State>
         <State label="parado" size="medium">
-          <div className="w-full max-w-80">
+          <div className="mx-auto w-full max-w-80">
             <EclusaLogo animated={false} />
           </div>
         </State>

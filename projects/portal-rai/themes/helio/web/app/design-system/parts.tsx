@@ -44,8 +44,8 @@ export function DesignGroup({ title, children }: { title: string; children: Reac
 export function TokenName({ token }: { token: Token }) {
   return (
     <div className="flex min-w-0 flex-col gap-0.5 font-mono text-12">
-      <code className="break-all text-bright">{token.name}</code>
-      <code className="break-all text-subtle">{token.value}</code>
+      <code className="wrap-anywhere text-bright">{token.name}</code>
+      <code className="wrap-anywhere text-subtle">{token.value}</code>
     </div>
   );
 }
