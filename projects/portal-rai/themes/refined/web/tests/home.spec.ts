@@ -1,9 +1,13 @@
-// The Home as a whole: the blocks in the board's order, the page's health, and the motion of the parts
-// every block shares: the chip strip and the scroll progress bar, still with reduced motion.
+// The Home as a whole: the blocks in the board's order, the whole page against the reference capture,
+// the page's health, and reduced motion: the logo, the chip strip and the scroll progress bar still, and
+// every block in its final state. The Home's screenshots come from here: each comparison checks that its
+// own, in screenshots/, is the Home as it is now; `pnpm test --update-snapshots` rewrites it.
 
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
+import { PNG } from "pngjs";
 import { spilledElements } from "./support/overflow";
-import { BLOCKS, WIDTHS } from "./support/reference";
+import { BLOCKS, expectImageToMatch, readReference, WIDTHS } from "./support/reference";
+import { expectSavedScreenshot } from "./support/screenshots";
 import { expect, load, type Motion, scrollThrough, test } from "./support/test";
 
 // The blocks of the Home and everything in them; not what Next adds to the body, such as its hidden
@@ -24,6 +28,16 @@ test("the Home lays out its blocks in the board's order", async ({ page }) => {
 });
 
 for (const width of WIDTHS) {
+  // The limit and its reason are next to MAX_DIFF_PIXEL_RATIO, in support/reference.ts.
+  test(`the whole Home matches the reference capture at ${width} px`, async ({ referencePage }) => {
+    const page = await referencePage(width);
+    const reference = await readReference(width);
+    const screenshot = await page.screenshot({ fullPage: true, animations: "disabled" });
+    await expectImageToMatch(`home-${width}`, PNG.sync.read(screenshot), reference.image);
+    // Only a screenshot that matched the reference is kept.
+    await expectSavedScreenshot(`home-${width}`, screenshot);
+  });
+
   for (const [motion, label] of MOTIONS) {
     test(`the Home is healthy at ${width} px ${label}`, async ({ newWindow, baseURL }) => {
       const origin = new URL(baseURL ?? "").origin;
@@ -75,15 +89,17 @@ for (const width of WIDTHS) {
     });
   }
 
-  test(`with reduced motion, the chip strip stands still, the progress bar stays hidden and the Home shows its final state (${width} px)`, async ({
+  test(`with reduced motion, the logo and the chip strip stand still, the progress bar stays hidden and the Home shows its final state (${width} px)`, async ({
     newWindow,
   }) => {
     const page = await newWindow(width, { motion: "reduce" });
     await load(page, "/");
 
-    // 400 ms is a fair stretch of the strip's run with motion (see the test below).
-    const [before, after] = await twoInstants(page, 400);
-    expect.soft(after.equals(before), "the chip strip stayed still").toBe(true);
+    // 400 ms is almost 5 frames of the logo's drawing, and a fair stretch of the strip's run with motion
+    // (see the test below).
+    const [before, after] = await twoInstants(page, 400, logo(page), chipStrip(page));
+    expect.soft(after[0].equals(before[0]), "the logo stayed still").toBe(true);
+    expect.soft(after[1].equals(before[1]), "the chip strip stayed still").toBe(true);
 
     await page.evaluate(() =>
       window.scrollTo({ top: document.documentElement.scrollHeight / 2, behavior: "instant" }),
@@ -110,12 +126,14 @@ for (const width of WIDTHS) {
     const page = await newWindow(width, { motion: "no-preference" });
     await load(page, "/");
 
-    const [before, after] = await twoInstants(page, 400);
-    expect.soft(after.equals(before), "the chip strip stayed still").toBe(false);
+    const [before, after] = await twoInstants(page, 400, chipStrip(page));
+    expect.soft(after[0].equals(before[0]), "the chip strip stayed still").toBe(false);
     // Under the pointer the strip pauses.
-    await page.getByRole("group", { name: "O que os guardrails avaliam" }).hover();
-    const [hovered, stillHovered] = await twoInstants(page, 400);
-    expect.soft(stillHovered.equals(hovered), "the hovered chip strip stayed still").toBe(true);
+    await chipStrip(page).hover();
+    const [hovered, stillHovered] = await twoInstants(page, 400, chipStrip(page));
+    expect
+      .soft(stillHovered[0].equals(hovered[0]), "the hovered chip strip stayed still")
+      .toBe(true);
     await page.mouse.move(0, 0);
 
     expect.soft(await progressWidth(page), "width of the progress bar at the top").toBe(0);
@@ -126,12 +144,28 @@ for (const width of WIDTHS) {
   });
 }
 
-// Two pictures of the chip strip, the given time apart.
-async function twoInstants(page: Page, gapMs: number): Promise<[Buffer, Buffer]> {
-  const strip = page.getByRole("group", { name: "O que os guardrails avaliam" });
-  const first = await strip.screenshot();
+function logo(page: Page): Locator {
+  return page.getByRole("img", { name: /versão Ondas/ });
+}
+
+function chipStrip(page: Page): Locator {
+  return page.getByRole("group", { name: "O que os guardrails avaliam" });
+}
+
+// A picture of each target, and another of each the given time later.
+async function twoInstants(
+  page: Page,
+  gapMs: number,
+  ...targets: Locator[]
+): Promise<[Buffer[], Buffer[]]> {
+  const pictures = async () => {
+    const taken: Buffer[] = [];
+    for (const target of targets) taken.push(await target.screenshot());
+    return taken;
+  };
+  const first = await pictures();
   await page.waitForTimeout(gapMs);
-  return [first, await strip.screenshot()];
+  return [first, await pictures()];
 }
 
 // The drawn width of the header's progress bar, in whole pixels.
