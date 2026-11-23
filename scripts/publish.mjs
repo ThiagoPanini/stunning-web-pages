@@ -488,12 +488,12 @@ async function bundleCss(theme, declared) {
   const cssFiles = readdirSync(chunks).filter((f) => f.endsWith('.css'));
   if (cssFiles.length !== 1) throw new Error(`${chunks}: expected one CSS chunk, found ${cssFiles.length}`);
   const css = await previewCss(readFileSync(join(chunks, cssFiles[0]), 'utf8'), declared);
-  return `/* ${theme.name}: o CSS do app (Tailwind 4, compilado no export estático), sem o que tokens.json declara.
-   Os valores dos tokens vêm de tokens.css; daqui saíram as @font-face, que tokens.css também declara,
-   e as animações, guardadas por prefers-reduced-motion: as prévias mostram o estado final, como o app
-   com movimento reduzido. */
+  return `/* ${theme.name}: the app's CSS (Tailwind 4, compiled in the static export), without what tokens.json declares.
+   The token values come from tokens.css; the @font-face rules, which tokens.css declares too, left this
+   file, and so did the animations, guarded by prefers-reduced-motion: the previews show the final state,
+   as the app does with reduced motion. */
 ${css}
-/* Moldura das prévias. */
+/* The previews' frame. */
 body {
   margin: 0;
 }
