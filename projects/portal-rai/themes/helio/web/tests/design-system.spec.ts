@@ -138,7 +138,7 @@ function homeComponents(): string[] {
 test("each component of the Home shows on its own on the route", async ({ page }) => {
   const components = homeComponents();
   expect(components, "components of the Home").toEqual(
-    expect.arrayContaining(["ButtonLink", "EclusaLogo", "TeamCard", "TerminalPanel"]),
+    expect.arrayContaining(["ButtonLink", "OndasLogo", "TeamCard", "TerminalPanel"]),
   );
   await page.goto(ROUTE);
   const shown = await page
@@ -232,7 +232,7 @@ test("with normal motion the animated logo changes and the stopped one does not"
   const page = await newWindow(1440, { motion: "no-preference" });
   await load(page, ROUTE);
   const logo = (state: string) =>
-    page.locator(`[data-component="EclusaLogo"] [data-state="${state}"] [role="img"]`);
+    page.locator(`[data-component="OndasLogo"] [data-state="${state}"] [role="img"]`);
   await logo("animado").scrollIntoViewIfNeeded();
   const pictures = async () => [
     await logo("animado").screenshot(),

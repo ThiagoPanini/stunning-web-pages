@@ -4,7 +4,7 @@ O Hélio é um Tema do Projeto `portal-rai`: a Home do portal de um time de Resp
 
 Os valores não estão aqui. A única fonte deles é o bloco `@theme` de [`web/app/globals.css`](web/app/globals.css), e este documento cita cada token pelo nome da variável. Para ver os valores desenhados, abra a rota `/design-system` do app (como rodar está no [README](README.md#como-rodar)) ou as Capturas dela: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) e [`screenshots/design-system-390.png`](screenshots/design-system-390.png).
 
-**Como ler os nomes.** A classe do Tailwind é o nome do token sem o prefixo do namespace: `--color-night` dá `bg-night`, `text-night` e `border-night`; `--text-15` dá `text-15`; `--radius-16` dá `rounded-16`; `--spacing-gutter` dá `px-gutter`; `--grid-template-columns-mission` dá `grid-cols-mission`. O crescimento flexível não tem namespace no Tailwind: `--grow-120` entra pela classe `grow-(--grow-120)`. Uma cor ou um comprimento de um papel só leva o nome do papel (`--color-night`, `--spacing-gutter`). Um valor de escala leva o nome do valor: `--text-15` é o tamanho de 15 px, `--text-36-80` cresce de 36 a 80 px, `--leading-160` é a altura de linha 1,6, `--tracking-tight-35` é o espaçamento de 35 milésimos de em negativos, `--grow-120` é o crescimento 1,2.
+**Como ler os nomes.** A classe do Tailwind é o nome do token sem o prefixo do namespace: `--color-night` dá `bg-night`, `text-night` e `border-night`; `--text-15` dá `text-15`; `--radius-16` dá `rounded-16`; `--spacing-gutter` dá `px-gutter`; `--grid-template-columns-mission` dá `grid-cols-mission`. O crescimento flexível não tem namespace no Tailwind: `--grow-120` entra pela classe `grow-(--grow-120)`. Uma cor ou um comprimento de um papel só leva o nome do papel (`--color-night`, `--spacing-gutter`). Um valor de escala leva o nome do valor: `--text-15` é o tamanho de 15 px, `--text-36-80` cresce de 36 a 80 px, `--leading-160` é a altura de linha 1,6, `--tracking-tight-35` é o espaçamento de 35 milésimos de em negativos, `--grow-120` é o crescimento 1,2. Os tokens do logo Ondas guardam os nomes do componente dele, com `logo` no nome (`--color-logo-blue`, `--font-logo`, `--text-logo`), e por isso ficam separados dos tokens da página de mesmo valor.
 
 **Nomear sem normalizar.** Cada valor do design tem o seu token, com o nome do valor como ele foi achado, e valores parecidos não foram fundidos. O que parece inconsistente está em [Observações](#observações), para você decidir o que corrigir no seu projeto.
 
@@ -16,12 +16,12 @@ Os valores não estão aqui. A única fonte deles é o bloco `@theme` de [`web/a
 
 Uma página só, escura e sóbria, que conta a história de dois times em oposição. Sobre uma escala de neutros quase pretos, só duas cores têm matiz, e cada uma tem um sentido: o vermelho é o ataque e o Red Team; o azul é o guardrail e o Blue Team. O título da abertura já diz isso, com o ponto de "Atacamos primeiro." em vermelho e o de "Protegemos sempre." em azul.
 
-Os títulos são grandes, de peso leve e com as letras apertadas. O mono aparece onde o texto é técnico ou é rótulo: sobretítulos, painéis de terminal, selos e a chamada de API. A página se move pouco e de propósito. Ela entra no carregamento, revela as seções conforme o scroll e acende as palavras do título da Missão, e o logo Eclusa anima o perímetro de guardrails em volta do agente.
+Os títulos são grandes, de peso leve e com as letras apertadas. O mono aparece onde o texto é técnico ou é rótulo: sobretítulos, painéis de terminal, selos e a chamada de API. A página se move pouco e de propósito. Ela entra no carregamento, revela as seções conforme o scroll e acende as palavras do título da Missão, e o logo Ondas anima, em caracteres, as ondas que chegam ao anel de guardrails em volta do agente e as que saem dele.
 
 A Home, de cima para baixo:
 
 - **Cabeçalho** fixo com desfoque: marca, navegação em pílula, o botão "Testar um guardrail" e a barra de progresso do scroll.
-- **Abertura** em duas colunas: sobretítulo, título, parágrafo, botão e link; ao lado, o logo Eclusa e a legenda dele.
+- **Abertura** em duas colunas: sobretítulo, título, parágrafo, botão e link; ao lado, o logo Ondas e a legenda de caracteres dele.
 - **01 · Missão**: um título cujas palavras acendem no scroll e três colunas.
 - **02 · Times**: os cartões do Red Team e do Blue Team, cada um com um painel de terminal.
 - **03 · Principais soluções**: quatro linhas com o selo do time, o nome e a descrição.
@@ -34,24 +34,32 @@ Neutros, do escuro ao claro:
 
 | Token | Papel |
 |---|---|
-| `--color-night` | fundo da página, dos painéis de terminal e do logo; texto do botão claro |
+| `--color-night` | fundo da página, dos painéis de terminal e, na abertura, do logo; texto do botão claro |
 | `--color-surface` | fundo dos cartões |
 | `--color-rule` | filetes das seções, dos cartões e dos painéis |
 | `--color-rule-strong` | filetes das colunas da Missão e pontilhado do painel do Red Team |
 | `--color-unlit` | palavras do título da Missão antes de acender |
-| `--color-subtle` | rótulos mono, rodapé, linhas de comando dos painéis, anéis de resposta do logo |
-| `--color-muted` | parágrafos, navegação, links de texto, texto dos painéis, "agente" na legenda do logo |
-| `--color-disc` | disco do logo |
+| `--color-subtle` | rótulos mono, rodapé, linhas de comando dos painéis |
+| `--color-muted` | parágrafos, navegação, links de texto, texto dos painéis, "*" e "agente" na legenda do logo |
 | `--color-bright` | texto principal, botão claro, marca, barra de progresso, link em hover |
 
 Acentos, cada um com um sentido:
 
 | Token | Papel |
 |---|---|
-| `--color-red` | ataque e Red Team: ponto do título, marca e nome do Red Team, selo RED, "passou" no painel, cruzes do logo, "ataque" na legenda |
-| `--color-blue` | guardrail e Blue Team: ponto do título, marca e nome do Blue Team, selo BLUE, "contido", etapas do painel, veredito "bloqueada", segmentos do logo em repouso, "guardrails" na legenda; também o anel de foco |
-| `--color-blue-soft` | logo: segmento morno e onda de choque |
-| `--color-blue-pale` | logo: segmento quente |
+| `--color-red` | ataque e Red Team: ponto do título, marca e nome do Red Team, selo RED, "passou" no painel, "×" e "ataque" na legenda do logo |
+| `--color-blue` | guardrail e Blue Team: ponto do título, marca e nome do Blue Team, selo BLUE, "contido", etapas do painel, veredito "bloqueada", ":" e "guardrails" na legenda do logo; também o anel de foco |
+
+Do logo Ondas, com os nomes do componente dele. Cada camada do desenho tem a sua cor:
+
+| Token | Papel |
+|---|---|
+| `--color-logo-agent` | o agente, a esfera de caracteres do centro |
+| `--color-logo-blue` | o anel de guardrails |
+| `--color-logo-red` | o que precisa ser barrado: os ataques que chegam e as respostas inválidas |
+| `--color-logo-gray` | o que pode passar: as respostas válidas |
+| `--color-logo-bright` | a cor de base do logo, que as camadas cobrem |
+| `--color-logo-night` | o fundo padrão do logo; na abertura, o app passa `--color-night` no lugar dele |
 
 Translúcidas, com o nome do alfa em centésimos:
 
@@ -68,11 +76,11 @@ Translúcidas, com o nome do alfa em centésimos:
 
 ## Tipografia
 
-Duas famílias: `--font-sans` (Geist, com os fallbacks do design) para o texto, e `--font-mono` (Geist Mono) para rótulos, selos, painéis e a chamada de API. As duas são fontes variáveis guardadas em [`web/fonts/`](web/fonts/), com a licença ao lado, e carregadas por [`web/app/fonts.ts`](web/app/fonts.ts) só no subconjunto latin. `--default-font-family` e `--default-mono-font-family` são apelidos delas.
+Duas fontes: `--font-sans` (Geist, com os fallbacks do design) para o texto, e `--font-mono` (Geist Mono) para rótulos, selos, painéis e a chamada de API. As duas são fontes variáveis guardadas em [`web/fonts/`](web/fonts/), com a licença ao lado, e carregadas por [`web/app/fonts.ts`](web/app/fonts.ts) só no subconjunto latin. `--default-font-family` e `--default-mono-font-family` são apelidos delas. `--font-logo` é a mesma pilha do Geist Mono, com o nome do componente do logo, que desenha os caracteres dele.
 
 Três pesos: `--font-weight-light` nos títulos, `--font-weight-normal` no texto e nos títulos das colunas da Missão, `--font-weight-medium` na marca e nos botões.
 
-Os tamanhos fixos são nomeados em px. Os fluidos, de `--text-22-30` a `--text-36-92`, crescem com a largura da janela, do mínimo ao máximo que o nome diz. Uma célula vazia herda o valor da base da página.
+Os tamanhos fixos são nomeados em px. Os fluidos, de `--text-22-30` a `--text-36-92`, crescem com a largura da janela, do mínimo ao máximo que o nome diz. `--text-logo` acompanha a largura do logo, e não a da janela: as 64 colunas de caracteres ocupam o quadrado inteiro. Uma célula vazia herda o valor da base da página.
 
 | Papel | Família | Tamanho | Peso | Altura de linha | Espaçamento entre letras |
 |---|---|---|---|---|---|
@@ -96,6 +104,7 @@ Os tamanhos fixos são nomeados em px. Os fluidos, de `--text-22-30` a `--text-3
 | Sobretítulos e rótulos, em caixa alta | mono | `--text-12` | normal | | `--tracking-wide-80` |
 | Legenda do logo e palavra ao lado das soluções | mono | `--text-12` | normal | | |
 | Selos RED e BLUE | mono | `--text-11` | normal | | `--tracking-wide-80` |
+| Caracteres do logo | logo | `--text-logo` | normal | `--leading-1200` | |
 
 Os rótulos de seção seguem o formato "01 · Missão", com o número de dois dígitos e um ponto médio. O sobretítulo da abertura e os rótulos de seção são o mesmo componente, `SectionLabel`.
 
@@ -140,7 +149,7 @@ Toda animação espera `prefers-reduced-motion: no-preference`. As guiadas por s
 
 As animações guiadas por scroll usam `--duration-timeline`, que só existe porque a duração não pode ser zero; quem manda nelas é a posição na janela.
 
-O logo Eclusa anima por `requestAnimationFrame`, a 85 ms por quadro contados do relógio. O desenho é função pura do quadro: o mesmo quadro desenha sempre a mesma imagem. Com movimento reduzido, ou com `animated={false}`, ele fica no quadro de partida.
+O logo Ondas anima por `requestAnimationFrame`, a 85 ms por quadro contados do relógio. O desenho é função pura do quadro: o mesmo quadro desenha sempre a mesma imagem. Com movimento reduzido, ou com `animated={false}`, ele fica no quadro de partida.
 
 ## Componentes
 
@@ -149,7 +158,7 @@ Os componentes ficam em [`web/components/`](web/components/), um por arquivo. Os
 | Bloco | Arquivo | Peças que usa |
 |---|---|---|
 | `SiteHeader` | `site-header.tsx` | `BrandMark`, `NavPill`, `NavLink`, `ButtonLink` |
-| `Hero` | `hero.tsx` | `SectionLabel`, `ButtonLink`, `TextLink`, `EclusaLogo`, `EclusaCaption` |
+| `Hero` | `hero.tsx` | `SectionLabel`, `ButtonLink`, `TextLink`, `OndasLogo`, `OndasCaption` |
 | `Mission` | `mission.tsx` | `SectionLabel`, `MissionColumn` |
 | `Teams` | `teams.tsx` | `SectionLabel`, `TeamCard`, `TerminalPanel` e as linhas dele |
 | `Solutions` | `solutions.tsx` | `SectionLabel`, `TeamBadge` |
@@ -167,8 +176,8 @@ O texto da Home fica nos blocos. `mission.tsx` e `teams.tsx` também exportam o 
 | `TextLink` | `text-link.tsx` | `href?` | repouso, hover, foco; sem `href`, inerte |
 | `FooterLink` | `footer-link.tsx` | `href?`, `current?` | repouso, hover, foco, atual; sem `href`, inerte |
 | `InertLink` | `inert-link.tsx` | os de um `<a>`, menos `href` | repouso, foco; é o link de uma Lacuna, que não navega |
-| `EclusaLogo` | `eclusa-logo.tsx` | `background?`, qualquer cor CSS; `animated?`, padrão `true`; `frame?`, o quadro de partida (0 escolhe o de repouso) | animado, parado |
-| `EclusaCaption` | `eclusa-caption.tsx` | nenhuma | |
+| `OndasLogo` | `ondas-logo.tsx` | `background?`, qualquer cor CSS, no lugar de `--color-logo-night`; `animated?`, padrão `true`; `frame?`, o quadro de partida (0 escolhe o de repouso) | animado, parado |
+| `OndasCaption` | `ondas-caption.tsx` | nenhuma | |
 | `SectionLabel` | `section-label.tsx` | `children`, o rótulo; `className?`, para o movimento de entrada | seção, abertura |
 | `MissionColumn` | `mission-column.tsx` | `title`, o passo; `children`, o texto; `className?`, para a subida escalonada | |
 | `TeamCard` | `team-card.tsx` | `team`: `red` ou `blue`; `stance`, `title`, `description`; `children`, o que fecha o cartão; `className?`, para o movimento de entrada | red, blue |
@@ -179,7 +188,9 @@ O texto da Home fica nos blocos. `mission.tsx` e `teams.tsx` também exportam o 
 | `TeamBadge` | `team-badge.tsx` | `team`: `red` ou `blue`, o tipo `Team`, que as soluções também usam | red, blue |
 | `ApiCallCard` | `api-call-card.tsx` | `className?` | |
 
-**O logo Eclusa** é SVG puro, sem fonte. O disco no centro é o agente conversacional, e o anel de 24 segmentos azuis é o perímetro de guardrails. Os ataques, cruzes vermelhas, chegam de fora; os segmentos se armam, recebem o impacto, e a cruz se desfaz em dois traços. As respostas válidas, anéis cinza, saem por uma porta que os segmentos abrem; as inválidas, anéis vermelhos cortados, são barradas por dentro. A legenda (`EclusaCaption`) dá nome às três marcas: ataque, guardrails e agente.
+**O logo Ondas** é texto, sem SVG: uma grade de 64 por 32 caracteres em `--font-logo`, em quatro camadas sobrepostas, cada uma na sua cor. No centro, o agente conversacional é uma esfera de caracteres que gira, em `--color-logo-agent`. Em volta, o anel de guardrails, em `--color-logo-blue`, é feito de ":" que uma varredura de "=" percorre. Os ataques chegam de fora como frentes de onda de "×", em `--color-logo-red`, e quebram no anel, que se fecha em "#" no ponto do impacto. As respostas do agente saem como ondas: as válidas, de "o" e "·" em `--color-logo-gray`, atravessam o anel; as inválidas, de "ø" em `--color-logo-red`, são barradas por dentro. A legenda (`OndasCaption`) nomeia três camadas pelo caractere delas: "×" ataque, ":" guardrails e "*" agente, numa linha só que não quebra.
+
+O componente do logo é o mesmo arquivo nos Temas do Projeto que o desenham; só o fundo passado muda. Na abertura do Hélio, o fundo é `--color-night`, a cor da página.
 
 ## O que fazer e o que não fazer
 
@@ -211,14 +222,18 @@ Inconsistências aparentes que o design carrega e o app reproduz como estão. Co
 1. **Duas regras de CSS sem uso.** O design traz um hover para as classes `chip` e `atk`, que nenhum elemento usa. Elas não foram portadas. A segunda tingiria um fundo de vermelho translúcido um pouco mais forte que `--color-red-12`, e essa tinta ficou sem token.
 2. **Um ajuste para telas estreitas que não vale aqui.** O design tem uma regra abaixo de 380 px, mas ela só atinge a legenda de outro logo, o Selo, que o Hélio não mostra. O Hélio não tem ajuste abaixo de 380 px.
 3. **Glifo fora da fonte.** A seta "→" não está no subconjunto latin da Geist nem da Geist Mono. As de "Ver os dados →" e "Ver integrações →" saem na fonte do sistema, no design e no app. A seta "↑" de "Voltar ao topo ↑" está no subconjunto e sai em Geist.
-4. **Duas linguagens para as mesmas ideias.** As marcas dos times nos cartões são os caracteres "×" (Red Team) e ":" (Blue Team), vindos da legenda em caracteres de logos anteriores. A legenda da Eclusa, na abertura, usa ícones em SVG para as mesmas ideias.
-5. **Duas setas.** O painel do Blue Team escreve o fluxo com setas ASCII (`->`); o resto da página usa "→".
-6. **Um título de outro peso.** O título das colunas da Missão é o único título em `--font-weight-normal`; todos os outros são `--font-weight-light`.
-7. **Palavra só de um time.** Só as soluções do Blue Team têm uma palavra em mono ao lado do nome ("antiataque", "ética"). As do Red Team não têm.
-8. **Valores de título quase iguais.** Postos lado a lado, aparecem três alturas de linha de título a um centésimo uma da outra (`--leading-103`, `--leading-104`, `--leading-105`) e seis espaçamentos entre letras de título, de `--tracking-tight-10` a `--tracking-tight-40`. De `--tracking-tight-20` em diante, cada um fica a meio centésimo de em do seguinte. Cada título tem o seu.
+4. **A cor de "agente" na legenda.** A legenda pinta o "*" e a palavra "agente" em `--color-muted`, enquanto o logo desenha o agente em `--color-logo-agent`: a cor da legenda não é a da camada que ela nomeia. O vermelho e o azul da legenda têm o valor das camadas deles.
+5. **A legenda nomeia três das quatro camadas.** As respostas do agente ficam sem item: as válidas, em `--color-logo-gray`, e as inválidas, "ø" em `--color-logo-red`.
+6. **A cor de base do logo não aparece.** O logo declara `--color-logo-bright` como cor do texto, mas cada camada pinta com a própria cor, e nenhum caractere sai nela.
+7. **Os outros logos continuam no design.** O Quadro da Home tem uma propriedade, `logo`, que troca o logo da abertura entre quatro desenhos, cada um com a sua legenda. O padrão é "ondas", e o app reproduz só ele. Com um valor fora da lista, o código do Quadro cai em "atual", outro logo, e não no padrão declarado.
+8. **Duas setas.** O painel do Blue Team escreve o fluxo com setas ASCII (`->`); o resto da página usa "→".
+9. **Um título de outro peso.** O título das colunas da Missão é o único título em `--font-weight-normal`; todos os outros são `--font-weight-light`.
+10. **Palavra só de um time.** Só as soluções do Blue Team têm uma palavra em mono ao lado do nome ("antiataque", "ética"). As do Red Team não têm.
+11. **Valores de título quase iguais.** Postos lado a lado, aparecem três alturas de linha de título a um centésimo uma da outra (`--leading-103`, `--leading-104`, `--leading-105`) e seis espaçamentos entre letras de título, de `--tracking-tight-10` a `--tracking-tight-40`. De `--tracking-tight-20` em diante, cada um fica a meio centésimo de em do seguinte. Cada título tem o seu.
 
 **No Sistema de design do app**
 
-9. **Tons de terminal sem uso.** `TerminalLeaderRow` e `TerminalStageRow` aceitam os tons `red`, `blue` e `subtle`. A Home usa, nas linhas com pontilhado, só a linha sem tom, `blue` e `red`; nas etapas, só `blue` e `subtle`. A rota `/design-system` mostra só os tons usados.
-10. **A quebra fora do `@theme`.** A quebra `narrow` é um `@custom-variant` de `globals.css`, por isso a rota `/design-system`, que lê o `@theme`, não a mostra. Ela está descrita em [Layout](#layout).
-11. **Tokens técnicos.** Quatro tokens não vêm do design: `--spacing`, a base da escala de espaçamento do Tailwind; `--duration-timeline`, a duração que a animação guiada por scroll exige, sem efeito visual; e os apelidos `--default-font-family` e `--default-mono-font-family`.
+12. **Tons de terminal sem uso.** `TerminalLeaderRow` e `TerminalStageRow` aceitam os tons `red`, `blue` e `subtle`. A Home usa, nas linhas com pontilhado, só a linha sem tom, `blue` e `red`; nas etapas, só `blue` e `subtle`. A rota `/design-system` mostra só os tons usados.
+13. **A quebra fora do `@theme`.** A quebra `narrow` é um `@custom-variant` de `globals.css`, por isso a rota `/design-system`, que lê o `@theme`, não a mostra. Ela está descrita em [Layout](#layout).
+14. **Tokens técnicos.** Quatro tokens não vêm do design: `--spacing`, a base da escala de espaçamento do Tailwind; `--duration-timeline`, a duração que a animação guiada por scroll exige, sem efeito visual; e os apelidos `--default-font-family` e `--default-mono-font-family`.
+15. **Tokens do logo com o valor de tokens da página.** `--color-logo-red`, `--color-logo-blue`, `--color-logo-gray`, `--color-logo-bright` e `--color-logo-night` têm o valor de `--color-red`, `--color-blue`, `--color-subtle`, `--color-bright` e `--color-night`, e `--font-logo` é a pilha de `--font-mono`. Ficam separados porque guardam os nomes do componente do logo; `--color-logo-agent` só aparece nele. Pela mesma razão, `--leading-1200` conta em milésimos, fora da regra dos centésimos das outras alturas de linha.

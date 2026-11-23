@@ -25,6 +25,10 @@
    that way, with no pointer over it. */
 @custom-variant hover (&:is(:hover, [data-show-state="hover"] *));
 
+/* Inside data-show-state="focus" a component is drawn focused, its own focus-visible: classes too (the
+   ring on the header's white blocks and on the tabs), as the base rule below draws the page's ring. */
+@custom-variant focus-visible (&:is(:focus-visible, [data-show-state="focus"] *));
+
 /* The board's four breakpoints, each the width at and below which its rules apply. */
 @custom-variant upto-1100 (@media (max-width: 1100px));
 @custom-variant upto-900 (@media (max-width: 900px));
@@ -265,10 +269,11 @@
 }
 
 /* The marquee's track (.uk-brands-track), inside the viewport: it slides forever, pauses while the
-   pointer is over the viewport and stays still with reduced motion. */
+   pointer is over the viewport and stays still with reduced motion. Inside data-show-state="hover" it
+   is drawn paused, as the hover variant draws a component hovered. */
 @utility marquee-track {
   animation: var(--animate-marquee);
-  .marquee-viewport:hover & {
+  .marquee-viewport:is(:hover, [data-show-state="hover"] *) & {
     animation-play-state: paused;
   }
   @media (prefers-reduced-motion: reduce) {

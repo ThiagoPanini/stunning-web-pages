@@ -2,14 +2,14 @@ import type { ReactNode } from "react";
 import { ApiCallCard } from "@/components/api-call-card";
 import { BrandMark } from "@/components/brand-mark";
 import { ButtonLink } from "@/components/button-link";
-import { EclusaCaption } from "@/components/eclusa-caption";
-import { EclusaLogo } from "@/components/eclusa-logo";
 import { FooterLink } from "@/components/footer-link";
 import { InertLink } from "@/components/inert-link";
 import { missionSteps } from "@/components/mission";
 import { MissionColumn } from "@/components/mission-column";
 import { NavLink } from "@/components/nav-link";
 import { NavPill } from "@/components/nav-pill";
+import { OndasCaption } from "@/components/ondas-caption";
+import { OndasLogo } from "@/components/ondas-logo";
 import { SectionLabel } from "@/components/section-label";
 import { TeamBadge } from "@/components/team-badge";
 import { TeamCard } from "@/components/team-card";
@@ -98,35 +98,37 @@ export function ComponentSpecimens() {
   return (
     <div className="flex flex-col gap-14">
       <Specimen
-        name="EclusaLogo"
-        file="eclusa-logo.tsx"
+        name="OndasLogo"
+        file="ondas-logo.tsx"
         about={
           <>
-            O logo do Hélio, em SVG, desenhado quadro a quadro. <Prop>animated</Prop> desligado
-            deixa o logo parado no quadro de partida, como o movimento reduzido. <Prop>frame</Prop>{" "}
-            escolhe o quadro de partida e <Prop>background</Prop> a cor do quadrado de fundo.
+            O logo Ondas, em caracteres, desenhado quadro a quadro: uma grade de 64 por 32 em quatro
+            camadas, o agente, os guardrails, o que é barrado e o que passa. <Prop>animated</Prop>{" "}
+            desligado deixa o logo parado no quadro de partida, como o movimento reduzido.{" "}
+            <Prop>frame</Prop> escolhe o quadro de partida e <Prop>background</Prop> a cor de fundo;
+            sem ela, o fundo é o do Quadro do logo.
           </>
         }
       >
         <State label="animado" size="medium">
           <div className="mx-auto w-full max-w-80">
-            <EclusaLogo />
+            <OndasLogo />
           </div>
         </State>
         <State label="parado" size="medium">
           <div className="mx-auto w-full max-w-80">
-            <EclusaLogo animated={false} />
+            <OndasLogo animated={false} />
           </div>
         </State>
       </Specimen>
 
       <Specimen
-        name="EclusaCaption"
-        file="eclusa-caption.tsx"
-        about="A legenda do logo: o que cada marca do desenho representa, numa linha só."
+        name="OndasCaption"
+        file="ondas-caption.tsx"
+        about="A legenda do logo: o caractere de cada parte do desenho e o que ele representa, numa linha só."
       >
         <State label="padrão" size="medium">
-          <EclusaCaption />
+          <OndasCaption />
         </State>
       </Specimen>
 

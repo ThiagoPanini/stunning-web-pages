@@ -7,10 +7,10 @@ import { parseThemeTokens } from "../app/design-system/theme-tokens";
 import { ORIGIN_DIR } from "./support/reference";
 import { expect, test } from "./support/test";
 
-const BOARDS = ["Main.dc.html", "LogoLab5.dc.html"];
+const BOARDS = ["Main.dc.html", "LogoLab1.dc.html"];
 
 // What the design system leaves out on purpose, as globals.css explains: two hover rules no element
-// uses, and the Selo logo's caption rule, which the Eclusa does not show.
+// uses, and the Selo logo's caption rule, which the Home with the Ondas logo does not show.
 const LEFT_OUT = [
   /\.chip:hover\{[^}]*\}/g,
   /\.atk:hover\{[^}]*\}/g,
