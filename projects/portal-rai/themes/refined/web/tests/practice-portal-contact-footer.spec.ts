@@ -6,7 +6,10 @@ import { type BlockName, expectBandToMatchReference, WIDTHS } from "./support/re
 import { test } from "./support/test";
 
 // Each band must also sit where the reference's sits, so it depends on every block above it.
-const BANDS: [BlockName, string][] = [["practice", "Na prática"]];
+const BANDS: [BlockName, string][] = [
+  ["practice", "Na prática"],
+  ["portal", "No portal"],
+];
 
 for (const width of WIDTHS) {
   for (const [block, title] of BANDS) {
