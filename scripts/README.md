@@ -6,7 +6,7 @@ A Puxada traz os Quadros de um Tema do Artefato do Claude Design para a Origem d
 
 ```
 projects/<projeto>/themes/<tema>/origin/
-├── pointer.json          Ponteiro para o Artefato: coisa do Autor
+├── pointer.json          Ponteiro para os Artefatos da Puxada e da Subida: coisa do Autor
 ├── captures.json         o que a Puxada captura: Quadros, larguras e seletores dos blocos
 ├── boards/               os Quadros (.dc.html) que formam o Tema, como saíram do Artefato
 └── reference/            gerado pelo script, nunca editado à mão
@@ -14,7 +14,7 @@ projects/<projeto>/themes/<tema>/origin/
     └── <Quadro>-<largura>.json
 ```
 
-- **`pointer.json`** guarda ferramenta, título, endereço e versão do Artefato, a data da Puxada e a lista de Quadros com o `sha256` de cada um. É o único arquivo do Catálogo que cita endereço de Artefato. `pulledAt` é a data da Puxada que trouxe aquela versão: uma Puxada que encontra a mesma versão não muda o Ponteiro.
+- **`pointer.json`** guarda ferramenta, título, endereço e versão do Artefato, a data da Puxada e a lista de Quadros com o `sha256` de cada um. É o único arquivo do Catálogo que cita endereço de Artefato. `pulledAt` é a data da Puxada que trouxe aquela versão: uma Puxada que encontra a mesma versão não muda o Ponteiro. O campo `designSystem` é da Subida, não da Puxada: guarda ferramenta, tipo, título, endereço e versão do Artefato do tipo Design System que recebeu o Sistema de design do Tema, e `publishedAt`, a data da publicação daquela versão. A Puxada deixa esse campo como está; a Subida o atualiza a cada versão nova do mesmo Artefato.
 - **`boards/`** tem só os Quadros que formam o Tema, sem edição. Um Quadro pode importar outros (`<dc-import>`); só entram os que a renderização padrão busca, e o script falha se faltar algum.
 - **`captures.json`** é a receita das capturas. Cada entrada tem `board`, `widths` e, opcionalmente, `blocks` e `regions`, que mapeiam um nome em inglês para um seletor CSS no DOM renderizado do original:
 
@@ -59,7 +59,7 @@ Para cada Quadro e largura, o script grava `reference/<Quadro>-<largura>.json` a
 - **Unidade**: pixels da imagem. A captura usa `deviceScaleFactor` 1, então um pixel CSS é um pixel da imagem, e a caixa serve direto de `clip` para o Playwright ou de recorte no PNG.
 - **A caixa é a do elemento**, com as bordas arredondadas para o pixel mais próximo. Por isso os blocos vizinhos se encaixam sem sobrepor. Um bloco centrado dentro de um contêiner com largura máxima tem `x` maior que zero.
 - **A faixa inteira do bloco**, de borda a borda da página, é `{ x: 0, y, width: <largura da captura>, height }`. É ela que o teste do Tema recorta quando compara um bloco do app com a referência.
-- **`blocks`** são os blocos da Tela, na ordem da página. **`regions`** são outras áreas úteis ao teste, como o lugar do logo, que um teste mascara enquanto o logo não existe.
+- **`blocks`** são os blocos da Tela, na ordem da página. **`regions`** são outras áreas úteis ao teste, como o lugar do logo, que o teste do Tema confere.
 - **Um seletor que casa zero ou mais de um elemento faz o script falhar.** Se o design mudar a estrutura, conserte o seletor em `captures.json`.
 
 ## Passo a passo
