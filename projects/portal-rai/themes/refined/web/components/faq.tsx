@@ -55,6 +55,7 @@ const QUESTIONS: { question: string; answer: ReactNode }[] = [
 function PlusIcon() {
   return (
     <svg
+      aria-hidden="true"
       width="16"
       height="16"
       viewBox="0 0 20 20"
