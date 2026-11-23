@@ -11,7 +11,8 @@
  *
  * Naming: a color or a length with one job is named after the job (page, rule, gutter); a value that
  * belongs to a scale is named after its value (text-15 is 15px, text-10-5 is 10.5px, text-38-64 grows
- * from 38 to 64px, leading-1375 is 1.375, tracking-tight-20 is -0.02em, radius-6 is 6px).
+ * from 38 to 64px, leading-1375 is 1.375, tracking-tight-20 is -0.02em, radius-6 is 6px, aspect-16-10
+ * is 16 / 10).
  *
  * The drawings keep their own geometry: the positions in % of the illustrations, the stroke widths of
  * the icons and the stops of the gradients stay in the components and in the background images below;
@@ -166,6 +167,10 @@
   --grid-template-columns-verdict: minmax(0, 1.5fr) minmax(0, 0.55fr) minmax(0, 0.85fr);
   --grid-template-columns-footer: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
   --grid-auto-columns-tabs: minmax(136px, 1fr);
+
+  /* Proportions, named after their ratio. */
+  --aspect-324-255: 324 / 255; /* the solution cards' drawings */
+  --aspect-16-10: 16 / 10; /* the bento's media placeholders */
 
   --radius-2: 2px; /* neon squares */
   --radius-6: 6px; /* eyebrows, placeholders, illustration branches */

@@ -527,9 +527,12 @@ export function ComponentSpecimens() {
         }
       >
         <State state="card" size="medium">
-          <MediaPlaceholder label="inserir gif · 16:10" className="aspect-16/10 w-full" />
+          <MediaPlaceholder label="inserir gif · 16:10" className="aspect-16-10 w-full" />
         </State>
         <State state="step" size="medium">
+          {/* A frame of the route, no value of the design: in the cycle the step's slot has no
+              proportion, it takes the height of the step's row. Out of it, the slot gets the
+              proportion its label announces. */}
           <MediaPlaceholder
             variant="step"
             label="inserir gif · 6:5"

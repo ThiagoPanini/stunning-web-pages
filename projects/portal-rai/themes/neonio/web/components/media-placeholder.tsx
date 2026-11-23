@@ -25,7 +25,7 @@ type MediaPlaceholderProps = {
   // card: rounded and bordered (.uk-ph, Integrations). step: square, with a rule on the side of the text
   // only, which moves to its top when the cycle step stacks at 900px and below (.uk-step .uk-ph).
   variant?: "card" | "step";
-  // Its size in the one instance, such as aspect-16/10.
+  // Its size in the one instance, such as aspect-16-10.
   className?: string;
 };
 

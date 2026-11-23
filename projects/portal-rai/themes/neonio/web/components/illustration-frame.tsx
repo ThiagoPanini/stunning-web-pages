@@ -15,7 +15,7 @@ export function IllustrationFrame({ label, children, className = "" }: Illustrat
     <div
       role="img"
       aria-label={label}
-      className={`relative mt-1 aspect-324/255 w-full font-mono-short text-subtle ${className}`.trim()}
+      className={`relative mt-1 aspect-324-255 w-full font-mono-short text-subtle ${className}`.trim()}
     >
       {children}
     </div>

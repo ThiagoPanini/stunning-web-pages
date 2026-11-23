@@ -100,6 +100,7 @@ const DRAWN: [RegExp, string, string][] = [
   [/^--grid-template-columns-/, "grid-template-columns", "1px 2px 3px"],
   [/^--grid-auto-columns-/, "grid-auto-columns", "7px"],
   [/^--radius-/, "border-top-left-radius", "3px"],
+  [/^--aspect-/, "aspect-ratio", "3 / 1"],
   [/^--blur-/, "filter", "3px"],
   [/^--background-image-/, "background-image", "linear-gradient(rgb(1, 2, 3), rgb(4, 5, 6))"],
   [/^--outline-width-/, "outline-width", "7px"],
