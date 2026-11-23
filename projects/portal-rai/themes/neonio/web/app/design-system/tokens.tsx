@@ -10,7 +10,7 @@ const variable = (token: Token) => `var(${token.name})`;
 function TokenGrid({ min, children }: { min: "narrow" | "wide"; children: ReactNode }) {
   const columns =
     min === "narrow"
-      ? "grid-cols-[repeat(auto-fill,minmax(min(160px,100%),1fr))]"
+      ? "grid-cols-[repeat(auto-fill,minmax(min(140px,100%),1fr))]"
       : "grid-cols-[repeat(auto-fill,minmax(min(300px,100%),1fr))]";
   return <ul className={`grid gap-x-6 gap-y-8 ${columns}`}>{children}</ul>;
 }

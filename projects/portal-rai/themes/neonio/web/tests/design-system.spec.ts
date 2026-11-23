@@ -3,8 +3,11 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import type { Locator } from "@playwright/test";
+import { PNG } from "pngjs";
 import { parseThemeTokens } from "../app/design-system/theme-tokens";
 import { WIDTHS } from "./support/reference";
+import { expectSavedScreenshot } from "./support/screenshots";
 import { expect, load, type NewWindow, test } from "./support/test";
 
 const ROUTE = "/design-system";
@@ -180,3 +183,174 @@ test("each component of the Home shows on its own on the route", async ({ newWin
     "components with no specimen on the route",
   ).toEqual([]);
 });
+
+// What a hover or a focus can change on a link, a button or a tab.
+const STATE_PROPERTIES = [
+  "color",
+  "background-color",
+  "border-top-color",
+  "outline-style",
+  "outline-color",
+  "outline-width",
+  "outline-offset",
+];
+
+function styleOf(locator: Locator): Promise<string[]> {
+  return locator.evaluate(
+    (element, properties) =>
+      properties.map((name) => `${name}: ${getComputedStyle(element).getPropertyValue(name)}`),
+    STATE_PROPERTIES,
+  );
+}
+
+// Each component is shown at rest; a component that changes under the pointer or the keyboard is also
+// shown in that state, without anyone hovering or focusing it, and what it shows is what the pointer and
+// the keyboard really do to the component at rest. A state is found by its caption, the interface text
+// the route shows (specimens.tsx): "repouso" is the state at rest, "hover" and "foco" the states drawn;
+// a component with several variants of its own (the white and the outline button) has the three cells
+// for each, which share the variant in data-variant.
+test("each component's hover and focus show on the route as they really are", async ({
+  newWindow,
+}) => {
+  const page = await openStill(newWindow);
+  const problems: string[] = [];
+  const restCells = page.locator('[data-component] [data-state="repouso"]');
+  const cells = await restCells.evaluateAll((elements) =>
+    elements.map((element) => ({
+      name: element.closest("[data-component]")?.getAttribute("data-component") ?? "",
+      variant: element.getAttribute("data-variant"),
+    })),
+  );
+  let checked = 0;
+  for (const { name, variant } of cells) {
+    const label = variant ? `${name} (${variant})` : name;
+    const cell = (state: string) =>
+      page.locator(
+        `[data-component="${name}"] [data-state="${state}"]${variant ? `[data-variant="${variant}"]` : ":not([data-variant])"}`,
+      );
+    const rest = cell("repouso").locator("a, button").first();
+    if ((await rest.count()) === 0) continue;
+    checked++;
+    await rest.scrollIntoViewIfNeeded();
+    const atRest = await styleOf(rest);
+
+    await rest.hover();
+    await page.waitForTimeout(400);
+    const hovered = await styleOf(rest);
+    await page.mouse.move(0, 0);
+    await page.waitForTimeout(400);
+    const shownHover = cell("hover").locator("a, button").first();
+    if (hovered.join() !== atRest.join()) {
+      if ((await shownHover.count()) === 0)
+        problems.push(`${label}: changes on hover and does not show it`);
+      else if ((await styleOf(shownHover)).join() !== hovered.join()) {
+        problems.push(`${label}: the hover shown is not the real one`);
+      }
+    } else if ((await shownHover.count()) > 0) {
+      problems.push(`${label}: shows a hover that does not exist`);
+    }
+
+    await rest.focus();
+    expect(await rest.evaluate((element) => element.matches(":focus-visible"))).toBe(true);
+    const focused = await styleOf(rest);
+    await rest.blur();
+    const shownFocus = cell("foco").locator("a, button").first();
+    if (focused.join() !== atRest.join()) {
+      if ((await shownFocus.count()) === 0)
+        problems.push(`${label}: changes on focus and does not show it`);
+      else if ((await styleOf(shownFocus)).join() !== focused.join()) {
+        problems.push(`${label}: the focus shown is not the real one`);
+      }
+    }
+  }
+  // HeaderBlockLink, NavLink, InertLink, ButtonLink twice and CycleTab.
+  expect(checked, "cells at rest with a link or a button").toBeGreaterThanOrEqual(6);
+  expect(problems).toEqual([]);
+});
+
+// The current tab and a tab that is not current, as the route shows them, are what the cycle's bar
+// draws for its current tab (the first, with no step on the route) and for the others.
+test("the current tab and a tab not current show as the bar draws them", async ({ newWindow }) => {
+  const page = await openStill(newWindow);
+  const tab = (selector: string) => page.locator(selector).locator("a").first();
+  const current = tab('[data-component="CycleTab"] [data-state="atual"]');
+  const notCurrent = tab('[data-component="CycleTab"] [data-state="repouso"]');
+  const barTabs = page.locator('[data-component="CycleTabs"] a');
+  await expect(barTabs).toHaveCount(5);
+  await expect(current).toHaveAttribute("aria-current", "step");
+  await expect(notCurrent).toHaveAttribute("aria-current", "false");
+  await expect(barTabs.first()).toHaveAttribute("aria-current", "step");
+  await expect(barTabs.nth(1)).toHaveAttribute("aria-current", "false");
+  expect(await styleOf(current), "the current tab").toEqual(await styleOf(barTabs.first()));
+  expect(await styleOf(notCurrent), "a tab not current").toEqual(await styleOf(barTabs.nth(1)));
+  expect(await styleOf(current), "the two states differ").not.toEqual(await styleOf(notCurrent));
+});
+
+// The logo with animated off is the only place it is used that way: with normal motion, the animated
+// one changes from one instant to the next and the stopped one does not. The two states are found by
+// their captions, "animado" and "parado".
+test("with normal motion the animated logo changes and the stopped one does not", async ({
+  newWindow,
+}) => {
+  const page = await newWindow(1440, { motion: "no-preference" });
+  await load(page, ROUTE);
+  const logo = (state: string) =>
+    page.locator(`[data-component="OndasLogo"] [data-state="${state}"] [role="img"]`);
+  await logo("animado").scrollIntoViewIfNeeded();
+  const pictures = async () => [
+    await logo("animado").screenshot(),
+    await logo("parado").screenshot(),
+  ];
+
+  // 400 ms is almost 5 frames of the drawing.
+  const [animated, stopped] = await pictures();
+  await page.waitForTimeout(400);
+  const [animatedLater, stoppedLater] = await pictures();
+  expect(animatedLater.equals(animated), "the animated logo changed").toBe(false);
+  expect(stoppedLater.equals(stopped), "the stopped logo stayed the same").toBe(true);
+});
+
+// The brands band rolls with normal motion and pauses under the pointer; the route draws it paused in
+// its "hover" cell, with no pointer over it, and the pause it draws is the one the pointer makes.
+test("with normal motion the band rolls, and the band shown hovered is paused as a hovered one is", async ({
+  newWindow,
+}) => {
+  const page = await newWindow(1440, { motion: "no-preference" });
+  await load(page, ROUTE);
+  const band = (state: string) => page.locator(`[data-component="Brands"] [data-state="${state}"]`);
+  const track = (state: string) => band(state).locator(".marquee-track");
+  const offset = (state: string) =>
+    track(state).evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).m41);
+  const playState = (state: string) =>
+    track(state).evaluate((element) => getComputedStyle(element).animationPlayState);
+  await band("rolando").scrollIntoViewIfNeeded();
+
+  expect(await playState("rolando"), "the band at rest").toBe("running");
+  expect(await playState("hover"), "the band shown hovered").toBe("paused");
+  const [rolling, shown] = [await offset("rolando"), await offset("hover")];
+  await page.waitForTimeout(400);
+  expect(await offset("rolando"), "the band at rest moved").toBeLessThan(rolling);
+  expect(await offset("hover"), "the band shown hovered stayed").toBe(shown);
+
+  await band("rolando").locator(".marquee-viewport").hover();
+  expect(await playState("rolando"), "the band under the pointer").toBe("paused");
+});
+
+// The route's screenshots, in the theme's screenshots/, taken under the conditions of the reference
+// captures: reduced motion, so the logos rest on their starting frame and the band stands still, and a
+// viewport as tall as the document. Each one must be the route as it is now (support/screenshots.ts).
+for (const width of WIDTHS) {
+  test(`the route's screenshot at ${width} px is the route as it is now`, async ({
+    referencePage,
+  }) => {
+    const page = await referencePage(width, { path: ROUTE });
+    const screenshot = await page.screenshot({ animations: "disabled" });
+    const height = await page.evaluate(() => document.documentElement.scrollHeight);
+    const capture = PNG.sync.read(screenshot);
+    expect(
+      { width: capture.width, height: capture.height },
+      "the screenshot is the whole route",
+    ).toEqual({ width, height });
+    await expectSavedScreenshot(`design-system-${width}`, screenshot);
+  });
+}
