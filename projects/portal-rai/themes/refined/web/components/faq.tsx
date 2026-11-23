@@ -1,13 +1,7 @@
-import { Accordion } from "@base-ui/react/accordion";
 import type { ReactNode } from "react";
-import { InertLink } from "./inert-link";
+import { AnswerLink, FaqAccordion, FaqItem } from "./faq-accordion";
 import { Section } from "./section";
 import { SectionHeader } from "./section-header";
-
-// A link inside an answer, to a screen the design left open (rf-faq-a a).
-function AnswerLink({ children }: { children: ReactNode }) {
-  return <InertLink className="text-cream underline underline-offset-3">{children}</InertLink>;
-}
 
 const QUESTIONS: { question: string; answer: ReactNode }[] = [
   {
@@ -51,66 +45,18 @@ const QUESTIONS: { question: string; answer: ReactNode }[] = [
   },
 ];
 
-// The plus of each question, which turns 45° into a cross while the question is open.
-function PlusIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="16"
-      height="16"
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-    >
-      <path d="M10 4.5v11M4.5 10h11" />
-    </svg>
-  );
-}
-
-// Perguntas frequentes (6): an accordion whose questions open and close each on its own, the first one
-// open on arrival (rf-faq). Each question is a heading with a button that says whether it is open; the
-// answer shows with no height animation, and the icon turns in .25s, with reduced motion too, as in the
-// design. At 760px and below the answer gives up its wide right margin.
+// Perguntas frequentes (6): the accordion of the six questions, the first one open on arrival (rf-faq).
 export function Faq() {
   return (
     <Section block="faq" id="perguntas" labelledBy="faq-title">
       <SectionHeader id="faq-title" title="Perguntas frequentes" count={QUESTIONS.length} />
-      <Accordion.Root
-        multiple
-        defaultValue={[0]}
-        render={<ul />}
-        role="list"
-        className="flex flex-col gap-3"
-      >
+      <FaqAccordion defaultOpen={[0]}>
         {QUESTIONS.map(({ question, answer }, index) => (
-          <Accordion.Item
-            key={question}
-            value={index}
-            render={<li />}
-            className="rounded-16 bg-surface"
-          >
-            <Accordion.Header>
-              <Accordion.Trigger className="group flex min-h-18 w-full cursor-pointer items-center justify-between gap-4 rounded-16 border-0 bg-transparent py-3.5 pr-4 pl-6 text-left font-medium text-16 text-bright tracking-tight-10">
-                <span>{question}</span>
-                <span
-                  aria-hidden="true"
-                  className="grid size-10 shrink-0 grow-0 basis-10 place-items-center rounded-circle bg-night text-bright transition-transform duration-slow group-data-panel-open:rotate-45"
-                >
-                  <PlusIcon />
-                </span>
-              </Accordion.Trigger>
-            </Accordion.Header>
-            <Accordion.Panel
-              render={<p />}
-              className="pr-20 pb-6 pl-6 text-pretty text-16 text-muted leading-155 tracking-tight-10 narrow:pr-6"
-            >
-              {answer}
-            </Accordion.Panel>
-          </Accordion.Item>
+          <FaqItem key={question} index={index} question={question}>
+            {answer}
+          </FaqItem>
         ))}
-      </Accordion.Root>
+      </FaqAccordion>
     </Section>
   );
 }

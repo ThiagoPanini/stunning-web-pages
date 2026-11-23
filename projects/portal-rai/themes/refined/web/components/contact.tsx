@@ -1,15 +1,9 @@
 import { buttonClassName } from "./button-link";
+import { FormField } from "./form-field";
 import { MediaMark } from "./media-placeholder";
 import { Paragraph } from "./paragraph";
 import { Pill } from "./pill";
 import { Section } from "./section";
-
-// A form field (rf-input): a dark field with a 1px border that shows on hover, its placeholder in the
-// media marks' gray, and a focus ring closer than the page's. 48px tall at least; the message, 132px.
-const FIELD =
-  "w-full rounded-10 border border-transparent bg-field px-4 py-3 text-16 text-bright tracking-tight-10 placeholder:text-mark hover:border-field-border focus-visible:outline-offset-field";
-
-const LABEL = "font-medium text-13 text-muted tracking-tight-10";
 
 // Contato: a media card with its pill, the title and a line on the media, next to the form; under both,
 // the team's direct channels. The design left the form without a destination (a design gap): there is no
@@ -37,44 +31,28 @@ export function Contact() {
           </Paragraph>
         </div>
         <div className="flex flex-col gap-3.5 rounded-16 bg-surface p-4">
-          <div className="flex flex-col gap-2">
-            <label className={LABEL} htmlFor="contact-name">
-              Nome
-            </label>
-            <input
-              id="contact-name"
-              className={`${FIELD} min-h-12`}
-              type="text"
-              name="name"
-              autoComplete="name"
-              placeholder="Seu nome"
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label className={LABEL} htmlFor="contact-email">
-              E-mail
-            </label>
-            <input
-              id="contact-email"
-              className={`${FIELD} min-h-12`}
-              type="email"
-              name="email"
-              autoComplete="email"
-              placeholder="Seu e-mail"
-            />
-          </div>
-          <div className="flex flex-auto flex-col gap-2">
-            <label className={LABEL} htmlFor="contact-message">
-              Como podemos ajudar?
-            </label>
-            <textarea
-              id="contact-message"
-              className={`${FIELD} min-h-33 flex-auto resize-y`}
-              name="message"
-              rows={5}
-              placeholder="Conte sobre o seu agente"
-            />
-          </div>
+          <FormField
+            id="contact-name"
+            label="Nome"
+            name="name"
+            autoComplete="name"
+            placeholder="Seu nome"
+          />
+          <FormField
+            id="contact-email"
+            label="E-mail"
+            type="email"
+            name="email"
+            autoComplete="email"
+            placeholder="Seu e-mail"
+          />
+          <FormField
+            id="contact-message"
+            label="Como podemos ajudar?"
+            type="message"
+            name="message"
+            placeholder="Conte sobre o seu agente"
+          />
           <button type="button" className={buttonClassName("primary", "w-full")}>
             Enviar mensagem
           </button>
