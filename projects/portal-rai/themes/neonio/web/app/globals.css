@@ -1,0 +1,277 @@
+/*
+ * The Neônio's design system.
+ *
+ * The @theme block below is the only source of the tokens: every value the origin uses (the Home board
+ * and the Ondas logo board) has a name here, named as found. Close values stay separate (ADR 0004): the
+ * board has many near greys, two stacks for JetBrains Mono, and reds and blues of its own next to the
+ * logo's.
+ * Tailwind's own theme is reset, so its palette, type scale, radii, breakpoints and the rest do not
+ * exist as classes; only its spacing scale comes back, and it names every fixed length in px (gap-2.5 is
+ * 10px, max-w-180 is 720px, leading-5.5 is a 22px line height).
+ *
+ * Naming: a color or a length with one job is named after the job (page, rule, gutter); a value that
+ * belongs to a scale is named after its value (text-15 is 15px, text-10-5 is 10.5px, text-38-64 grows
+ * from 38 to 64px, leading-1375 is 1.375, tracking-tight-20 is -0.02em, radius-6 is 6px).
+ *
+ * The drawings keep their own geometry: the positions in % of the illustrations, the stroke widths of
+ * the icons and the stops of the gradients stay in the components and in the background images below;
+ * their colors are tokens.
+ */
+
+@import "tailwindcss";
+
+/* The board's :hover rules apply to any pointer; Tailwind's own hover waits for (hover: hover).
+   Inside data-show-state="hover" a component is drawn hovered: the /design-system route shows the state
+   that way, with no pointer over it. */
+@custom-variant hover (&:is(:hover, [data-show-state="hover"] *));
+
+/* The board's four breakpoints, each the width at and below which its rules apply. */
+@custom-variant upto-1100 (@media (max-width: 1100px));
+@custom-variant upto-900 (@media (max-width: 900px));
+@custom-variant upto-760 (@media (max-width: 760px));
+@custom-variant upto-640 (@media (max-width: 640px));
+
+@theme static {
+  --*: initial;
+  --spacing: 0.25rem;
+
+  /* Families, with the board's fallbacks. JetBrains Mono comes with two stacks: the long one in the
+     eyebrows and the chart caption, the short one in every other mono label. */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; /* page base */
+  --font-display: "Inter Tight", "Inter", system-ui, sans-serif; /* titles, brand, brand names */
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-mono-short: "JetBrains Mono", ui-monospace, monospace;
+  --font-logo:
+    "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; /* the Ondas logo */
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+
+  /* The page and the white of the header blocks and buttons. */
+  --color-page: #040406; /* page, cards, tabs; text on white */
+  --color-white: #ffffff; /* headings, white blocks, buttons, focus ring */
+  --color-text: #e3e4e9; /* the page's base text */
+  --color-nav-hover: #e6e7ec; /* nav link hover, on the white block */
+  --color-white-hover: #dcdde3; /* white block and white button hover */
+  --color-white-10: rgba(255, 255, 255, 0.1); /* outline button hover */
+
+  /* Greys of text, from light to dark. */
+  --color-secondary: #c7c9d1; /* captions, team names, step paragraphs */
+  --color-muted: #9194a1; /* leads, legend, brand names, tabs, footer links */
+  --color-subtle: #80838f; /* team headers, card titles, illustration text and chip borders */
+
+  /* Rules and surfaces. */
+  --color-rule: #2e3038; /* rules, and the color of the 1px gaps of the ruled grids */
+  --color-rule-strong: #3a3c45; /* top edge of the bars */
+  --color-faint: #464853; /* illustration branches, placeholder labels */
+  --color-rule-subtle: #1c1d23; /* placeholder border, illustration axes */
+  --color-ruling: #16171c; /* ruled lines of the attack agent illustration */
+  --color-grid: #15161b; /* chart grid lines */
+  --color-placeholder: #0b0c10; /* media placeholders */
+  --color-tab-current: #121317; /* the current tab */
+  --color-bar-top: #25262d; /* chart bars, top of the gradient; their legend swatch */
+  --color-bar-bottom: #111216; /* chart bars, bottom of the gradient */
+
+  /* Accents of the illustrations and of the neon squares: red is the Red Team, blue the Blue Team,
+     violet a section with no team, lime the false positives of the chart. */
+  --color-red: #ff5b3d; /* illustration line, dots and chip */
+  --color-red-neon: #ff6a4d; /* red neon square; top of the current day's bar */
+  --color-red-glow: #e8341c; /* red neon glow */
+  --color-red-deep: #c42f17; /* bottom of the current day's bar */
+  --color-red-pale: #ff8a73; /* top edge of the current day's bar */
+  --color-blue: #3d8bff; /* illustration squares and the blocked row */
+  --color-blue-neon: #4d94ff; /* blue neon square */
+  --color-blue-glow: #1560f0; /* blue neon glow */
+  --color-violet-neon: #bf8bff; /* violet neon square */
+  --color-violet-glow: #7b2cff; /* violet neon glow */
+  --color-lime: #d9f24a; /* the highlighted false positives */
+  --color-lime-pale: #e2ebb4; /* false positives */
+
+  /* The logo's colors: its legend in the hero and its drawing. */
+  --color-logo-red: #ec5b48; /* attack */
+  --color-logo-blue: #5a90f8; /* guardrails */
+  --color-logo-agent: #c9d1d6; /* agent */
+  --color-logo-gray: #87949c; /* valid answers */
+  --color-logo-bright: #eef1f2; /* the logo's base color */
+  --color-logo-night: #0a0d0f; /* the logo board's own background */
+
+  /* Font sizes: fixed ones in px, fluid ones from their minimum to their maximum. */
+  --text-10: 10px; /* weekday labels */
+  --text-10-5: 10.5px; /* illustration chips, verdict header */
+  --text-11: 11px; /* placeholder labels, "dias" */
+  --text-11-5: 11.5px; /* verdict rows */
+  --text-12: 12px; /* legend, team headers, step labels, chart caption */
+  --text-13: 13px; /* company name; eyebrows at 760px and below */
+  --text-14: 14px; /* nav, header blocks, eyebrows, footer links */
+  --text-15: 15px; /* card titles, footer headings */
+  --text-16: 16px; /* page base, buttons, leads, captions */
+  --text-18: 18px; /* tabs */
+  --text-19: 19px; /* brand, brand names */
+  --text-22: 22px; /* footer brand */
+  --text-28: 28px; /* step titles */
+  --text-30: 30px; /* the 7 of the week */
+  --text-26-32: clamp(26px, 2.25vw, 32px); /* closing call title */
+  --text-32-44: clamp(32px, 3.1vw, 44px); /* Solutions and Data titles */
+  --text-32-48: clamp(32px, 3.4vw, 48px); /* section titles: Cycle */
+  --text-32-52: clamp(32px, 3.6vw, 52px); /* Integrations title */
+  --text-38-64: clamp(38px, 4.45vw, 64px); /* hero title */
+  --text-logo: 2.604cqw; /* the logo's characters: 64 columns span its width */
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+
+  /* Letter spacing, in thousandths of an em. */
+  --tracking-tight-30: -0.03em; /* brand, footer brand */
+  --tracking-tight-20: -0.02em; /* titles, brand names, step titles, footer headings */
+  --tracking-tight-15: -0.015em; /* closing call title */
+  --tracking-tight-10: -0.01em; /* page base, buttons, tabs */
+  --tracking-wide-30: 0.03em; /* eyebrows */
+  --tracking-wide-40: 0.04em; /* step labels */
+  --tracking-wide-60: 0.06em; /* team names */
+  --tracking-wide-140: 0.14em; /* placeholder labels */
+
+  /* Line heights without a unit, in thousandths; the two in px (20 and 22) are spacing steps. */
+  --leading-1000: 1; /* legend, labels, chips */
+  --leading-1120: 1.12; /* section titles */
+  --leading-1125: 1.125; /* hero title */
+  --leading-1130: 1.13; /* closing call title */
+  --leading-1140: 1.14; /* step titles */
+  --leading-1200: 1.2; /* the logo's characters */
+  --leading-1250: 1.25; /* card titles */
+  --leading-1300: 1.3; /* team headers */
+  --leading-1375: 1.375; /* page base */
+  --leading-1400: 1.4; /* leads */
+
+  /* Fluid spacing and the page widths. */
+  --spacing-gutter: clamp(16px, 2.8vw, 40px); /* side padding of header, hero, main and footer */
+  --spacing-inset: clamp(20px, 2.4vw, 32px); /* side padding inside the ruled frame */
+  --spacing-section: clamp(96px, 12.5vw, 176px); /* space above each section and the closing call */
+  --spacing-teams: clamp(64px, 8vw, 112px); /* space above the team columns */
+  --spacing-panel-y: clamp(40px, 6.6vw, 96px); /* cycle step text, above and below */
+  --spacing-panel-x: clamp(24px, 4vw, 64px); /* cycle step text, at the sides */
+  --spacing-bars: clamp(4px, 0.9vw, 12px); /* gap between the chart bars */
+  --spacing-cta-top: clamp(40px, 4.6vw, 64px); /* closing call padding */
+  --spacing-cta-x: clamp(24px, 2.8vw, 40px);
+  --spacing-cta-bottom: clamp(36px, 4vw, 56px);
+  --spacing-cta-height: clamp(520px, 47vw, 680px); /* closing call minimum height */
+  --container-page: 1440px; /* hero, brands, main and footer */
+  --container-header: 1360px; /* the row of header blocks */
+
+  /* Grids that are not N equal columns; those are Tailwind's own (grid-cols-2). */
+  --grid-template-columns-hero: minmax(0, 1fr) minmax(0, 600px); /* pitch and logo */
+  --grid-template-columns-verdict: minmax(0, 1.5fr) minmax(0, 0.55fr) minmax(0, 0.85fr);
+  --grid-template-columns-footer: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+  --grid-auto-columns-tabs: minmax(136px, 1fr);
+
+  --radius-2: 2px; /* neon squares */
+  --radius-6: 6px; /* eyebrows, placeholders, illustration branches */
+  --radius-circle: 50%; /* illustration dots */
+
+  --blur-2: 2px; /* neon squares: the light */
+  --blur-4: 4px; /* small neon squares: the glow */
+  --blur-5: 5px; /* neon squares: the glow */
+
+  /* Drawn backgrounds: ruled lines, hatching and the bars' gradients. */
+  --background-image-ruled: repeating-linear-gradient(
+    180deg,
+    transparent 0 26px,
+    var(--color-ruling) 26px 27px
+  ); /* attack agent illustration */
+  --background-image-week-bar: repeating-linear-gradient(
+    180deg,
+    var(--color-rule) 0 1px,
+    transparent 1px 4px
+  ); /* Red Week bars */
+  --background-image-week-bar-current: linear-gradient(
+    180deg,
+    var(--color-red-neon) 0%,
+    var(--color-red-deep) 100%
+  ); /* Red Week: the current day */
+  --background-image-hatch: repeating-linear-gradient(
+    135deg,
+    var(--color-rule) 0 1px,
+    transparent 1px 9px
+  ); /* divider between cycle steps */
+  --background-image-chart: repeating-linear-gradient(
+    0deg,
+    var(--color-grid) 0 1px,
+    transparent 1px 24px
+  ); /* chart grid */
+  --background-image-chart-bar: linear-gradient(
+    180deg,
+    var(--color-bar-top) 0%,
+    var(--color-bar-bottom) 100%
+  ); /* chart bars */
+
+  /* The keyboard focus ring, in --color-white; on white, in --color-page and inside the element. */
+  --outline-width-focus: 2px;
+  --outline-offset-focus: 2px;
+  --outline-offset-inset: -4px; /* nav links, brand and tabs */
+
+  /* Motion. Hover transitions all take .15s with the default ease. */
+  --default-transition-duration: 0.15s;
+  --default-transition-timing-function: ease;
+  --duration-marquee: 44s;
+  --animate-marquee: brands-marquee var(--duration-marquee) linear infinite;
+}
+
+/* The board's keyframes (uk-marquee): the track holds the list twice and slides by one copy. */
+@keyframes brands-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@layer base {
+  /* The focus ring of the page, from the board's .uk :focus-visible rule. Inside
+     data-show-state="focus", drawn focused: the /design-system route shows the state that way. */
+  :focus-visible,
+  [data-show-state="focus"] :is(a, button) {
+    outline: var(--outline-width-focus) solid var(--color-white);
+    outline-offset: var(--outline-offset-focus);
+  }
+
+  /* Anchors scroll smoothly, only without reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+/*
+ * Motion utilities. The board has three kinds of motion: hover transitions, the brands marquee and the
+ * logo, which animates itself. With reduced motion the marquee stops and no transition runs.
+ */
+
+/* On the page root: no transition anywhere inside it with reduced motion, as the board's
+   .uk *{transition:none !important}. */
+@utility transitions-off-when-reduced {
+  @media (prefers-reduced-motion: reduce) {
+    & * {
+      /* biome-ignore lint/complexity/noImportantStyles: the board's rule wins over every transition utility, as there */
+      transition: none !important;
+    }
+  }
+}
+
+/* The brands marquee's viewport (.uk-brands-vp): it hides what runs past it and fades both ends. */
+@utility marquee-viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+/* The marquee's track (.uk-brands-track), inside the viewport: it slides forever, pauses while the
+   pointer is over the viewport and stays still with reduced motion. */
+@utility marquee-track {
+  animation: var(--animate-marquee);
+  .marquee-viewport:hover & {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
