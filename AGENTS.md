@@ -45,8 +45,8 @@ The app reproduces the design as it is. Fixing the design belongs to the Autor, 
 - **Name without normalizing.** Every value in the design gets its own token, named as found; close values stay separate. Whatever looks inconsistent becomes an Observação in `DESIGN.md`.
 - **Keep the Lacunas.** A media placeholder stays a placeholder, and a link to a Tela that does not exist stays inert. `HANDOFF.md` lists them.
 - **Interface text as written**, placeholders such as `[NOME DA COMPANHIA]` included.
-- **One logo per Tema.** `origin/` holds only the Quadros that form the Tema; other logo variants and comparison Quadros stay in the Artefato.
-- **Telas only.** Material that is not a Tela, such as a logo briefing or a lab, stays in the Artefato.
+- **One logo per Tema.** The app reproduces one logo; the other logo variants stay in the Artefato.
+- **Only the Quadros that form the Tema.** `origin/` holds the Quadros of the Tema's Telas and of the components they draw, such as the Quadro of its logo, even when the Artefato files that Quadro among its labs. What does not form the Tema stays in the Artefato: a logo briefing, the rest of a lab, other logo variants and comparison Quadros. None of it becomes a Tela of the app.
 - **Fidelity is measured** against the Capturas de referência. The app's captures are taken under the same conditions as the Puxada's: the same browser, 1440 and 390 px wide, reduced motion, and a viewport as tall as the document.
 
 ## Tema pronto
