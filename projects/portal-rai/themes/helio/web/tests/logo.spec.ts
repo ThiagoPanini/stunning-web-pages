@@ -16,10 +16,10 @@ const LOGO_PAGE_WIDTH = 1324;
 const LOGO_SIZE = 560;
 
 // The same strict PIXEL_THRESHOLD as every other comparison, though this one sets two renderings side by
-// side, the logo board alone and the logo cut from the Home at 1324 px. The Eclusa logo before it needed
-// pixelmatch's default, 0.1, because the edges of its SVG strokes differed by a few levels between the
-// two. The Ondas is text on a flat background, and nothing around it in the Home sets its letter
-// spacing: 0 of 313,600 pixels differ, which the looser threshold passes too.
+// side, the logo board alone and the logo cut from the Home at 1324 px. They draw the same: the logo is
+// text on a flat background, and nothing around it in the Home sets its letter spacing, so 0 of 313,600
+// pixels differ. Two renderings of SVG strokes would not be this close, their edges a few levels apart,
+// and would need pixelmatch's default, 0.1.
 const LOGO_PIXEL_THRESHOLD = PIXEL_THRESHOLD;
 
 test("with reduced motion, the logo matches the reference capture of the logo board", async ({
