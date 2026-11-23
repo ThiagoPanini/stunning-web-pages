@@ -1,4 +1,4 @@
-// The Eclusa logo: still with reduced motion, on the frame of the logo board's reference capture, and
+// The Ondas logo: still with reduced motion, on the frame of the logo board's reference capture, and
 // animated frame by frame with normal motion.
 
 import { readFileSync } from "node:fs";
@@ -6,7 +6,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import { PNG } from "pngjs";
-import { expectImageToMatch, ORIGIN_DIR, regionBox } from "./support/reference";
+import { expectImageToMatch, ORIGIN_DIR, PIXEL_THRESHOLD, regionBox } from "./support/reference";
 import { expect, load, test } from "./support/test";
 
 // The logo board is captured alone at 560 px. In the Home the logo column grows from 420 px by half the
@@ -15,13 +15,12 @@ import { expect, load, test } from "./support/test";
 const LOGO_PAGE_WIDTH = 1324;
 const LOGO_SIZE = 560;
 
-// Looser than the PIXEL_THRESHOLD of the other comparisons, and only here: this one sets two renderings
-// side by side, the logo board alone and the logo cut from the Home at 1324 px. Their stroke edges
-// differ by a few levels (1,147 pixels byte for byte, the same in every run), and 2 of them cross the
-// strict threshold. This test holds the frame and the drawing; the colors are held by the whole Home
-// (home.spec.ts), where the logo matches its reference byte for byte. pixelmatch's default, 0.1, leaves
-// none.
-const LOGO_PIXEL_THRESHOLD = 0.1;
+// The same strict PIXEL_THRESHOLD as every other comparison, though this one sets two renderings side by
+// side, the logo board alone and the logo cut from the Home at 1324 px. The Eclusa logo before it needed
+// pixelmatch's default, 0.1, because the edges of its SVG strokes differed by a few levels between the
+// two. The Ondas is text on a flat background, and nothing around it in the Home sets its letter
+// spacing: 0 of 313,600 pixels differ, which the looser threshold passes too.
+const LOGO_PIXEL_THRESHOLD = PIXEL_THRESHOLD;
 
 test("with reduced motion, the logo matches the reference capture of the logo board", async ({
   referencePage,
@@ -34,7 +33,7 @@ test("with reduced motion, the logo matches the reference capture of the logo bo
   });
 
   const expected = PNG.sync.read(
-    await readFile(join(ORIGIN_DIR, "reference", `LogoLab5-${LOGO_SIZE}.png`)),
+    await readFile(join(ORIGIN_DIR, "reference", `LogoLab1-${LOGO_SIZE}.png`)),
   );
   const actual = PNG.sync.read(await page.screenshot({ clip: box, animations: "disabled" }));
   await expectImageToMatch(`logo-${LOGO_SIZE}`, actual, expected, {
@@ -44,7 +43,7 @@ test("with reduced motion, the logo matches the reference capture of the logo bo
 
 // Two pictures of the logo, the given time apart, under the motion preference the page has now.
 async function twoInstants(page: Page, gapMs: number): Promise<[Buffer, Buffer]> {
-  const logo = page.getByRole("img", { name: /versão Eclusa/ });
+  const logo = page.getByRole("img", { name: /versão Ondas/ });
   const first = await logo.screenshot();
   await page.waitForTimeout(gapMs);
   return [first, await logo.screenshot()];
@@ -69,7 +68,7 @@ test("with normal motion the logo changes from one instant to the next, and stop
 // Tailwind classes, not as imports.
 test("the logo component imports nothing from the app", () => {
   const source = readFileSync(
-    join(import.meta.dirname, "..", "components", "eclusa-logo.tsx"),
+    join(import.meta.dirname, "..", "components", "ondas-logo.tsx"),
     "utf8",
   );
   const imported = [...source.matchAll(/\b(?:import|from)\s*\(?\s*["']([^"']+)["']/g)].map(
