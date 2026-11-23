@@ -14,6 +14,9 @@
  * Left out on purpose: the two hover rules of the Quadro no element uses (.chip and .atk), the rule for
  * the Selo logo's caption under 380px, which the Eclusa does not show, and the drawing of the brand mark,
  * the caption icons and the logo (stroke widths and coordinates stay in the SVG and in the components).
+ * The motion keeps its own geometry too: the distances, scale and opacity of the Quadro's keyframes and
+ * the ranges of its scroll-driven animations stay in the keyframes and utilities below; their durations
+ * and curves are tokens.
  */
 
 @import "tailwindcss";
@@ -108,6 +111,14 @@
   --spacing-card: clamp(22px, 2.4vw, 34px); /* team card padding */
   --container-page: 1344px;
 
+  /* Grids: as many columns as fit, each at least its minimum, and one column when even that does not. */
+  --grid-template-columns-mission: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); /* Missão */
+  --grid-template-columns-teams: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); /* Times */
+
+  /* Flex grow factors that are not whole numbers, in hundredths; whole ones are Tailwind's (grow-3). */
+  --grow-120: 1.2; /* solution name */
+  --grow-160: 1.6; /* solution description */
+
   --radius-6: 6px; /* badges */
   --radius-10: 10px; /* buttons, terminal panels */
   --radius-16: 16px; /* cards */
@@ -116,6 +127,10 @@
 
   --shadow-glow: 0 8px 28px rgba(238, 241, 242, 0.2); /* button hover */
   --blur-16: 16px; /* header backdrop */
+
+  /* The keyboard focus ring, in --color-blue. */
+  --outline-width-focus: 2px;
+  --outline-offset-focus: 3px;
 
   /* Motion. Hover transitions all take .2s with the default ease. */
   --default-transition-duration: 0.2s;
@@ -193,18 +208,15 @@
   }
 }
 
+/* The focus ring of every link, button and field, from the Quadro's :focus-visible rule. Inside
+   data-show-state="focus", drawn focused: the /design-system route shows the state that way. */
 @layer base {
-  body {
-    background: var(--color-night);
-  }
-
-  /* Inside data-show-state="focus", drawn focused: the /design-system route shows the state that way. */
   a:focus-visible,
   button:focus-visible,
   textarea:focus-visible,
   [data-show-state="focus"] :is(a, button, textarea) {
-    outline: 2px solid var(--color-blue);
-    outline-offset: 3px;
+    outline: var(--outline-width-focus) solid var(--color-blue);
+    outline-offset: var(--outline-offset-focus);
   }
 }
 

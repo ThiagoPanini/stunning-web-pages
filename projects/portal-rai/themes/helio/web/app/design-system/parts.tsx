@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SectionLabel } from "@/components/section-label";
 import type { Token } from "./theme-tokens";
 
 // The pieces the route repeats, in the Home's language: numbered sections ruled above, mono labels.
@@ -16,9 +17,9 @@ export function DesignSection({ number, label, title, lead, children }: DesignSe
     <section className="flex flex-col gap-12 border-rule border-t py-20">
       <div className="flex flex-wrap items-end gap-x-12 gap-y-6">
         <div className="flex grow basis-65 flex-col gap-4">
-          <div className="font-mono text-12 text-subtle uppercase tracking-wide-80">
+          <SectionLabel>
             {number} · {label}
-          </div>
+          </SectionLabel>
           <h2 className="font-light text-28-42 leading-110 tracking-tight-25">{title}</h2>
         </div>
         <p className="max-w-160 grow-3 basis-140 text-pretty text-17 text-muted leading-160">

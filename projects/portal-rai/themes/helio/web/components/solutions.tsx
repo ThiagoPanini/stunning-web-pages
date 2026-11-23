@@ -1,7 +1,8 @@
-import { TeamBadge } from "./team-badge";
+import { SectionLabel } from "./section-label";
+import { type Team, TeamBadge } from "./team-badge";
 
 type Solution = {
-  team: "red" | "blue";
+  team: Team;
   name: string;
   // A word in mono next to the name, which only the Blue Team's solutions carry.
   tag?: string;
@@ -47,9 +48,7 @@ export function Solutions() {
     <section data-block="solutions" className="flex flex-col gap-10 border-rule border-t py-24">
       <div className="reveal-1 flex flex-wrap items-end gap-x-12 gap-y-6">
         <div className="flex grow basis-80 flex-col gap-4">
-          <div className="font-mono text-12 text-subtle uppercase tracking-wide-80">
-            03 · Principais soluções
-          </div>
+          <SectionLabel>03 · Principais soluções</SectionLabel>
           <h2 className="font-light text-28-42 leading-110 tracking-tight-25">O que entregamos.</h2>
         </div>
         <p className="max-w-140 grow-2 basis-105 text-pretty text-17 text-muted leading-160">
@@ -66,7 +65,7 @@ export function Solutions() {
             <div className="shrink-0 basis-18">
               <TeamBadge team={solution.team} />
             </div>
-            <div className="flex min-w-0 grow-[1.2] basis-75 flex-wrap items-baseline gap-x-3.5 gap-y-1.5">
+            <div className="flex min-w-0 grow-(--grow-120) basis-75 flex-wrap items-baseline gap-x-3.5 gap-y-1.5">
               <h3 className="font-light text-22-30 leading-115 tracking-tight-20">
                 {solution.name}
               </h3>
@@ -74,7 +73,7 @@ export function Solutions() {
                 <span className="font-mono text-12 text-subtle">{solution.tag}</span>
               )}
             </div>
-            <p className="grow-[1.6] basis-85 text-pretty text-15 text-muted leading-155">
+            <p className="grow-(--grow-160) basis-85 text-pretty text-15 text-muted leading-155">
               {solution.description}
             </p>
           </div>

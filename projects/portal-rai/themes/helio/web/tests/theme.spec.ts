@@ -1,15 +1,16 @@
 // O Sistema de design no código: o @theme nomeia todo valor que a Origem usa, sem fundir valores
 // parecidos, e o tema padrão do Tailwind não existe como classe.
 
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parseThemeTokens } from "../app/design-system/theme-tokens";
 import { ORIGIN_DIR } from "./support/reference";
 import { expect, test } from "./support/test";
 
 const BOARDS = ["Main.dc.html", "LogoLab5.dc.html"];
 
-// What the theme leaves out on purpose, as globals.css explains: two hover rules no element uses, and
-// the Selo logo's caption rule, which the Eclusa does not show.
+// What the Sistema de design leaves out on purpose, as globals.css explains: two hover rules no element
+// uses, and the Selo logo's caption rule, which the Eclusa does not show.
 const LEFT_OUT = [
   /\.chip:hover\{[^}]*\}/g,
   /\.atk:hover\{[^}]*\}/g,
@@ -34,7 +35,7 @@ function readBoard(name: string): string {
   return text;
 }
 
-// Every declaration of the board's <style> blocks and style attributes, as [property, value].
+// Every declaration of the Quadro's <style> blocks and style attributes, as [property, value].
 function declarations(board: string): [string, string][] {
   const styles = [
     ...[...board.matchAll(/<style>([\s\S]*?)<\/style>/g)].map((match) => match[1]),
@@ -46,13 +47,11 @@ function declarations(board: string): [string, string][] {
   ]);
 }
 
+const GLOBALS_CSS = readFileSync(join(import.meta.dirname, "..", "app", "globals.css"), "utf8");
+
 // The tokens of the @theme block in app/globals.css, as [name, normalized value].
 function themeTokens(): [string, string][] {
-  const css = readFileSync(join(import.meta.dirname, "..", "app", "globals.css"), "utf8");
-  const block = css.match(/@theme static \{([\s\S]*?)\n\}/)?.[1] ?? "";
-  return [...block.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)].map(
-    (match) => [match[1], normalize(match[2])],
-  );
+  return parseThemeTokens(GLOBALS_CSS).map(({ name, value }) => [name, normalize(value)]);
 }
 
 type Use = { kind: string; value: string; names: RegExp };
@@ -85,6 +84,19 @@ function originValues(): Use[] {
           add("espaçamento fluido", fluid, /^--spacing-/);
         }
       }
+      if (property === "grid-template-columns") add("grade", value, /^--grid-template-columns-/);
+      // The grow factor of the flex shorthand; a whole one is a step of Tailwind's own (grow-3).
+      if (property === "flex") {
+        const grow = value.split(/\s+/)[0];
+        if (!Number.isInteger(Number(grow))) add("crescimento", grow, /^--grow-/);
+      }
+      if (property === "outline") {
+        for (const [length] of value.matchAll(/\b\d*\.?\d+px\b/g)) {
+          add("espessura do contorno", length, /^--outline-width-/);
+        }
+      }
+      if (property === "outline-offset")
+        add("afastamento do contorno", value, /^--outline-offset-/);
       if (["transition", "animation", "animation-duration", "animation-delay"].includes(property)) {
         for (const [time] of value.matchAll(/(?:\d*\.)?\d+m?s\b/g)) {
           add("duração", time, /^--(default-transition-duration|duration-|delay-)/);
@@ -112,6 +124,56 @@ test("todo valor que a Origem usa tem nome no @theme", () => {
     if (!named) unnamed.add(`${use.kind}: ${use.value}`);
   }
   expect([...unnamed], "valores da Origem sem nome no @theme").toEqual([]);
+});
+
+// The numbers of a CSS value that are a design's choice: a length, a time, an angle, a decimal. A whole
+// number with no unit is a step of Tailwind's own (flex-[1_1_0] grows by 1), and 0 and 100% are none
+// and all; none of them is a choice of the Quadro.
+function literalValues(value: string): string[] {
+  return [...value.matchAll(/(\d*\.?\d+)([a-z%]*)/g)]
+    .filter(([, number, unit]) => {
+      if (unit === "" || unit === "fr") return !Number.isInteger(Number(number));
+      return !(Number(number) === 0 || (unit === "%" && number === "100"));
+    })
+    .map(([literal]) => literal);
+}
+
+// Where a component would write a value of its own: the arbitrary values of its classes (grow-[1.2],
+// grid-cols-[…]). The brand mark's ring keeps its stroke widths, part of its drawing (globals.css).
+const DRAWINGS = ["brand-mark.tsx"];
+
+// The body of an at-rule block of a stylesheet, braces balanced: `@layer base` gives its rules.
+function blockBody(css: string, header: string): string {
+  const start = css.indexOf(`${header} {`);
+  if (start === -1) return "";
+  let depth = 0;
+  for (let index = css.indexOf("{", start); index < css.length; index++) {
+    if (css[index] === "{") depth++;
+    if (css[index] === "}" && --depth === 0) return css.slice(css.indexOf("{", start) + 1, index);
+  }
+  return "";
+}
+
+test("nenhum componente nem regra base escreve um valor do design fora do @theme", () => {
+  const dir = join(import.meta.dirname, "..", "components");
+  const found: string[] = [];
+  for (const file of readdirSync(dir).filter((name) => name.endsWith(".tsx"))) {
+    if (DRAWINGS.includes(file)) continue;
+    const source = readFileSync(join(dir, file), "utf8");
+    for (const [className, value] of source.matchAll(/[\w:-]+-\[([^\]\s"'`]+)\]/g)) {
+      const literals = literalValues(value);
+      if (literals.length > 0) found.push(`${file}: ${className} (${literals.join(", ")})`);
+    }
+  }
+  // Outside the @theme, globals.css has the motion, with its own geometry (its header says why), and
+  // the base rules, which read the tokens.
+  const base = blockBody(GLOBALS_CSS.replace(/\/\*[\s\S]*?\*\//g, ""), "@layer base");
+  expect(base, "a regra base de globals.css").toContain("outline");
+  for (const [, property, value] of base.matchAll(/([a-z-]+)\s*:\s*([^;{}]+);/g)) {
+    const literals = literalValues(value);
+    if (literals.length > 0) found.push(`globals.css, @layer base: ${property} (${literals})`);
+  }
+  expect(found, "valores escritos fora do @theme").toEqual([]);
 });
 
 // Classes of Tailwind's default theme, written here so Tailwind scans them: if the theme still had them,

@@ -1,6 +1,8 @@
+// red: the Red Team, which attacks. blue: the Blue Team, which guards.
+export type Team = "red" | "blue";
+
 type TeamBadgeProps = {
-  // red: the Red Team, which attacks. blue: the Blue Team, which guards.
-  team: "red" | "blue";
+  team: Team;
 };
 
 // The small tag that says which team a solution belongs to: RED or BLUE, in mono, on a tint of its color.
