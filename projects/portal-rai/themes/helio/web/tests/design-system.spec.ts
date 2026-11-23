@@ -3,6 +3,7 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import type { Locator } from "@playwright/test";
 import { WIDTHS } from "./support/reference";
 import { expect, test } from "./support/test";
 
@@ -118,4 +119,102 @@ test("a rota não guarda cópia dos valores do @theme", () => {
     .filter(([, value]) => /[#("]/.test(value) && !value.startsWith("var("))
     .filter(([, value]) => source.includes(value.toLowerCase()));
   expect(copied, "valores do @theme escritos na rota").toEqual([]);
+});
+
+// The components of the Home: every function a file of components/ exports, except the blocks of the
+// page (the files that mark data-block), which the Home itself shows.
+function homeComponents(): string[] {
+  const dir = join(import.meta.dirname, "..", "components");
+  return readdirSync(dir)
+    .filter((file) => file.endsWith(".tsx"))
+    .flatMap((file) => {
+      const source = readFileSync(join(dir, file), "utf8");
+      if (source.includes("data-block=")) return [];
+      return [...source.matchAll(/^export function (\w+)/gm)].map((match) => match[1]);
+    });
+}
+
+test("cada componente da Home aparece isolado na rota", async ({ page }) => {
+  const components = homeComponents();
+  expect(components, "componentes da Home").toEqual(
+    expect.arrayContaining(["ButtonLink", "EclusaLogo", "TeamCard", "TerminalPanel"]),
+  );
+  await page.goto(ROUTE);
+  const shown = await page
+    .locator("[data-component]")
+    .evaluateAll((elements) => elements.map((element) => element.getAttribute("data-component")));
+  expect(
+    components.filter((name) => !shown.includes(name)),
+    "componentes sem amostra na rota",
+  ).toEqual([]);
+});
+
+// What a hover or a focus can change on a link or a button.
+const STATE_PROPERTIES = [
+  "color",
+  "background-color",
+  "box-shadow",
+  "translate",
+  "outline-style",
+  "outline-color",
+  "outline-width",
+  "outline-offset",
+];
+
+function styleOf(locator: Locator): Promise<string[]> {
+  return locator.evaluate(
+    (element, properties) =>
+      properties.map((name) => `${name}: ${getComputedStyle(element).getPropertyValue(name)}`),
+    STATE_PROPERTIES,
+  );
+}
+
+// Each component is shown at rest; a component that changes under the pointer or the keyboard is also
+// shown in that state, without anyone hovering or focusing it, and what it shows is what the pointer and
+// the keyboard really do to the component at rest.
+test("hover e foco de cada componente aparecem na rota como são de verdade", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(ROUTE);
+  const problems: string[] = [];
+  const specimens = page.locator("[data-component]");
+  let checked = 0;
+  for (const name of await specimens.evaluateAll((elements) =>
+    elements.map((element) => element.getAttribute("data-component") ?? ""),
+  )) {
+    const specimen = page.locator(`[data-component="${name}"]`);
+    const rest = specimen.locator('[data-state="repouso"]').locator("a, button").first();
+    if ((await rest.count()) === 0) continue;
+    checked++;
+    await rest.scrollIntoViewIfNeeded();
+    const atRest = await styleOf(rest);
+
+    await rest.hover();
+    await page.waitForTimeout(400);
+    const hovered = await styleOf(rest);
+    await page.mouse.move(0, 0);
+    await page.waitForTimeout(400);
+    const shownHover = specimen.locator('[data-show-state="hover"]').locator("a, button").first();
+    if (hovered.join() !== atRest.join()) {
+      if ((await shownHover.count()) === 0) problems.push(`${name}: muda em hover e não o mostra`);
+      else if ((await styleOf(shownHover)).join() !== hovered.join()) {
+        problems.push(`${name}: o hover mostrado não é o de verdade`);
+      }
+    } else if ((await shownHover.count()) > 0) {
+      problems.push(`${name}: mostra um hover que não existe`);
+    }
+
+    await rest.focus();
+    expect(await rest.evaluate((element) => element.matches(":focus-visible"))).toBe(true);
+    const focused = await styleOf(rest);
+    await rest.blur();
+    const shownFocus = specimen.locator('[data-show-state="focus"]').locator("a, button").first();
+    if (focused.join() !== atRest.join()) {
+      if ((await shownFocus.count()) === 0) problems.push(`${name}: muda no foco e não o mostra`);
+      else if ((await styleOf(shownFocus)).join() !== focused.join()) {
+        problems.push(`${name}: o foco mostrado não é o de verdade`);
+      }
+    }
+  }
+  expect(checked, "componentes com link ou botão").toBeGreaterThan(3);
+  expect(problems).toEqual([]);
 });

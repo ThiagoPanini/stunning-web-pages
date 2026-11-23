@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BrandMark } from "@/components/brand-mark";
 import { TextLink } from "@/components/text-link";
 import { DesignGroup, DesignSection } from "./parts";
+import { ComponentSpecimens } from "./specimens";
 import { groupTokens, readThemeTokens } from "./theme-tokens";
 import {
   ColorTokens,
@@ -120,9 +121,18 @@ export default function DesignSystem() {
           <PlainTokens tokens={tokens.motion} />
         </DesignSection>
 
+        <DesignSection
+          number="06"
+          label="Componentes"
+          title="Componentes."
+          lead="Cada componente de components/ fora dos blocos da página, isolado. Os links e o botão aparecem em repouso, em hover e em foco, desenhados sem ponteiro nem teclado; ao vivo eles respondem igual."
+        >
+          <ComponentSpecimens />
+        </DesignSection>
+
         {tokens.others.length > 0 && (
           <DesignSection
-            number="06"
+            number="07"
             label="Outros"
             title="Outros tokens."
             lead="Tokens de um namespace que esta rota ainda não desenha."
