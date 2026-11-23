@@ -45,6 +45,27 @@ function titleColors(page: Page): Promise<string[]> {
   );
 }
 
+// The colors of the cycle step titles at each stop of a scroll down the page, `step` px at a time, from
+// the first title entering the window until the last one reaches its top. Each jump is instant and waits
+// two frames, as scrollTo does. The whole walk runs in the page, in one call: two calls per stop, over a
+// hundred round trips, outlasted the test's time on a loaded machine.
+function titleColorsOnTheWayDown(page: Page, step: number): Promise<string[][]> {
+  return stepTitles(page).evaluateAll(async (titles, gap) => {
+    const frames = () =>
+      new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const topOf = (title: Element) => title.getBoundingClientRect().top + window.scrollY;
+    const first = topOf(titles[0]);
+    const last = topOf(titles[titles.length - 1]);
+    const seen: string[][] = [];
+    for (let top = first - window.innerHeight; top <= last; top += gap) {
+      window.scrollTo({ top, behavior: "instant" });
+      await frames();
+      seen.push(titles.map((title) => getComputedStyle(title).color));
+    }
+    return seen;
+  }, step);
+}
+
 const BLOCKS = '[data-block="teams"], [data-block="cycle"], [data-block="solutions"]';
 
 // The cards that rise into place: the two team cards and the four solution frames.
@@ -91,21 +112,10 @@ for (const width of WIDTHS) {
       "Proteger cada conversa em produção e em tempo real",
       "Acompanhar o resultado todos os dias",
     ]);
-    const [firstTop, lastTop] = await stepTitles(page).evaluateAll((titles) =>
-      [titles[0], titles[titles.length - 1]].map(
-        (title) => title.getBoundingClientRect().top + window.scrollY,
-      ),
-    );
-    const windowHeight = await page.evaluate(() => window.innerHeight);
-
     expect(await titleColors(page), "at the top of the page").toEqual(Array(5).fill(UNLIT));
 
     // From the first title entering the window until the last one reaches the top, 20px at a time.
-    const seen: string[][] = [];
-    for (let top = firstTop - windowHeight; top <= lastTop; top += 20) {
-      await scrollTo(page, top);
-      seen.push(await titleColors(page));
-    }
+    const seen = await titleColorsOnTheWayDown(page, 20);
 
     expect(seen[0], "as the first title enters the window").toEqual(Array(5).fill(UNLIT));
     expect(seen.at(-1), "with the last title at the top of the window").toEqual(
