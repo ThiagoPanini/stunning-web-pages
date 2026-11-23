@@ -1,6 +1,6 @@
-// A Home como um todo: os blocos na ordem do Quadro, a página inteira contra a Captura de referência, a
-// saúde da página e o movimento reduzido. As Capturas da Home saem daqui: cada comparação confere que a
-// sua, em screenshots/, é a Home de agora, e `pnpm test --update-snapshots` a regrava.
+// The Home as a whole: the blocks in the board's order, the whole page against the reference capture,
+// the page's health and reduced motion. The Home's screenshots come from here: each comparison checks
+// that its own, in screenshots/, is the Home as it is now; `pnpm test --update-snapshots` rewrites it.
 
 import type { Page } from "@playwright/test";
 import { PNG } from "pngjs";
@@ -14,11 +14,11 @@ import { expect, load, type Motion, test } from "./support/test";
 const PAGE_ELEMENTS = "[data-block], [data-block] *";
 
 const MOTIONS: [Motion, string][] = [
-  ["no-preference", "com movimento"],
-  ["reduce", "com movimento reduzido"],
+  ["no-preference", "with motion"],
+  ["reduce", "with reduced motion"],
 ];
 
-test("a Home compõe os blocos na ordem do Quadro", async ({ page }) => {
+test("the Home lays out its blocks in the board's order", async ({ page }) => {
   await page.goto("/");
   const blocks = await page
     .locator("[data-block]")
@@ -28,19 +28,17 @@ test("a Home compõe os blocos na ordem do Quadro", async ({ page }) => {
 
 for (const width of WIDTHS) {
   // The limit and its reason are next to MAX_DIFF_PIXEL_RATIO, in support/reference.ts.
-  test(`a Home inteira bate com a Captura de referência em ${width} px`, async ({
-    referencePage,
-  }) => {
+  test(`the whole Home matches the reference capture at ${width} px`, async ({ referencePage }) => {
     const page = await referencePage(width);
     const reference = await readReference(width);
     const screenshot = await page.screenshot({ fullPage: true, animations: "disabled" });
     await expectImageToMatch(`home-${width}`, PNG.sync.read(screenshot), reference.image);
-    // Only a Captura that matched the reference is kept.
+    // Only a screenshot that matched the reference is kept.
     await expectSavedScreenshot(`home-${width}`, screenshot);
   });
 
   for (const [motion, label] of MOTIONS) {
-    test(`a Home é saudável em ${width} px ${label}`, async ({ newWindow, baseURL }) => {
+    test(`the Home is healthy at ${width} px ${label}`, async ({ newWindow, baseURL }) => {
       const origin = new URL(baseURL ?? "").origin;
       const page = await newWindow(width, { motion });
       const consoleErrors: string[] = [];
@@ -69,21 +67,21 @@ for (const width of WIDTHS) {
       await page.waitForLoadState("networkidle");
 
       // Soft: a sick page reports every problem at once.
-      expect.soft(consoleErrors, "erros de console").toEqual([]);
-      expect.soft(failed, "requisições que falharam").toEqual([]);
-      expect.soft(outside, "requisições para fora do servidor local").toEqual([]);
-      expect.soft(fonts, "as duas fontes vêm do servidor local").toHaveLength(2);
+      expect.soft(consoleErrors, "console errors").toEqual([]);
+      expect.soft(failed, "failed requests").toEqual([]);
+      expect.soft(outside, "requests outside the local server").toEqual([]);
+      expect.soft(fonts, "both fonts come from the local server").toHaveLength(2);
       // After the scroll left every reveal in its final place.
       expect
-        .soft(await spilledElements(page, width), "elementos fora da largura da página")
+        .soft(await spilledElements(page, width), "elements outside the page width")
         .toEqual([]);
       expect
-        .soft(await page.evaluate(() => document.documentElement.scrollWidth), "largura rolável")
+        .soft(await page.evaluate(() => document.documentElement.scrollWidth), "scrollable width")
         .toBe(width);
     });
   }
 
-  test(`com movimento reduzido, o logo fica parado e a Home aparece no estado final sem rolar (${width} px)`, async ({
+  test(`with reduced motion, the logo stays still and the Home shows its final state without scrolling (${width} px)`, async ({
     newWindow,
   }) => {
     const page = await newWindow(width, { motion: "reduce" });
@@ -93,11 +91,11 @@ for (const width of WIDTHS) {
     const first = await logo.screenshot();
     // 400 ms is almost 5 frames of the logo's drawing.
     await page.waitForTimeout(400);
-    expect.soft((await logo.screenshot()).equals(first), "o logo ficou parado").toBe(true);
+    expect.soft((await logo.screenshot()).equals(first), "the logo stayed still").toBe(true);
 
     // Nothing waits for the scroll: no animation runs anywhere in the page, and nothing below the fold
     // is hidden or faded. The parts of an SVG drawing carry their own opacity, as the logo's do.
-    expect.soft(await page.evaluate(() => document.getAnimations().length), "animações").toBe(0);
+    expect.soft(await page.evaluate(() => document.getAnimations().length), "animations").toBe(0);
     const faded = await page.locator(PAGE_ELEMENTS).evaluateAll((elements) =>
       elements
         .filter((element) => !(element instanceof SVGElement && element.ownerSVGElement))
@@ -107,7 +105,7 @@ for (const width of WIDTHS) {
         })
         .map((element) => element.outerHTML.slice(0, 80)),
     );
-    expect(faded, "elementos apagados ou escondidos").toEqual([]);
+    expect(faded, "faded or hidden elements").toEqual([]);
   });
 }
 

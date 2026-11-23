@@ -1,13 +1,13 @@
 import { BrandMark } from "./brand-mark";
 import { FooterLink } from "./footer-link";
 
-// Telas the design does not have yet: their links are Lacunas.
+// Screens the design does not have yet: their links stay inert.
 const otherScreens = ["Dados", "Playground", "Integrações"];
 
-// The footer, in one ruled row that wraps when narrow: the brand with the company placeholder, the links
-// to the Telas, and the team's channel and e-mail placeholders next to "Voltar ao topo", which goes back
-// to the start of the page (the page's outer element is #topo). Keep data-block="footer": the tests find
-// the block by it.
+// The footer, in one ruled row that wraps when narrow: the brand with the company placeholder, the
+// links to the screens, and the team's channel and e-mail placeholders next to "Voltar ao topo",
+// which goes back to the start of the page (the page's outer element is #topo). Keep
+// data-block="footer": the tests find the block by it.
 export function SiteFooter() {
   return (
     <footer data-block="footer" className="mx-auto box-content max-w-page px-gutter">

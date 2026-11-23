@@ -3,7 +3,7 @@ import { InertLink } from "./inert-link";
 
 type TextLinkProps = {
   children: ReactNode;
-  // Without a destination the link is a Lacuna and stays inert.
+  // Without a destination, which the design left open, the link stays inert.
   href?: string;
 };
 

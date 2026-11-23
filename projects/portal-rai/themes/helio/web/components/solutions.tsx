@@ -9,7 +9,7 @@ type Solution = {
   description: string;
 };
 
-// Two solutions of each team, in the Quadro's order.
+// Two solutions of each team, in the board's order.
 const solutions: Solution[] = [
   {
     team: "red",
@@ -39,10 +39,10 @@ const solutions: Solution[] = [
   },
 ];
 
-// 03 · Principais soluções: a heading with its lead paragraph, then four rows, each with the team badge,
-// the name and the description. The rows are ruled above, the last one also below; when narrow, each
-// row stacks badge, name and description. Heading and rows rise into place as they enter the view.
-// Keep data-block="solutions": the tests find the block by it.
+// The Solutions section, "03 · Principais soluções": a heading with its lead paragraph, then four
+// rows, each with the team badge, the name and the description. The rows are ruled above, the last
+// one also below; when narrow, each row stacks badge, name and description. Heading and rows rise
+// into place as they enter the view. Keep data-block="solutions": the tests find the block by it.
 export function Solutions() {
   return (
     <section data-block="solutions" className="flex flex-col gap-10 border-rule border-t py-24">

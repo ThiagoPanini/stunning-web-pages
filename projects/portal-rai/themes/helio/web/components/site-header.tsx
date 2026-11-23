@@ -3,7 +3,7 @@ import { ButtonLink } from "./button-link";
 import { NavLink } from "./nav-link";
 import { NavPill } from "./nav-pill";
 
-// Telas the design does not have yet: their links are Lacunas.
+// Screens the design does not have yet: their links stay inert.
 const otherScreens = ["Dados", "Playground", "Integrações"];
 
 // The header: sticky and blurred over the page, with the brand, the nav pill, the button and a bar that

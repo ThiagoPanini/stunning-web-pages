@@ -1,4 +1,4 @@
-// Tailwind 4 entra por PostCSS, o caminho que as documentações do Next e do Tailwind mostram (ADR 0005).
+// Tailwind 4 comes in through PostCSS, the path the Next and Tailwind docs show (ADR 0005).
 const config = {
   plugins: {
     "@tailwindcss/postcss": {},

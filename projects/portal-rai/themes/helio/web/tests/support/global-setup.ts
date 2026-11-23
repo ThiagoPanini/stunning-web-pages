@@ -10,7 +10,7 @@ export const OUT_DIR = join(import.meta.dirname, "..", "..", "out");
 export default async function globalSetup() {
   await access(join(OUT_DIR, "index.html")).catch(() => {
     throw new Error(
-      "out/index.html não existe: rode `pnpm test`, que faz o build antes, ou `pnpm build`.",
+      "out/index.html does not exist: run `pnpm test`, which builds first, or `pnpm build`.",
     );
   });
   const server = await startStaticServer(OUT_DIR);

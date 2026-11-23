@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
-// Export estático: o build gera arquivos e recusa recurso de servidor (ADR 0006).
+// Static export: the build writes files and refuses server features (ADR 0006).
 const nextConfig: NextConfig = {
   output: "export",
-  // Cache Components e o prefetch parcial não funcionam com export no Next 16.4.6.
+  // Cache Components and partial prefetching do not work with export in Next 16.4.6.
   cacheComponents: false,
   partialPrefetching: false,
-  // Sem isto o HTML aponta para /_next/image, rota que não existe no export.
+  // Without this the HTML points to /_next/image, a route the export does not have.
   images: { unoptimized: true },
   reactCompiler: true,
   typedRoutes: true,

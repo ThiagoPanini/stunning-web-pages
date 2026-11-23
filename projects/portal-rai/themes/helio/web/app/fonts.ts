@@ -1,10 +1,10 @@
 import localFont from "next/font/local";
 
-// Geist and Geist Mono, latin subset: the same files the Quadro loads from Google Fonts (Geist v5, font
+// Geist and Geist Mono, latin subset: the same files the board loads from Google Fonts (Geist v5, font
 // version 1.800; Geist Mono v6, font version 1.701), each a variable font with a weight axis from 100 to
 // 900, with Google's latin unicode-range. The license is fonts/OFL.txt.
 //
-// The @font-face keeps the design's family name, so the stacks in @theme are the Quadro's own and no
+// The @font-face keeps the design's family name, so the stacks in @theme are the board's own and no
 // automatic fallback goes in front of them. The layout imports this module only for its @font-face rules:
 // the className next/font generates names the family after the constant ("geistMono"), not the design.
 // The font loader only takes literals, hence the repeated range.

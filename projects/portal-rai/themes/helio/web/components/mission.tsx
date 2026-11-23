@@ -21,9 +21,9 @@ export const missionSteps = [
   },
 ];
 
-// 01 · Missão: the large title whose words light up one after the other while it crosses the view, and
-// three columns that rise into place, staggered, as they enter it. Keep data-block="mission": the tests
-// find the block by it.
+// The Mission section, "01 · Missão": the large title whose words light up one after the other
+// while it crosses the view, and three columns that rise into place, staggered, as they enter it.
+// Keep data-block="mission": the tests find the block by it.
 export function Mission() {
   return (
     <section data-block="mission" className="flex flex-col gap-16 border-rule border-t py-24">

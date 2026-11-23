@@ -1,6 +1,6 @@
-// The Capturas of the app, in the Tema's screenshots/. A plain run writes nothing: it checks that each
-// saved Captura is, byte for byte, what the app renders now. Playwright's own flag rewrites them, as it
-// does with its snapshots: `pnpm test --update-snapshots`.
+// The app's screenshots, in the theme's screenshots/. A plain run writes nothing: it checks that
+// each saved screenshot is, byte for byte, what the app renders now. Playwright's own flag rewrites
+// them, as it does with its snapshots: `pnpm test --update-snapshots`.
 
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -23,10 +23,10 @@ export async function expectSavedScreenshot(name: string, image: Buffer): Promis
   if (rewrite || matches) return;
   expect(
     saved !== undefined || mode === "missing",
-    `${file} não existia; gravada agora, confira e rode de novo`,
+    `${file} did not exist; written now, check it and run again`,
   ).toBe(true);
   expect(
     !saved || matches,
-    `${file} não é o que o app desenha agora: regrave com \`pnpm test --update-snapshots\``,
+    `${file} is not what the app draws now: rewrite it with \`pnpm test --update-snapshots\``,
   ).toBe(true);
 }

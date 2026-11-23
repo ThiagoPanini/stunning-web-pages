@@ -1,5 +1,5 @@
-// O fim da Home: 03 · Principais soluções, 04 · Comece e o rodapé, cada um contra o seu recorte da
-// Captura de referência, mais os links do fim da página e a largura dos três blocos.
+// The end of the Home: Solutions, Start and the footer, each against its own cut of the reference
+// capture, plus the links at the end of the page and the width of the three blocks.
 
 import type { Page } from "@playwright/test";
 import { spilledElements } from "./support/overflow";
@@ -11,22 +11,22 @@ const OWN_BLOCKS: BlockName[] = ["solutions", "start", "footer"];
 // Each band must also sit where the reference's sits, so it depends on every block above it: the same
 // block one subpixel higher or lower draws some of its lines one pixel off.
 const BANDS: [BlockName, string][] = [
-  ["solutions", "Principais soluções"],
-  ["start", "Comece"],
-  ["footer", "Rodapé"],
+  ["solutions", "Solutions"],
+  ["start", "Start"],
+  ["footer", "Footer"],
 ];
 
 const scrollY = (page: Page) => page.evaluate(() => window.scrollY);
 
 for (const width of WIDTHS) {
   for (const [block, title] of BANDS) {
-    test(`${title} bate com a referência em ${width} px`, async ({ referencePage }) => {
+    test(`${title} matches the reference at ${width} px`, async ({ referencePage }) => {
       const page = await referencePage(width);
       await expectBandToMatchReference(page, { width, from: block });
     });
   }
 
-  test(`"Voltar ao topo" leva ao início da página em ${width} px`, async ({ page }) => {
+  test(`"Voltar ao topo" goes back to the top of the page at ${width} px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
     await page.goto("/");
     const backToTop = page
@@ -38,14 +38,14 @@ for (const width of WIDTHS) {
     await expect.poll(() => scrollY(page)).toBe(0);
   });
 
-  test(`o fim da Home não transborda na horizontal em ${width} px`, async ({ referencePage }) => {
+  test(`the end of the Home does not spill sideways at ${width} px`, async ({ referencePage }) => {
     const page = await referencePage(width);
     expect(await spilledElements(page, width, OWN_BLOCKS)).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
   });
 }
 
-// Links to Telas the design does not have yet (Lacunas), and the button whose action does not exist.
+// Links to screens the design does not have yet, and the button whose action does not exist.
 const INERT_LINKS: [BlockName, string][] = [
   ["start", "Testar um guardrail"],
   ["start", "Ver integrações →"],
@@ -54,7 +54,9 @@ const INERT_LINKS: [BlockName, string][] = [
   ["footer", "Integrações"],
 ];
 
-test("os links do fim da Home para Telas que não existem não navegam", async ({ page }) => {
+test("the links at the end of the Home to screens that do not exist go nowhere", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 800 });
   await page.goto("/");
   for (const [block, name] of INERT_LINKS) {

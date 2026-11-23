@@ -7,12 +7,12 @@ import { useEffect, useState } from "react";
 // take the hit, and the cross breaks into two strokes. Valid answers (grey rings) leave through a door the
 // segments open; invalid ones (slashed red rings) are stopped from inside.
 //
-// The drawing is a pure function of the frame, ported from the Quadro's logic: the same frame always draws
+// The drawing is a pure function of the frame, ported from the board's logic: the same frame always draws
 // the same image. The frame comes from time (85 ms per frame), never from a counter or a random draw.
-// It imports nothing from the app; its colors are the Sistema de design's tokens, as Tailwind classes.
+// It imports nothing from the app; its colors are the design system's tokens, as Tailwind classes.
 
 type EclusaLogoProps = {
-  // Any CSS color for the square behind the drawing. The Quadro's default is the page's night.
+  // Any CSS color for the square behind the drawing. The board's default is the page's night.
   background?: string;
   // Off, the logo stays on its starting frame. Reduced motion has the same effect.
   animated?: boolean;

@@ -3,10 +3,11 @@ import { ButtonLink } from "./button-link";
 import { SectionLabel } from "./section-label";
 import { TextLink } from "./text-link";
 
-// 04 · Comece: the closing call, with the button and a link to Integrações, next to the card that
-// simulates an API call. The two columns stack when narrow, and each rises into place as it enters the
-// view, the card a beat later. The button and the link lead to Telas the design does not have yet, so
-// they are inert. Keep data-block="start": the tests find the block by it.
+// The Start section, "04 · Comece": the closing call, with the button and a link to "Integrações",
+// next to the card that simulates an API call. The two columns stack when narrow, and each rises
+// into place as it enters the view, the card a beat later. The button and the link lead to screens
+// the design does not have yet, so they are inert. Keep data-block="start": the tests find the
+// block by it.
 export function Start() {
   return (
     <section

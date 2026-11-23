@@ -1,5 +1,5 @@
 // The test of every spec file: Playwright's, pointed at the static server of global-setup, plus two ways
-// to open the app: `referencePage`, under the conditions of the Capturas de referência, and `newWindow`, a
+// to open the app: `referencePage`, under the conditions of the reference captures, and `newWindow`, a
 // browser window of a given size and motion preference.
 //
 // Each block of the page has its own spec file (header-hero.spec.ts, and one per later block), so tickets
@@ -31,7 +31,7 @@ export const test = base.extend<Fixtures>({
   // biome-ignore lint/correctness/noEmptyPattern: Playwright reads a fixture's dependencies from this pattern
   baseURL: async ({}, use) => {
     const url = process.env.HELIO_BASE_URL;
-    if (!url) throw new Error("HELIO_BASE_URL não definida: rode os testes por `pnpm test`.");
+    if (!url) throw new Error("HELIO_BASE_URL is not set: run the tests through `pnpm test`.");
     await use(url);
   },
   referencePage: async ({ browser, baseURL }, use) => {

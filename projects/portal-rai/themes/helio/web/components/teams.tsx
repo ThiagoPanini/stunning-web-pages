@@ -75,8 +75,9 @@ export function BlueTeamPanel() {
   );
 }
 
-// 02 · Times: the title and its paragraph rise into place, and the Red Team and Blue Team cards slide in
-// from their sides as they enter the view. Keep data-block="teams": the tests find the block by it.
+// The Teams section, "02 · Times": the title and its paragraph rise into place, and the Red Team
+// and Blue Team cards slide in from their sides as they enter the view. Keep data-block="teams":
+// the tests find the block by it.
 export function Teams() {
   return (
     <section data-block="teams" className="flex flex-col gap-12 border-rule border-t py-24">

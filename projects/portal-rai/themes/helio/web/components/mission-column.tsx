@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 type MissionColumnProps = {
-  // The step, one word of the Missão title: "Pesquisar".
+  // The step, one word of the Mission title: "Pesquisar".
   title: string;
   // What the team does in that step.
   children: ReactNode;
@@ -9,7 +9,7 @@ type MissionColumnProps = {
   className?: string;
 };
 
-// A column of 01 · Missão: the step's name over what the team does in it, under a strong rule.
+// A column of the Mission section: the step's name over what the team does in it, under a strong rule.
 export function MissionColumn({ title, children, className = "" }: MissionColumnProps) {
   return (
     <div className={`flex flex-col gap-2.5 border-rule-strong border-t pt-5 ${className}`}>

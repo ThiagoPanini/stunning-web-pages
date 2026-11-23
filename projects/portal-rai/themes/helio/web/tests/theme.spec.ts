@@ -1,5 +1,5 @@
-// O Sistema de design no código: o @theme nomeia todo valor que a Origem usa, sem fundir valores
-// parecidos, e o tema padrão do Tailwind não existe como classe.
+// The design system in code: @theme names every value the origin uses, without merging close values,
+// and Tailwind's default theme does not exist as classes.
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -9,7 +9,7 @@ import { expect, test } from "./support/test";
 
 const BOARDS = ["Main.dc.html", "LogoLab5.dc.html"];
 
-// What the Sistema de design leaves out on purpose, as globals.css explains: two hover rules no element
+// What the design system leaves out on purpose, as globals.css explains: two hover rules no element
 // uses, and the Selo logo's caption rule, which the Eclusa does not show.
 const LEFT_OUT = [
   /\.chip:hover\{[^}]*\}/g,
@@ -35,7 +35,7 @@ function readBoard(name: string): string {
   return text;
 }
 
-// Every declaration of the Quadro's <style> blocks and style attributes, as [property, value].
+// Every declaration of the board's <style> blocks and style attributes, as [property, value].
 function declarations(board: string): [string, string][] {
   const styles = [
     ...[...board.matchAll(/<style>([\s\S]*?)<\/style>/g)].map((match) => match[1]),
@@ -56,7 +56,7 @@ function themeTokens(): [string, string][] {
 
 type Use = { kind: string; value: string; names: RegExp };
 
-// Each value the Origem uses, with the token namespaces where its name must be.
+// Each value the origin uses, with the token namespaces where its name must be.
 function originValues(): Use[] {
   const uses: Use[] = [];
   const add = (kind: string, value: string, names: RegExp) =>
@@ -65,44 +65,43 @@ function originValues(): Use[] {
     const board = readBoard(name);
     // Colors anywhere: styles, SVG attributes and the logo's script.
     for (const [color] of board.matchAll(/#[0-9A-Fa-f]{6}\b|rgba?\([^)]*\)/g)) {
-      add("cor", color, /^--(color|shadow)-/);
+      add("color", color, /^--(color|shadow)-/);
     }
     for (const [property, value] of declarations(board)) {
       if (value.includes("{{")) continue;
-      if (property === "font-family") add("família", value, /^--font-(sans|mono)$/);
-      if (property === "font-size") add("tamanho", value, /^--text-/);
-      if (property === "font-weight") add("peso", value, /^--font-weight-/);
-      if (property === "letter-spacing") add("espaçamento entre letras", value, /^--tracking-/);
-      if (property === "line-height") add("altura de linha", value, /^--leading-/);
-      if (property === "border-radius") add("raio", value, /^--radius-/);
-      if (property === "box-shadow") add("sombra", value, /^--shadow-/);
+      if (property === "font-family") add("family", value, /^--font-(sans|mono)$/);
+      if (property === "font-size") add("size", value, /^--text-/);
+      if (property === "font-weight") add("weight", value, /^--font-weight-/);
+      if (property === "letter-spacing") add("letter spacing", value, /^--tracking-/);
+      if (property === "line-height") add("line height", value, /^--leading-/);
+      if (property === "border-radius") add("radius", value, /^--radius-/);
+      if (property === "box-shadow") add("shadow", value, /^--shadow-/);
       if (property.endsWith("backdrop-filter")) {
-        add("desfoque", value.replace(/^blur\((.*)\)$/, "$1"), /^--blur-/);
+        add("blur", value.replace(/^blur\((.*)\)$/, "$1"), /^--blur-/);
       }
       if (["padding", "gap", "margin"].includes(property)) {
         for (const [fluid] of value.matchAll(/clamp\([^)]*\([^)]*\)[^)]*\)|clamp\([^)]*\)/g)) {
-          add("espaçamento fluido", fluid, /^--spacing-/);
+          add("fluid spacing", fluid, /^--spacing-/);
         }
       }
-      if (property === "grid-template-columns") add("grade", value, /^--grid-template-columns-/);
+      if (property === "grid-template-columns") add("grid", value, /^--grid-template-columns-/);
       // The grow factor of the flex shorthand; a whole one is a step of Tailwind's own (grow-3).
       if (property === "flex") {
         const grow = value.split(/\s+/)[0];
-        if (!Number.isInteger(Number(grow))) add("crescimento", grow, /^--grow-/);
+        if (!Number.isInteger(Number(grow))) add("grow", grow, /^--grow-/);
       }
       if (property === "outline") {
         for (const [length] of value.matchAll(/\b\d*\.?\d+px\b/g)) {
-          add("espessura do contorno", length, /^--outline-width-/);
+          add("outline width", length, /^--outline-width-/);
         }
       }
-      if (property === "outline-offset")
-        add("afastamento do contorno", value, /^--outline-offset-/);
+      if (property === "outline-offset") add("outline offset", value, /^--outline-offset-/);
       if (["transition", "animation", "animation-duration", "animation-delay"].includes(property)) {
         for (const [time] of value.matchAll(/(?:\d*\.)?\d+m?s\b/g)) {
-          add("duração", time, /^--(default-transition-duration|duration-|delay-)/);
+          add("duration", time, /^--(default-transition-duration|duration-|delay-)/);
         }
         for (const [easing] of value.matchAll(/cubic-bezier\([^)]*\)/g)) {
-          add("curva", easing, /^--ease-/);
+          add("easing", easing, /^--ease-/);
         }
       }
     }
@@ -110,7 +109,7 @@ function originValues(): Use[] {
   return uses;
 }
 
-test("todo valor que a Origem usa tem nome no @theme", () => {
+test("every value the origin uses has a name in @theme", () => {
   const tokens = themeTokens();
   const uses = originValues();
   expect(uses.length).toBeGreaterThan(100);
@@ -119,16 +118,16 @@ test("todo valor que a Origem usa tem nome no @theme", () => {
     const named = tokens.some(
       ([name, value]) =>
         use.names.test(name) &&
-        (value === use.value || (use.kind === "cor" && value.includes(use.value))),
+        (value === use.value || (use.kind === "color" && value.includes(use.value))),
     );
     if (!named) unnamed.add(`${use.kind}: ${use.value}`);
   }
-  expect([...unnamed], "valores da Origem sem nome no @theme").toEqual([]);
+  expect([...unnamed], "origin values with no name in @theme").toEqual([]);
 });
 
 // The numbers of a CSS value that are a design's choice: a length, a time, an angle, a decimal. A whole
 // number with no unit is a step of Tailwind's own (flex-[1_1_0] grows by 1), and 0 and 100% are none
-// and all; none of them is a choice of the Quadro.
+// and all; none of them is a choice of the board.
 function literalValues(value: string): string[] {
   return [...value.matchAll(/(\d*\.?\d+)([a-z%]*)/g)]
     .filter(([, number, unit]) => {
@@ -154,7 +153,7 @@ function blockBody(css: string, header: string): string {
   return "";
 }
 
-test("nenhum componente nem regra base escreve um valor do design fora do @theme", () => {
+test("no component or base rule writes a design value outside @theme", () => {
   const dir = join(import.meta.dirname, "..", "components");
   const found: string[] = [];
   for (const file of readdirSync(dir).filter((name) => name.endsWith(".tsx"))) {
@@ -168,12 +167,12 @@ test("nenhum componente nem regra base escreve um valor do design fora do @theme
   // Outside the @theme, globals.css has the motion, with its own geometry (its header says why), and
   // the base rules, which read the tokens.
   const base = blockBody(GLOBALS_CSS.replace(/\/\*[\s\S]*?\*\//g, ""), "@layer base");
-  expect(base, "a regra base de globals.css").toContain("outline");
+  expect(base, "the base rule of globals.css").toContain("outline");
   for (const [, property, value] of base.matchAll(/([a-z-]+)\s*:\s*([^;{}]+);/g)) {
     const literals = literalValues(value);
     if (literals.length > 0) found.push(`globals.css, @layer base: ${property} (${literals})`);
   }
-  expect(found, "valores escritos fora do @theme").toEqual([]);
+  expect(found, "values written outside @theme").toEqual([]);
 });
 
 // Classes of Tailwind's default theme, written here so Tailwind scans them: if the theme still had them,
@@ -208,7 +207,7 @@ const THEME_CLASSES = [
   "rounded-10",
 ];
 
-test("uma classe de cor ou de tamanho padrão do Tailwind não gera estilo", async ({ page }) => {
+test("a color or size class of Tailwind's default theme generates no style", async ({ page }) => {
   await page.goto("/");
   const changed = await page.evaluate(
     ([defaults, own]) => {
@@ -244,6 +243,10 @@ test("uma classe de cor ou de tamanho padrão do Tailwind não gera estilo", asy
     },
     [DEFAULT_CLASSES, THEME_CLASSES],
   );
-  expect(changed.own, "classes do tema do Hélio que mudam o elemento").toEqual(THEME_CLASSES);
-  expect(changed.defaults, "classes do tema padrão do Tailwind que mudam o elemento").toEqual([]);
+  expect(changed.own, "classes of the Hélio's theme that change the element").toEqual(
+    THEME_CLASSES,
+  );
+  expect(changed.defaults, "classes of Tailwind's default theme that change the element").toEqual(
+    [],
+  );
 });

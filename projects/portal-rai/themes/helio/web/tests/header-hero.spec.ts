@@ -1,18 +1,18 @@
-// Cabeçalho e abertura: a faixa do topo da Home contra a Captura de referência, e o comportamento do
-// cabeçalho em tela estreita e em ponteiro grosso.
+// Header and hero: the band at the top of the Home against the reference capture, and how the header
+// behaves in a narrow window and on a coarse pointer.
 
 import type { Locator } from "@playwright/test";
 import { expectBandToMatchReference, readReference, regionBox, WIDTHS } from "./support/reference";
 import { expect, type NewWindow, test } from "./support/test";
 
 for (const width of WIDTHS) {
-  test(`cabeçalho e abertura batem com a referência em ${width} px`, async ({ referencePage }) => {
+  test(`header and hero match the reference at ${width} px`, async ({ referencePage }) => {
     const page = await referencePage(width);
     // The logo included: with reduced motion it rests on the frame the reference shows.
     await expectBandToMatchReference(page, { width, from: "header", to: "hero" });
   });
 
-  test(`o lugar do logo é o da referência em ${width} px`, async ({ referencePage }) => {
+  test(`the logo sits where the reference has it at ${width} px`, async ({ referencePage }) => {
     const page = await referencePage(width);
     const reference = await readReference(width);
     expect(await regionBox(page, "logo")).toEqual(reference.regions.logo);
@@ -28,7 +28,7 @@ async function headerAfterScroll(newWindow: NewWindow, width: number) {
   const header = page.locator('[data-block="header"]');
   const box = async (locator: Locator) => {
     const found = await locator.boundingBox();
-    if (!found) throw new Error("elemento sem caixa");
+    if (!found) throw new Error("element has no box");
     return found;
   };
   return {
@@ -40,7 +40,7 @@ async function headerAfterScroll(newWindow: NewWindow, width: number) {
 }
 
 for (const width of [761, 1440]) {
-  test(`acima de 760 px o cabeçalho fica no topo e a navegação divide a linha (${width} px)`, async ({
+  test(`above 760 px the header sticks to the top and the nav shares its row (${width} px)`, async ({
     newWindow,
   }) => {
     const { header, brand, nav, button } = await headerAfterScroll(newWindow, width);
@@ -51,7 +51,7 @@ for (const width of [761, 1440]) {
 }
 
 for (const width of [760, 390]) {
-  test(`em 760 px ou menos o cabeçalho rola com a página e a navegação ganha uma linha (${width} px)`, async ({
+  test(`at 760 px or less the header scrolls with the page and the nav gets a row of its own (${width} px)`, async ({
     newWindow,
   }) => {
     const { header, brand, nav, button } = await headerAfterScroll(newWindow, width);
@@ -61,7 +61,7 @@ for (const width of [760, 390]) {
   });
 }
 
-test("em ponteiro grosso os links da navegação crescem para 44 px", async ({ newWindow }) => {
+test("on a coarse pointer the nav links grow to 44 px", async ({ newWindow }) => {
   const heights = async (hasTouch: boolean) => {
     const page = await newWindow(390, { height: 800, hasTouch });
     await page.goto("/");

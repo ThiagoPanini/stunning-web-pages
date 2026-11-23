@@ -6,7 +6,7 @@ import { Solutions } from "@/components/solutions";
 import { Start } from "@/components/start";
 import { Teams } from "@/components/teams";
 
-// The Home of the Hélio: header, opening, the four numbered sections and the footer, in the Quadro's order.
+// The Hélio's Home: header, opening, the four numbered sections and the footer, in the board's order.
 export default function Home() {
   return (
     <div
