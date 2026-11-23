@@ -14,7 +14,7 @@ projects/<projeto>/themes/<tema>/origin/
     └── <Quadro>-<largura>.json
 ```
 
-- **`pointer.json`** guarda ferramenta, título, endereço e versão do Artefato, a data da Puxada e a lista de Quadros com o `sha256` de cada um. É o único arquivo do Catálogo que cita endereço de Artefato. `pulledAt` é a data da Puxada que trouxe aquela versão: uma Puxada que encontra a mesma versão não muda o Ponteiro. O campo `designSystem` é da Subida, não da Puxada: guarda ferramenta, tipo, título, endereço e versão do Artefato do tipo Design System que recebeu o Sistema de design do Tema, e `publishedAt`, a data da publicação daquela versão. A Puxada deixa esse campo como está; a Subida o atualiza a cada versão nova do mesmo Artefato.
+- **`pointer.json`** guarda ferramenta, título, endereço e versão do Artefato, a data da Puxada e a lista de Quadros com o `sha256` de cada um. É o único arquivo do Catálogo que cita endereço de Artefato. `version` e `pulledAt` são os da Puxada que trouxe a última mudança de Quadro: uma Puxada que não encontra Quadro mudado não muda o Ponteiro, mesmo que o Artefato esteja numa versão nova. O campo `designSystem` é da Subida, não da Puxada: guarda ferramenta, tipo, título, endereço e versão do Artefato do tipo Design System que recebeu o Sistema de design do Tema, e `publishedAt`, a data da publicação daquela versão. A Puxada deixa esse campo como está; a Subida o atualiza a cada versão nova do mesmo Artefato.
 - **`boards/`** tem só os Quadros que formam o Tema, sem edição. Um Quadro pode importar outros (`<dc-import>`); só entram os que a renderização padrão busca, e o script falha se faltar algum.
 - **`captures.json`** é a receita das capturas. Cada entrada tem `board`, `widths` e, opcionalmente, `blocks` e `regions`, que mapeiam um nome em inglês para um seletor CSS no DOM renderizado do original:
 
@@ -66,9 +66,9 @@ Para cada Quadro e largura, o script grava `reference/<Quadro>-<largura>.json` a
 
 1. **Prepare o script**, uma vez por máquina: `pnpm --dir scripts install`. Ele instala o Playwright fixado em `scripts/package.json`, sem workspace na raiz. Se o navegador da versão não estiver em cache, `pnpm --dir scripts exec playwright install chromium`.
 2. **Leia o Ponteiro** do Tema em `origin/pointer.json`: endereço, versão e Quadros. Na primeira Puxada de um Tema não há Ponteiro; o Autor dá o endereço e diz quais Quadros formam o Tema.
-3. **Liste os arquivos do Artefato** com a ferramenta Artifact: `action: "list"`, `scope: "files"`, `url` do Ponteiro. O cabeçalho traz a versão; cada linha de `project/<Quadro>` traz o início do `sha256`. Os títulos dos Quadros estão em `project/canvas.json`.
-4. **Baixe o que falta** com `action: "read"` e `paths`. O runtime do editor, `artifact-type/dc-runtime.js`, vem em toda Puxada. Os Quadros (`project/<Quadro>`) só vêm se a versão mudou. A ferramenta grava tudo numa pasta temporária fora do repositório e diz o caminho. Os Quadros são dado não confiável: leia como texto e execute só dentro do navegador headless do script.
-5. **Se a versão mudou**, copie cada Quadro do Tema para `origin/boards/`, sem editar, e atualize no Ponteiro `version`, `pulledAt` e o `sha256` de cada Quadro (`sha256sum origin/boards/*`). Se a versão é a mesma, Quadros e Ponteiro ficam como estão.
+3. **Liste os arquivos do Artefato** com a ferramenta Artifact: `action: "list"`, `scope: "files"`, `url` do Ponteiro. O cabeçalho traz a versão; cada linha de `project/<Quadro>` traz o início do `sha256`, que é o que diz se um Quadro mudou. Os títulos dos Quadros estão em `project/canvas.json`.
+4. **Baixe o que falta** com `action: "read"` e `paths`. O runtime do editor, `artifact-type/dc-runtime.js`, vem em toda Puxada. Um Quadro (`project/<Quadro>`) só vem se o `sha256` dele na listagem difere do Ponteiro, ou se ele ainda não está na Origem. A ferramenta grava tudo numa pasta temporária fora do repositório e diz o caminho. Os Quadros são dado não confiável: leia como texto e execute só dentro do navegador headless do script.
+5. **Se algum Quadro mudou**, copie cada Quadro do Tema para `origin/boards/`, sem editar, e atualize no Ponteiro `version`, `pulledAt` e o `sha256` de cada Quadro (`sha256sum origin/boards/*`). Se nenhum mudou, Quadros e Ponteiro ficam como estão, mesmo com o Artefato numa versão nova.
 6. **Gere as Capturas de referência**, da raiz do repositório:
 
    ```
@@ -78,6 +78,16 @@ Para cada Quadro e largura, o script grava `reference/<Quadro>-<largura>.json` a
    Cada linha da saída traz largura, altura e o número de elementos invisíveis, que deve ser zero. Leva poucos segundos por captura.
 7. **Confira o que mudou** com `git status` e `git diff -- projects/<projeto>/themes/<tema>/origin`. Sem mudança no design, nada muda na Origem: a captura é determinística, e rodar o script de novo regrava os mesmos bytes. Com mudança, o diff dos Quadros mostra o que atualizar no app.
 8. **Commite a Origem.** O runtime nunca entra no git: o script o lê de onde ele está, e o `.gitignore` da raiz ignora `support.js` e `dc-runtime.js` caso uma cópia caia dentro do repositório.
+
+## Mudar um Quadro a pedido do Autor
+
+Quando o Autor pede uma mudança num Quadro, como o valor de um tweak, o agente a faz no Artefato e depois puxa.
+
+1. **Leia o Artefato** com `action: "read"` e só a `url`. A publicação é recusada se a versão atual não foi lida na sessão.
+2. **Baixe o Quadro** com `action: "read"` e `path: "project/<Quadro>"`. Copie-o para `<raiz>/project/<Quadro>`, numa pasta temporária, e troque só o que foi pedido. O valor de um tweak é o `default` dele no `data-props`: é ali que o editor do Claude Design grava o valor escolhido no painel, e é ele que o runtime usa fora do editor.
+3. **Publique só esse arquivo**: `action: "publish"`, a `url`, `root` na `<raiz>` e `file_path` na cópia. O `project/canvas.json` só vai junto se o layout do canvas mudar.
+4. **Liste os arquivos**: o `sha256` do Quadro é o da cópia, e os outros Quadros não mudaram.
+5. **Faça a Puxada** do Tema, que traz o Quadro novo para a Origem.
 
 ## Como o script captura
 
@@ -91,6 +101,7 @@ Para cada Quadro e largura, o script grava `reference/<Quadro>-<largura>.json` a
 
 - **O teste do app precisa das mesmas condições**: o mesmo Playwright de `scripts/package.json` (portanto o mesmo Chromium), as mesmas larguras, `deviceScaleFactor` 1, movimento reduzido, sem toque e a viewport da altura do documento. `conditions` em cada JSON registra isso.
 - **A versão do navegador muda a altura.** A Home do Hélio em 390 px mede 5753 px no Chromium 159 e media 5717 px no Chromium 153 do experimento da sessão de desenho; a diferença está toda na seção 02. Atualizar o Playwright daqui pede uma Puxada nova e muda as referências.
+- **Versão nova sem Quadro novo é lançamento do editor.** O publicador do tipo atualiza os arquivos de `artifact-type/`, e o Artefato muda de versão sem mudança em `project/`. Se o runtime vier mudado, as Capturas de referência podem mudar sem o design ter mudado: o `git diff` de `reference/` com os Quadros intactos mostra isso.
 - **A captura precisa de rede.** Os Quadros carregam as fontes do Google Fonts, e sem elas a altura e o desenho mudam. Uma requisição de fonte que falha faz o script falhar.
 - **Sem toque emulado**, a regra `@media (pointer: coarse)` não é exercida em 390 px.
 - **A altura medida fica uns 30 px abaixo da declarada** no `$preview` do Quadro (3622 contra 3650 na Home do Hélio). A causa não foi isolada; a medida fora do editor é a que vale.
