@@ -47,8 +47,8 @@ function titleColors(page: Page): Promise<string[]> {
 
 // The colors of the cycle step titles at each stop of a scroll down the page, `step` px at a time, from
 // the first title entering the window until the last one reaches its top. Each jump is instant and waits
-// two frames, as scrollTo does. The whole walk runs in the page, in one call: a call per stop, a hundred
-// round trips, outlasted the test's time on a loaded machine.
+// two frames, as scrollTo does. The whole walk runs in the page, in one call: two calls per stop, over a
+// hundred round trips, outlasted the test's time on a loaded machine.
 function titleColorsOnTheWayDown(page: Page, step: number): Promise<string[][]> {
   return stepTitles(page).evaluateAll(async (titles, gap) => {
     const frames = () =>
