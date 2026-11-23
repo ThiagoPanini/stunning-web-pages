@@ -8,6 +8,8 @@ Tudo o que você precisa está nesta pasta. Nenhum documento depende de link ext
 
 A Home do Hélio no seu projeto, igual às Capturas [`screenshots/home-1440.png`](screenshots/home-1440.png) e [`screenshots/home-390.png`](screenshots/home-390.png). As duas são idênticas, byte a byte, ao design original renderizado num navegador: elas são o alvo.
 
+As Capturas saíram do Chromium do Playwright 1.65.1 (Chromium 159), em Linux, com `deviceScaleFactor` 1, movimento reduzido e sem toque, depois de as fontes carregarem, com a janela da altura do documento e a página inteira na imagem. Nessas condições a sua Home pode bater pixel a pixel com elas. Outro navegador ou outro sistema desenha o texto de outro jeito: aí a comparação é de olho, e uma diferença no texto não quer dizer que a página esteja errada.
+
 A Home está pronta quando:
 
 - Em 1440 e em 390 px de largura, com movimento reduzido, ela mostra o que as Capturas mostram: as mesmas seções na mesma ordem, o mesmo texto e as mesmas cores, tamanhos e espaçamentos.
@@ -23,7 +25,7 @@ Reimplementar fiel é o ponto de partida. O que corrigir no design é decisão d
 
 1. Este arquivo, até o fim.
 2. [`DESIGN.md`](DESIGN.md): o Sistema de design papel por papel (cores, tipografia, layout, formas, movimento, componentes) e as Observações.
-3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor e cada peça isolada, nos seus estados.
+3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor e cada peça isolada, nos seus estados. As Capturas são altas: a da Home em 390 px tem 5.753 px, e a do Sistema de design em 1440 px, 13.092 px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar, ou compare pixel a pixel. Os valores vêm de `globals.css`, não da imagem.
 4. [`web/app/globals.css`](web/app/globals.css): o `@theme` com todos os valores, as duas variantes próprias (`hover` e `narrow`), os keyframes e as utilidades de movimento.
 5. [`web/app/fonts.ts`](web/app/fonts.ts) e a pasta [`web/fonts/`](web/fonts/): as duas fontes, o subconjunto e a licença.
 6. [`web/app/layout.tsx`](web/app/layout.tsx) e [`web/app/page.tsx`](web/app/page.tsx): a Home montada a partir dos blocos.
@@ -32,6 +34,8 @@ Reimplementar fiel é o ponto de partida. O que corrigir no design é decisão d
 Para ver o app rodando, siga [Como rodar](README.md#como-rodar) no README. A rota `/design-system` mostra os estados de hover e foco desenhados lado a lado.
 
 A pasta `origin/` e os testes em `web/tests/` são do Autor: guardam o design cru e comparam o app com ele. Você não precisa deles; o que eles dizem está nas Capturas e nestes documentos.
+
+Os comentários do código usam palavras do Autor. **Quadro** é um arquivo do design original no Claude Design: a Home inteira ou o logo. **Origem** é a pasta `origin/`. O **ADR 0004** citado em `globals.css` é uma decisão do repositório do catálogo, fora desta pasta: reproduzir o design como está, o que o `DESIGN.md` diz em "Nomear sem normalizar" e nas Observações.
 
 ## O que vale manter
 
@@ -106,10 +110,13 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`. Para outro arranjo:
   | `grid-cols-[…]`, `flex-[1_1_0]` | o valor entre colchetes, com `_` no lugar de espaço |
   | `border-t`, `border` | um filete de `1px solid`, na cor da classe `border-*` ao lado |
 
+  As outras classes são utilidades padrão do Tailwind 4, com o CSS da documentação dele. As que o nome não entrega: `antialiased` é `-webkit-font-smoothing: antialiased` com `-moz-osx-font-smoothing: grayscale`, e no Linux não muda o pixel, então as Capturas não conferem a falta dela; `size-4.5` é largura e altura no passo da escala; `-bottom-px` é `bottom: -1px`; `hover:-translate-y-px` é `translate: 0 -1px` no `:hover`.
+
 - **Variantes.** `hover:` é `:hover` em qualquer ponteiro; `narrow:` é `@media (max-width: 760px)`; `pointer-coarse:` é `@media (pointer: coarse)`; `last:` é `:last-child`.
-- **Movimento.** As utilidades de movimento (`enter-*`, `reveal-*`, `slide-from-*`, `light-up-*`, `scroll-progress` e `fade-on-exit`) já são CSS puro em `globals.css`, cada uma com as guardas `@media` e `@supports`. Copie-as como classes, junto com os `@keyframes`.
+- **Movimento.** As utilidades de movimento (`enter-*`, `reveal-*`, `slide-from-*`, `light-up-*`, `scroll-progress` e `fade-on-exit`) estão em `globals.css` como `@utility nome { … }`, com as guardas `@media` e `@supports` aninhadas dentro. Troque `@utility nome` por `.nome`, porque o aninhamento já é CSS nativo, e copie os `@keyframes` junto. Em `scroll-progress`, o `transform: scaleX(0)` fora das guardas é a barra em repouso e vai junto.
 - **Reset.** O app conta com o preflight do Tailwind: margens zeradas; títulos que herdam tamanho e peso; links que herdam a cor, sem sublinhado; `svg` em bloco; e `border-box` em tudo, menos nos quatro elementos `content-box` do Desvio 5. Reproduza essa combinação no seu reset.
-- **Fontes.** Dois `@font-face`, com as famílias "Geist" e "Geist Mono", os arquivos de `web/fonts/`, o eixo de peso de 100 a 900 e o `unicode-range` latin que está em `fonts.ts`.
+- **Fontes.** Dois `@font-face`, com as famílias "Geist" e "Geist Mono", os arquivos de `web/fonts/`, o eixo de peso de 100 a 900, `font-display: swap` e o `unicode-range` latin que está em `fonts.ts`.
+- **Logo.** `eclusa-logo.tsx` vai inteiro, mas traz classes do Tailwind. As seis de cor (`fill-disc`, `stroke-blue`, `stroke-blue-soft`, `stroke-blue-pale`, `stroke-red` e `stroke-subtle`) viram regras com a variável da cor. A do contêiner vira `position: relative; aspect-ratio: 1; width: 100%; overflow: hidden; background-color: var(--color-night)`, e a do `svg`, `position: absolute; top: 0; left: 0; display: block`.
 
 ## Num projeto que já usa Tailwind 4
 
