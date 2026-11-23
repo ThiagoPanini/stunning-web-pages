@@ -45,7 +45,7 @@ const SETTLE_MS = 500;
 
 // pixelmatch's own default: the per-pixel color distance (OKLab HyAB, 0 to 1) below which two pixels are
 // equal. Anti-aliased pixels are detected and ignored.
-const PIXEL_THRESHOLD = 0.1;
+export const PIXEL_THRESHOLD = 0.1;
 
 // Default share of a band's pixels that may differ. First calibration, on the header and hero band with
 // the logo masked: 0 differing pixels at 1440 and at 390 px. Compared byte for byte, the bands differ
