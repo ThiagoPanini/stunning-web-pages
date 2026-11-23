@@ -31,11 +31,6 @@ Um design de um Projeto, com Sistema de design próprio e app próprio. Dois Tem
 _Em código_: `theme`
 _Avoid_: versão, skin, variação, variante
 
-**Versão**:
-A evolução de um mesmo Tema no tempo, de um Ciclo para o outro. Não é a versão de um Artefato nem a de uma dependência, que são o número que a ferramenta ou o pacote dá.
-_Em código_: `version`
-_Avoid_: usar como sinônimo de Tema
-
 **Tela**:
 Uma página de um Tema, como a Home. Um Tema cobre as Telas que tiver, sem obrigação de cobrir todas as do Projeto.
 _Em código_: `screen`
@@ -52,7 +47,7 @@ _Em código_: `handoff`
 _Avoid_: guia de implementação, passo a passo
 
 **Deck**:
-A apresentação de um Tema em HTML de arquivo único: mostra o Tema por Capturas e amostras e defende o layout.
+A apresentação de um Tema em HTML de arquivo único, que só existe quando o Autor a pede: mostra o Tema por Capturas e amostras e defende o layout.
 _Em código_: `presentation`
 _Avoid_: slides, PowerPoint
 

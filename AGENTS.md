@@ -19,13 +19,13 @@ stunning-web-pages/
         ├── HANDOFF.md        o briefing que o Consumidor entrega ao agente dele
         ├── web/              o app: as Telas e a rota /design-system
         ├── screenshots/      Capturas do app
-        ├── presentation.html o Deck
+        ├── presentation.html o Deck, só quando o Autor pede
         └── origin/           a Origem: Quadros crus, Capturas de referência, Ponteiro
 ```
 
 - Cada Tema é autossuficiente: nada nele importa de outro Tema nem da raiz, e código repetido entre Temas é aceito. O framework é um atributo que o Tema declara no README, sem nível de pasta próprio.
 - Não há workspace na raiz. `scripts/` guarda o único código fora dos Temas e carrega as próprias dependências.
-- Cada app fixa versões exatas no próprio manifesto e no próprio lockfile, congeladas na data da implementação. Um Tema antigo só muda num Ciclo novo sobre ele, que gera uma nova Versão. O `mise.toml` da raiz fixa as versões maiores de Node e pnpm com que todo Tema nasce.
+- Cada app fixa versões exatas no próprio manifesto e no próprio lockfile, congeladas na data da implementação. Um Tema só muda num Ciclo sobre ele, e a mudança o sobrescreve: o estado anterior fica só no histórico do git, e a data do README do Tema passa a ser a desse Ciclo. O `mise.toml` da raiz fixa as versões maiores de Node e pnpm com que todo Tema nasce.
 - O `README.md` da raiz indexa todo Projeto e todo Tema; o `README.md` de um Projeto traz a tabela dos Temas dele.
 
 ## O laço com o Claude Design
@@ -44,8 +44,7 @@ O app reproduz o design como ele está. Corrigir o design cabe ao Autor, no Clau
 - **Nomear sem normalizar.** Cada valor do design ganha um token próprio, com o nome como foi achado; valores parecidos ficam separados. O que parecer inconsistência vira uma Observação no `DESIGN.md`.
 - **Manter as Lacunas.** Um espaço reservado de mídia continua espaço reservado, e um link para uma Tela que não existe continua inerte. O `HANDOFF.md` as lista.
 - **Texto de interface como foi escrito**, com os espaços reservados como `[NOME DA COMPANHIA]`.
-- **Um logo por Tema.** O app reproduz um logo; as outras variantes de logo ficam no Artefato.
-- **Só os Quadros que formam o Tema.** `origin/` guarda os Quadros das Telas do Tema e dos componentes que elas desenham, como o Quadro do logo, mesmo quando o Artefato arquiva esse Quadro entre os laboratórios. O que não forma o Tema fica no Artefato: o briefing de um logo, o resto de um laboratório, as outras variantes de logo e os Quadros de comparação. Nada disso vira Tela do app.
+- **Só os Quadros que formam o Tema.** `origin/` guarda os Quadros das Telas do Tema e dos componentes que elas desenham, mesmo os que o Artefato arquiva entre os laboratórios. Todo o resto fica no Artefato, sem virar Tela do app.
 - **A fidelidade é medida** contra as Capturas de referência. As capturas do app são tiradas nas mesmas condições da Puxada: o mesmo navegador, 1440 e 390 px de largura, movimento reduzido e viewport da altura do documento.
 
 ## Tema pronto
@@ -56,7 +55,6 @@ Um Tema está pronto, e o agente mescla o Ciclo sozinho, quando tudo isto vale:
 - O app compila e o teste passa.
 - `README.md`, `DESIGN.md` e `HANDOFF.md` estão escritos.
 - As Capturas do app estão guardadas em `screenshots/`.
-- O Deck existe.
 - O Sistema de design foi publicado.
 - Os índices do Projeto e da raiz listam o Tema.
 
