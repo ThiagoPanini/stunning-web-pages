@@ -2,6 +2,7 @@ import { BrandMark } from "./brand-mark";
 import { ButtonLink } from "./button-link";
 import { NavLink } from "./nav-link";
 import { NavPill } from "./nav-pill";
+import { ScrollProgress } from "./scroll-progress";
 
 // Screens the design does not have yet: their links stay inert.
 const otherScreens = ["Dados", "Playground", "Integrações"];
@@ -37,10 +38,7 @@ export function SiteHeader() {
           <ButtonLink variant="header">Testar um guardrail</ButtonLink>
         </div>
       </div>
-      <div
-        aria-hidden="true"
-        className="scroll-progress absolute inset-x-0 -bottom-px h-0.5 bg-cream"
-      />
+      <ScrollProgress />
     </header>
   );
 }
