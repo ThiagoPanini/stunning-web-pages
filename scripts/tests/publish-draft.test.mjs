@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildIndex, readSource } from '../publish.mjs';
+import { buildIndex, readDraft } from '../publish.mjs';
 import { tempDir, writeTree } from './fixtures.mjs';
 
 const THEME = { title: 'demo-portal · Aurora', namespace: 'Aurora' };
 const LAST_CHANGE = { by: 'Ana', at: '2026-11-23T10:00:00Z', via: 'GitHub · owner/repo@abc1234', note: 'New colors.' };
 
-test('the source lists its components in the order tokens.json records, then the new ones by name', () => {
+test('the draft lists its components in the order tokens.json records, then the new ones by name', () => {
   const dir = writeTree(tempDir(), {
     'project/README.md': 'Brand book.\n',
     'project/tokens.json': JSON.stringify({ meta: { components: { Card: 'components/card.tsx', Badge: 'x' } } }),
@@ -18,23 +18,23 @@ test('the source lists its components in the order tokens.json records, then the
     'project/components/Cover/preview.html': '<!-- @dsCard height=288 -->\n<p>cover</p>\n',
     'project/assets/Licenses/README.md': '# Licenças\n',
   });
-  const source = readSource(dir);
+  const draft = readDraft(dir);
   assert.deepEqual(
-    source.components.map(({ name, group }) => ({ name, group })),
+    draft.components.map(({ name, group }) => ({ name, group })),
     [
       { name: 'Card', group: undefined },
       { name: 'Badge', group: 'Marca' },
       { name: 'Alert', group: undefined },
     ],
   );
-  assert.equal(source.components[1].readme, '# Badge\n\nA badge.\n');
-  assert.equal(source.cover, '<!-- @dsCard height=288 -->\n<p>cover</p>\n');
-  assert.equal(source.readme, 'Brand book.\n');
-  assert.deepEqual(source.assets, ['assets/Licenses/README.md']);
-  assert.equal(source.index, undefined);
+  assert.equal(draft.components[1].readme, '# Badge\n\nA badge.\n');
+  assert.equal(draft.cover, '<!-- @dsCard height=288 -->\n<p>cover</p>\n');
+  assert.equal(draft.readme, 'Brand book.\n');
+  assert.deepEqual(draft.assets, ['assets/Licenses/README.md']);
+  assert.equal(draft.index, undefined);
 });
 
-test('what the build does not make is kept from the source, except fonts the app no longer has', () => {
+test('what the build does not make is kept from the draft, except fonts the app no longer has', () => {
   const dir = writeTree(tempDir(), {
     'project/README.md': 'Brand book.\n',
     'project/tokens.json': '{}',
@@ -45,12 +45,12 @@ test('what the build does not make is kept from the source, except fonts the app
     'project/archived/README.md': 'old\n',
   });
   const built = new Set(['README.md', 'tokens.json', 'components/Card/README.md', 'components/Card/preview.html']);
-  assert.deepEqual(readSource(dir).keep(built), ['archived/README.md', 'components/Card/Card.d.ts', 'voice.md']);
+  assert.deepEqual(readDraft(dir).keep(built), ['archived/README.md', 'components/Card/Card.d.ts', 'voice.md']);
 });
 
-test('a source without the brand book or tokens.json is refused', () => {
-  assert.throws(() => readSource(writeTree(tempDir(), { 'project/tokens.json': '{}' })), /project\/README\.md/);
-  assert.throws(() => readSource(writeTree(tempDir(), { 'project/README.md': 'x' })), /project\/tokens\.json/);
+test('a draft without the brand book or tokens.json is refused', () => {
+  assert.throws(() => readDraft(writeTree(tempDir(), { 'project/tokens.json': '{}' })), /project\/README\.md/);
+  assert.throws(() => readDraft(writeTree(tempDir(), { 'project/README.md': 'x' })), /project\/tokens\.json/);
 });
 
 test('a new publication keeps every key of the index read back and changes title, namespace and lastChange', () => {
