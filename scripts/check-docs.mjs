@@ -15,7 +15,7 @@ import { readTheme } from './theme.mjs';
 const ARTIFACT_ADDRESS = /claude\.ai\/(?:code\/)?artifacts?\//i;
 
 // GitHub's anchor for a heading: lowercase, punctuation dropped except hyphens, spaces to hyphens.
-function slug(heading) {
+function githubAnchor(heading) {
   return heading
     .trim()
     .toLowerCase()
@@ -28,7 +28,7 @@ function anchors(markdown) {
   let inFence = false;
   for (const line of markdown.split('\n')) {
     if (line.startsWith('```')) inFence = !inFence;
-    if (!inFence && /^#{1,6} /.test(line)) found.add(slug(line.replace(/^#+ /, '').replaceAll('`', '')));
+    if (!inFence && /^#{1,6} /.test(line)) found.add(githubAnchor(line.replace(/^#+ /, '').replaceAll('`', '')));
   }
   return found;
 }

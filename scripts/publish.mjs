@@ -599,7 +599,7 @@ export async function build({ themeDir, draftDir, outDir, note, ref }) {
     source: 'github',
     repo: info.repo,
     ref: label,
-    package: theme.package,
+    package: theme.appPath,
     paths: { tokens: ['app/globals.css'], fonts: [...faces.map((f) => f.file), 'app/fonts.ts'], docs: ['../DESIGN.md'] },
     components: Object.fromEntries(draft.components.map(({ name }) => [name, `components/${files.get(name)}`])),
     synced: new Date().toLocaleDateString('sv-SE'),
