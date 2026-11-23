@@ -25,7 +25,7 @@ Reimplementar fiel é o ponto de partida. O que corrigir no design é decisão d
 
 1. Este arquivo, até o fim.
 2. [`DESIGN.md`](DESIGN.md): o Sistema de design papel por papel (cores, tipografia, layout, formas, movimento, componentes) e as Observações.
-3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor e cada peça isolada, nos seus estados. As Capturas são altas: a da Home em 390 px tem 5.753 px, e a do Sistema de design em 1440 px, 13.092 px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar, ou compare pixel a pixel. Os valores vêm de `globals.css`, não da imagem.
+3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor e cada peça isolada, nos seus estados. As Capturas são altas: a da Home em 390 px tem 5.753 px, e a do Sistema de design em 1440 px, 15.027 px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar, ou compare pixel a pixel. Os valores vêm de `globals.css`, não da imagem.
 4. [`web/app/globals.css`](web/app/globals.css): o `@theme` com todos os valores, as duas variantes próprias (`hover` e `narrow`), os keyframes e as utilidades de movimento.
 5. [`web/app/fonts.ts`](web/app/fonts.ts) e a pasta [`web/fonts/`](web/fonts/): as duas fontes, o subconjunto e a licença.
 6. [`web/app/layout.tsx`](web/app/layout.tsx) e [`web/app/page.tsx`](web/app/page.tsx): a Home montada a partir dos blocos.
@@ -107,7 +107,9 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`. Para outro arranjo:
   | `rounded-16`, `shadow-glow`, `backdrop-blur-16` | `border-radius`, `box-shadow` e `backdrop-filter: blur(…)` com o token |
   | `px-gutter`, `p-card`, `max-w-page` | `padding-inline: var(--spacing-gutter)`, `padding: var(--spacing-card)`, `max-width: var(--container-page)` |
   | `gap-2.5`, `py-24`, `basis-120` | um passo da escala: `calc(var(--spacing) * 2.5)` e assim por diante |
-  | `grid-cols-[…]`, `flex-[1_1_0]` | o valor entre colchetes, com `_` no lugar de espaço |
+  | `grid-cols-mission`, `grid-cols-teams` | `grid-template-columns: var(--grid-template-columns-…)` |
+  | `grow-(--grow-120)`, `grow-3` | `flex-grow` com a variável entre parênteses, ou com o número |
+  | `flex-[1_1_0]`, `border-[1.5px]` | o valor entre colchetes, com `_` no lugar de espaço |
   | `border-t`, `border` | um filete de `1px solid`, na cor da classe `border-*` ao lado |
 
   As outras classes são utilidades padrão do Tailwind 4, com o CSS da documentação dele. As que o nome não entrega: `antialiased` é `-webkit-font-smoothing: antialiased` com `-moz-osx-font-smoothing: grayscale`, e no Linux não muda o pixel, então as Capturas não conferem a falta dela; `size-4.5` é largura e altura no passo da escala; `-bottom-px` é `bottom: -1px`; `hover:-translate-y-px` é `translate: 0 -1px` no `:hover`.

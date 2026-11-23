@@ -53,6 +53,7 @@ Depois da instalação, o app não precisa de rede: as fontes estão dentro dele
 | `pnpm lint` | confere lint e formatação com o Biome |
 | `pnpm typecheck` | gera os tipos das rotas e confere os tipos |
 | `pnpm test` | faz o build e roda o teste do Playwright |
+| `pnpm test --update-snapshots` | faz o mesmo e regrava as Capturas de `screenshots/` que mudaram |
 
 ## Teste e fidelidade
 
@@ -62,7 +63,7 @@ Antes do primeiro `pnpm test`, instale o navegador da versão fixada: `pnpm exec
 - **O limite é nenhum pixel diferente**, com limiar por pixel de 0,02 do `pixelmatch`. A razão está junto de `MAX_DIFF_PIXEL_RATIO`, em [`web/tests/support/reference.ts`](web/tests/support/reference.ts).
 - **O logo isolado tem outro limiar.** [`web/tests/logo.spec.ts`](web/tests/logo.spec.ts) compara duas renderizações diferentes, o design do logo sozinho e o logo recortado da Home, cujas bordas diferem alguns níveis; por isso ele usa o limiar 0,1, com a razão ao lado. As cores do logo ficam conferidas pela Home inteira.
 - **A comparação só vale no Chromium do Playwright fixado, em Linux**, onde as referências foram tiradas. Outro navegador ou outro sistema desenha o texto de outro jeito, e a comparação falha sem que a página esteja errada.
-- **Cada comparação verde regrava a sua Captura** em `screenshots/`, a da Home e a do Sistema de design. Como elas batem byte a byte, o arquivo só muda quando a página muda. Uma comparação vermelha não grava.
+- **O teste não grava nada no repositório.** Ele confere que cada Captura de `screenshots/`, a da Home e a do Sistema de design, é byte a byte o que o app desenha agora, e falha se não for. Depois de mudar a página de propósito, regrave as Capturas com `pnpm test --update-snapshots`, que só reescreve as que mudaram; a da Home só é gravada depois de bater com a Captura de referência.
 
 ## Mapa da pasta
 

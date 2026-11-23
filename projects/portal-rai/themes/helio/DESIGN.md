@@ -4,7 +4,7 @@ O Hélio é um Tema do Projeto `portal-rai`: a Home do portal de um time de Resp
 
 Os valores não estão aqui. A única fonte deles é o bloco `@theme` de [`web/app/globals.css`](web/app/globals.css), e este documento cita cada token pelo nome da variável. Para ver os valores desenhados, abra a rota `/design-system` do app (como rodar está no [README](README.md#como-rodar)) ou as Capturas dela: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) e [`screenshots/design-system-390.png`](screenshots/design-system-390.png).
 
-**Como ler os nomes.** A classe do Tailwind é o nome do token sem o prefixo do namespace: `--color-night` dá `bg-night`, `text-night` e `border-night`; `--text-15` dá `text-15`; `--radius-16` dá `rounded-16`; `--spacing-gutter` dá `px-gutter`. Uma cor ou um comprimento de um papel só leva o nome do papel (`--color-night`, `--spacing-gutter`). Um valor de escala leva o nome do valor: `--text-15` é o tamanho de 15 px, `--text-36-80` cresce de 36 a 80 px, `--leading-160` é a altura de linha 1,6, `--tracking-tight-35` é o espaçamento de 35 milésimos de em negativos.
+**Como ler os nomes.** A classe do Tailwind é o nome do token sem o prefixo do namespace: `--color-night` dá `bg-night`, `text-night` e `border-night`; `--text-15` dá `text-15`; `--radius-16` dá `rounded-16`; `--spacing-gutter` dá `px-gutter`; `--grid-template-columns-mission` dá `grid-cols-mission`. O crescimento flexível não tem namespace no Tailwind: `--grow-120` entra pela classe `grow-(--grow-120)`. Uma cor ou um comprimento de um papel só leva o nome do papel (`--color-night`, `--spacing-gutter`). Um valor de escala leva o nome do valor: `--text-15` é o tamanho de 15 px, `--text-36-80` cresce de 36 a 80 px, `--leading-160` é a altura de linha 1,6, `--tracking-tight-35` é o espaçamento de 35 milésimos de em negativos, `--grow-120` é o crescimento 1,2.
 
 **Nomear sem normalizar.** Cada valor do design tem o seu token, com o nome do valor como ele foi achado, e valores parecidos não foram fundidos. O que parece inconsistente está em [Observações](#observações), para você decidir o que corrigir no seu projeto.
 
@@ -97,14 +97,14 @@ Os tamanhos fixos são nomeados em px. Os fluidos, de `--text-22-30` a `--text-3
 | Legenda do logo e palavra ao lado das soluções | mono | `--text-12` | normal | | |
 | Selos RED e BLUE | mono | `--text-11` | normal | | `--tracking-wide-80` |
 
-Os rótulos de seção seguem o formato "01 · Missão", com o número de dois dígitos e um ponto médio.
+Os rótulos de seção seguem o formato "01 · Missão", com o número de dois dígitos e um ponto médio. O sobretítulo da abertura e os rótulos de seção são o mesmo componente, `SectionLabel`.
 
 ## Layout
 
 - **Largura.** O conteúdo mede no máximo `--container-page`, centrado, com `--spacing-gutter` de respiro de cada lado. O contêiner do cabeçalho, o `main` e o rodapé usam `content-box`: a largura máxima é a do conteúdo, e o respiro fica por fora dela.
 - **Espaçamento.** É a escala do Tailwind, sobre a base `--spacing`: todo comprimento fixo do design é um passo dela (`gap-2.5`, `p-0.75`, `py-24`). Dois espaçamentos fluidos têm nome: `--spacing-gutter`, o respiro lateral da página, e `--spacing-card`, o padding dos cartões dos times.
 - **Ritmo das seções.** Cada seção numerada abre com um filete `--color-rule` no topo e tem o mesmo padding vertical (`py-24`; o Comece fecha com `pb-26`). Dentro dela vêm o rótulo mono, o título e o parágrafo que abre a seção.
-- **Colunas que quebram sozinhas.** A página responde pela largura intrínseca dos blocos, com `flex-wrap` e grades `auto-fit`, sem quebra por largura de janela. A abertura tem duas colunas que empilham quando não cabem. As colunas da Missão têm no mínimo 260 px, os cartões dos Times no mínimo 440 px, e as linhas das soluções e as colunas do Comece quebram pela base de cada parte.
+- **Colunas que quebram sozinhas.** A página responde pela largura intrínseca dos blocos, com `flex-wrap` e grades `auto-fit`, sem quebra por largura de janela. A abertura tem duas colunas que empilham quando não cabem. As grades da Missão e dos Times, `--grid-template-columns-mission` e `--grid-template-columns-teams`, põem quantas colunas couberem, cada uma com no mínimo 260 px na Missão e 440 px nos Times, e uma coluna só quando nem isso cabe. As linhas das soluções e as colunas do Comece quebram pela base de cada parte. Nas linhas das soluções, o nome cresce `--grow-120` e a descrição `--grow-160`, os dois únicos fatores de crescimento da página que não são números inteiros; os inteiros são as classes do próprio Tailwind (`grow`, `grow-2`, `grow-3`).
 - **Uma quebra só: `narrow`**, a 760 px ou menos, declarada como `@custom-variant` em `globals.css`, fora do `@theme`. Nela o cabeçalho deixa de ser fixo e a navegação ganha uma linha própria, que rola de lado.
 - **Ponteiro grosso.** Com `pointer-coarse:`, os links da navegação crescem para 44 px de altura. Os outros alvos de toque já têm 44 px de altura mínima: marca, botões, links de texto e links do rodapé.
 - **Camadas.** O cabeçalho fica por cima da página, com `--color-header` sob o desfoque `--blur-16`. A barra de progresso, em `--color-bright`, corre na borda de baixo dele.
@@ -122,6 +122,7 @@ Os rótulos de seção seguem o formato "01 · Missão", com o número de dois d
 - **Filetes** de 1 px separam tudo: `--color-rule` em seções, cartões e painéis; `--color-rule-strong` no topo das colunas da Missão e, pontilhado, entre o passo e o resultado no painel do Red Team.
 - **Profundidade.** A página é plana. Há uma sombra só, `--shadow-glow`, no botão claro em hover, e um desfoque só, `--blur-16`, no cabeçalho. Os cartões se separam do fundo pela cor (`--color-surface` sobre `--color-night`) e pelo filete.
 - **Marca.** Um anel com um ponto no centro, em duas versões: a do cabeçalho, em `--color-bright`, e a do rodapé, menor, em `--color-muted`.
+- **Foco.** O foco de teclado (`:focus-visible`) desenha em links, botões e campos um anel de espessura `--outline-width-focus` em `--color-blue`, afastado `--outline-offset-focus` do elemento. É a única regra global do app, em `@layer base` de `globals.css`.
 
 ## Movimento
 
@@ -141,8 +142,6 @@ As animações guiadas por scroll usam `--duration-timeline`, que só existe por
 
 O logo Eclusa anima por `requestAnimationFrame`, a 85 ms por quadro contados do relógio. O desenho é função pura do quadro: o mesmo quadro desenha sempre a mesma imagem. Com movimento reduzido, ou com `animated={false}`, ele fica no quadro de partida.
 
-O foco de teclado (`:focus-visible`) desenha em links, botões e campos um anel de 2 px em `--color-blue`, afastado 3 px.
-
 ## Componentes
 
 Os componentes ficam em [`web/components/`](web/components/), um por arquivo. Os sete blocos da página, marcados com `data-block`, compõem a Home em [`web/app/page.tsx`](web/app/page.tsx). As peças que eles usam aparecem isoladas, nos seus estados, na rota `/design-system`. Cada peça importa só `react` e as peças irmãs, e o estilo dela são classes de token.
@@ -150,14 +149,14 @@ Os componentes ficam em [`web/components/`](web/components/), um por arquivo. Os
 | Bloco | Arquivo | Peças que usa |
 |---|---|---|
 | `SiteHeader` | `site-header.tsx` | `BrandMark`, `NavPill`, `NavLink`, `ButtonLink` |
-| `Hero` | `hero.tsx` | `ButtonLink`, `TextLink`, `EclusaLogo`, `EclusaCaption` |
-| `Mission` | `mission.tsx` | nenhuma; as colunas estão no próprio arquivo |
-| `Teams` | `teams.tsx` | `TeamCard`, `TerminalPanel` e as linhas dele |
-| `Solutions` | `solutions.tsx` | `TeamBadge` |
-| `Start` | `start.tsx` | `ButtonLink`, `TextLink`, `ApiCallCard` |
+| `Hero` | `hero.tsx` | `SectionLabel`, `ButtonLink`, `TextLink`, `EclusaLogo`, `EclusaCaption` |
+| `Mission` | `mission.tsx` | `SectionLabel`, `MissionColumn` |
+| `Teams` | `teams.tsx` | `SectionLabel`, `TeamCard`, `TerminalPanel` e as linhas dele |
+| `Solutions` | `solutions.tsx` | `SectionLabel`, `TeamBadge` |
+| `Start` | `start.tsx` | `SectionLabel`, `ButtonLink`, `TextLink`, `ApiCallCard` |
 | `SiteFooter` | `site-footer.tsx` | `BrandMark`, `FooterLink` |
 
-O rótulo mono de cada seção ("01 · Missão") está escrito dentro do bloco, com as mesmas classes do sobretítulo da abertura.
+O texto da Home fica nos blocos. `mission.tsx` e `teams.tsx` também exportam o texto das colunas, dos cartões e dos painéis, e os dois painéis prontos (`RedTeamPanel` e `BlueTeamPanel`), para a rota `/design-system` mostrar as peças com o mesmo texto da Home.
 
 | Peça | Arquivo | Propriedades | Estados |
 |---|---|---|---|
@@ -170,12 +169,14 @@ O rótulo mono de cada seção ("01 · Missão") está escrito dentro do bloco, 
 | `InertLink` | `inert-link.tsx` | os de um `<a>`, menos `href` | repouso, foco; é o link de uma Lacuna, que não navega |
 | `EclusaLogo` | `eclusa-logo.tsx` | `background?`, qualquer cor CSS; `animated?`, padrão `true`; `frame?`, o quadro de partida (0 escolhe o de repouso) | animado, parado |
 | `EclusaCaption` | `eclusa-caption.tsx` | nenhuma | |
+| `SectionLabel` | `section-label.tsx` | `children`, o rótulo; `className?`, para o movimento de entrada | seção, abertura |
+| `MissionColumn` | `mission-column.tsx` | `title`, o passo; `children`, o texto; `className?`, para a subida escalonada | |
 | `TeamCard` | `team-card.tsx` | `team`: `red` ou `blue`; `stance`, `title`, `description`; `children`, o que fecha o cartão; `className?`, para o movimento de entrada | red, blue |
 | `TerminalPanel` | `terminal-panel.tsx` | `children`, as linhas | |
 | `TerminalNote` | `terminal-panel.tsx` | `children` | |
 | `TerminalLeaderRow` | `terminal-panel.tsx` | `step`, `outcome`, `tone?`: `red`, `blue` ou `subtle` | sem tom e com cada tom |
 | `TerminalStageRow` | `terminal-panel.tsx` | `stage`, `tone?`, `children` | sem tom e com cada tom |
-| `TeamBadge` | `team-badge.tsx` | `team`: `red` ou `blue` | red, blue |
+| `TeamBadge` | `team-badge.tsx` | `team`: `red` ou `blue`, o tipo `Team`, que as soluções também usam | red, blue |
 | `ApiCallCard` | `api-call-card.tsx` | `className?` | |
 
 **O logo Eclusa** é SVG puro, sem fonte. O disco no centro é o agente conversacional, e o anel de 24 segmentos azuis é o perímetro de guardrails. Os ataques, cruzes vermelhas, chegam de fora; os segmentos se armam, recebem o impacto, e a cruz se desfaz em dois traços. As respostas válidas, anéis cinza, saem por uma porta que os segmentos abrem; as inválidas, anéis vermelhos cortados, são barradas por dentro. A legenda (`EclusaCaption`) dá nome às três marcas: ataque, guardrails e agente.
@@ -187,7 +188,7 @@ Fazer:
 - Usar só os tokens do `@theme`. Um valor novo entra lá primeiro, com nome.
 - Dar matiz só com sentido: vermelho para ataque e Red Team, azul para guardrail, Blue Team e foco.
 - Escrever títulos em `--font-weight-light`, com a altura de linha e o espaçamento entre letras do papel deles.
-- Abrir cada seção com o rótulo mono em caixa alta, `--tracking-wide-80` e `--color-subtle`, no formato "01 · Missão".
+- Abrir cada seção com o `SectionLabel`, o rótulo mono em caixa alta, `--tracking-wide-80` e `--color-subtle`, no formato "01 · Missão".
 - Separar seções e cartões por filete e por superfície.
 - Mostrar o estado final quando o movimento é reduzido ou quando o navegador não tem linha do tempo de scroll.
 - Manter os alvos de toque de 44 px e o anel de foco azul.
