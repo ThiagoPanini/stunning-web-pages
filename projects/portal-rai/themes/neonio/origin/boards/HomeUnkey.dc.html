@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Responsible AI · Home · Unkey</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#040406}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+.uk *,.uk *::before,.uk *::after{box-sizing:border-box}
+:where(.uk) a{color:inherit;text-decoration:none}
+.uk :focus-visible{outline:2px solid #ffffff;outline-offset:2px}
+.uk-navlink{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;color:#040406;transition:background-color .15s}
+.uk-navlink:hover{background:#e6e7ec}
+.uk .uk-navlink:focus-visible,.uk .uk-brand:focus-visible{outline-color:#040406;outline-offset:-4px}
+.uk-wblock{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;background:#ffffff;color:#040406;font-size:14px;font-weight:500;white-space:nowrap;transition:background-color .15s}
+.uk-wblock:hover{background:#dcdde3}
+.uk-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 20px;font-size:16px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap;transition:background-color .15s,color .15s}
+.uk-btn-w{background:#ffffff;color:#040406}
+.uk-btn-w:hover{background:#dcdde3}
+.uk-btn-o{border:1px solid #ffffff;color:#ffffff}
+.uk-btn-o:hover{background:rgba(255,255,255,.1)}
+.uk-eyebrow{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;width:fit-content;padding:7px 12px;border:1px solid #2e3038;border-radius:6px;font:400 14px/20px 'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;letter-spacing:.03em;text-transform:uppercase;color:#ffffff;white-space:nowrap}
+.uk-neon{position:relative;display:inline-block;flex:0 0 10px;width:10px;height:10px}
+.uk-neon i{position:absolute;inset:0;border-radius:2px;background:#bf8bff}
+.uk-neon i:nth-child(1){filter:blur(5px);background:#7b2cff}
+.uk-neon i:nth-child(2){filter:blur(2px)}
+.uk-neon-s{flex-basis:8px;width:8px;height:8px}
+.uk-neon-s i:nth-child(1){filter:blur(4px)}
+.uk-neon-red i{background:#ff6a4d}
+.uk-neon-red i:nth-child(1){background:#e8341c}
+.uk-neon-blu i{background:#4d94ff}
+.uk-neon-blu i:nth-child(1){background:#1560f0}
+.uk-h2{margin:0;font-family:'Inter Tight','Inter',system-ui,sans-serif;font-weight:300;font-size:clamp(32px,3.4vw,48px);line-height:1.12;letter-spacing:-0.02em;color:#ffffff;text-wrap:balance}
+.uk-lead{margin:0;font-size:16px;line-height:1.4;color:#9194a1;text-wrap:pretty}
+.uk-mono{font-family:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+.uk-hero-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,600px);align-items:end;gap:40px 48px}
+.uk-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 24px;font:400 12px/1 'JetBrains Mono',ui-monospace,monospace;color:#9194a1;white-space:nowrap}
+.uk-legend span{display:inline-flex;align-items:center;gap:8px}
+.uk-brands-vp{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}
+.uk-brands-track{display:flex;width:max-content;animation:uk-marquee 44s linear infinite}
+.uk-brands-vp:hover .uk-brands-track{animation-play-state:paused}
+.uk-brands-set{display:flex;align-items:center;gap:88px;margin:0;padding:0 88px 0 0;list-style:none}
+.uk-brand-i{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-family:'Inter Tight','Inter',system-ui,sans-serif;font-size:19px;font-weight:500;letter-spacing:-0.02em;color:#9194a1;white-space:nowrap}
+.uk-brand-i svg{flex:0 0 auto;display:block}
+@keyframes uk-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.uk-teams{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:#2e3038;border-top:1px solid #2e3038;border-bottom:1px solid #2e3038}
+.uk-team-g{display:flex;flex-direction:column;background:#040406;min-width:0}
+.uk-team-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;min-height:48px;padding:12px 32px;border-bottom:1px solid #2e3038;font:400 12px/1.3 'JetBrains Mono',ui-monospace,monospace;color:#80838f}
+.uk-team-n{letter-spacing:.06em;text-transform:uppercase;color:#c7c9d1}
+.uk-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin:0;padding:0;list-style:none;background:#2e3038;flex:1 1 auto}
+.uk-card{display:flex;flex-direction:column;min-height:380px;padding:26px 32px 24px;background:#040406;min-width:0}
+.uk-card h3{margin:0;font:400 15px/1.25 'JetBrains Mono',ui-monospace,monospace;color:#80838f}
+.uk-mini{position:relative;width:100%;aspect-ratio:324 / 255;margin-top:4px;font-family:'JetBrains Mono',ui-monospace,monospace;color:#80838f}
+.uk-cap{margin:32px 0 0;margin-top:auto;padding-top:28px;font-size:16px;line-height:22px;color:#c7c9d1;text-wrap:pretty}
+.uk-cap strong{font-weight:500;color:#ffffff}
+.uk-br-chip{position:absolute;display:inline-flex;align-items:center;height:19px;padding:0 6px;background:#040406;border:1px solid #80838f;font-size:10.5px;line-height:1;color:#9194a1;white-space:nowrap}
+.uk-br-l{position:absolute;border:0 solid #464853}
+.uk-dot{position:absolute;width:7px;height:7px;margin:-3px 0 0 -3px;border-radius:50%;background:#ff5b3d}
+.uk-krow{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.55fr) minmax(0,.85fr);gap:8px;align-items:center;height:26px;padding:0 6px;font-size:11.5px;color:#80838f;white-space:nowrap}
+.uk-krow>span{overflow:hidden;text-overflow:ellipsis}
+.uk-krow-on{background:#3d8bff;color:#040406}
+.uk-hbar{position:relative;flex:1 1 0;background:repeating-linear-gradient(180deg,#2e3038 0 1px,transparent 1px 4px);border-top:1px solid #3a3c45}
+.uk-hbar-on{background:linear-gradient(180deg,#ff6a4d 0%,#c42f17 100%);border-top-color:#ff8a73}
+.uk-sq-o{position:absolute;border:1px solid #2e3038}
+.uk-sq-b{position:absolute;border:1px solid #3d8bff}
+.uk-corner{position:absolute;width:5px;height:5px;margin:-2px 0 0 -2px;background:#3d8bff}
+.uk-handle{position:absolute;width:9px;height:9px;margin:-4px 0 0 -4px;background:#040406;border:1px solid #80838f}
+.uk-tabsbar{position:sticky;top:54px;z-index:25;background:#040406}
+.uk-tabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(136px,1fr);gap:1px;margin:0;padding:0;list-style:none;background:#2e3038;border-top:1px solid #2e3038;border-bottom:1px solid #2e3038;overflow-x:auto;scrollbar-width:none}
+.uk-tabs li{display:flex;background:#040406}
+.uk-tab{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:10px;min-height:63px;padding:0 16px;color:#9194a1;font-size:18px;letter-spacing:-0.01em;white-space:nowrap;transition:color .15s,background-color .15s}
+.uk-tab svg{flex:0 0 auto;display:block;opacity:.85}
+.uk-tab:hover{color:#ffffff}
+.uk-tab.is-on{background:#121317;color:#ffffff}
+.uk .uk-tab:focus-visible{outline-offset:-4px}
+.uk-step{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));min-height:566px;border-bottom:1px solid #2e3038;scroll-margin-top:118px}
+.uk-ptext{display:flex;flex-direction:column;justify-content:center;gap:22px;padding:clamp(40px,6.6vw,96px) clamp(24px,4vw,64px)}
+.uk-steplabel{display:inline-flex;align-items:center;gap:10px;font:400 12px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.04em;text-transform:uppercase;color:#9194a1}
+.uk-ptitle{margin:0;font-size:28px;line-height:1.14;font-weight:400;letter-spacing:-0.02em;color:#ffffff;text-wrap:balance}
+.uk-ptitle span{display:block;color:#9194a1}
+.uk-hatch{height:48px;border-bottom:1px solid #2e3038;background:repeating-linear-gradient(135deg,#2e3038 0 1px,transparent 1px 9px)}
+.uk-ph{position:relative;display:grid;place-items:center;overflow:hidden;background:#0b0c10;border:1px solid #1c1d23;border-radius:6px}
+.uk-ph-mark{font:500 11px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:#464853;white-space:nowrap;pointer-events:none;user-select:none}
+.uk-step .uk-ph{border:0;border-left:1px solid #2e3038;border-radius:0}
+.uk-bento{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#2e3038;border-top:1px solid #2e3038;border-bottom:1px solid #2e3038}
+.uk-bento-tall{grid-row:span 2}
+.uk-bcard{display:flex;flex-direction:column;gap:24px;padding:28px 28px 30px;background:#040406;min-width:0}
+.uk-bcard .uk-cap{margin:0;padding:0;min-height:66px}
+.uk-chart{position:relative;display:flex;align-items:flex-end;gap:clamp(4px,.9vw,12px);height:320px;padding:0 clamp(20px,2.4vw,32px);background:repeating-linear-gradient(0deg,#15161b 0 1px,transparent 1px 24px);border-bottom:1px solid #2e3038}
+.uk-bar{position:relative;flex:1 1 0;display:flex;flex-direction:column;justify-content:flex-start;background:linear-gradient(180deg,#25262d 0%,#111216 100%);border-top:1px solid #3a3c45}
+.uk-seg{flex:0 0 22px;background:#e2ebb4}
+.uk-seg-hot{background:#d9f24a}
+.uk-feat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px 56px}
+.uk-feat .uk-cap{margin:0;padding:0;color:#9194a1}
+.uk-foot a{color:#9194a1;transition:color .15s}
+.uk-foot a:hover{color:#ffffff}
+.uk-flink{display:inline-flex;align-items:center;min-height:44px}
+@media (max-width:1100px){.uk-teams{grid-template-columns:minmax(0,1fr)}.uk-bento{grid-template-columns:repeat(2,minmax(0,1fr))}.uk-bento-tall{grid-column:1 / -1;grid-row:auto}}
+@media (max-width:900px){.uk-hero-g{grid-template-columns:minmax(0,1fr)}.uk-hero-logo{order:-1;width:100%;max-width:520px;justify-self:center}.uk-step{grid-template-columns:minmax(0,1fr)}.uk-step .uk-ph{min-height:300px;border-left:0;border-top:1px solid #2e3038}}
+@media (max-width:760px){.uk-hdr{position:relative !important}.uk-tabsbar{top:0}.uk-step{scroll-margin-top:64px}.uk-feat{grid-template-columns:minmax(0,1fr)}.uk-eyebrow{font-size:13px}}
+@media (max-width:640px){.uk-g2,.uk-bento{grid-template-columns:minmax(0,1fr)}.uk-team-h{padding:12px 20px}.uk-card{padding:24px 20px}}
+@media (prefers-reduced-motion:reduce){.uk-brands-track{animation:none}.uk *{transition:none !important}}
+</style>
+</helmet>
+<div id="topo" class="uk" style="position: relative; overflow-x: clip; background: #040406; color: #e3e4e9; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 16px; line-height: 1.375; letter-spacing: -0.01em; -webkit-font-smoothing: antialiased">
+
+<header class="uk-hdr" style="position: sticky; top: 0; z-index: 30; padding: 10px clamp(16px, 2.8vw, 40px) 0; pointer-events: none">
+<div style="max-width: 1360px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 4px">
+<div style="pointer-events: auto; flex: 1 1 520px; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 24px; min-height: 44px; padding: 0 0 0 16px; background: #ffffff; color: #040406">
+<a class="uk-brand" href="#topo" style="display: inline-flex; align-items: center; min-height: 44px; padding-right: 8px; font-family: 'Inter Tight', 'Inter', system-ui, sans-serif; font-size: 19px; font-weight: 500; letter-spacing: -0.03em; white-space: nowrap">Responsible AI</a>
+<nav aria-label="Principal" style="display: flex; flex-wrap: wrap; align-items: center; font-size: 14px; font-weight: 500">
+<a class="uk-navlink" href="#">Dados</a>
+<a class="uk-navlink" href="#">Playground</a>
+<a class="uk-navlink" href="#">Integrações</a>
+</nav>
+</div>
+<a class="uk-wblock" href="#contato" style="pointer-events: auto">Contato</a>
+<a class="uk-wblock" href="#" style="pointer-events: auto">Testar um guardrail</a>
+</div>
+</header>
+
+<section aria-labelledby="uk-h1" style="max-width: 1440px; margin: 0 auto; padding: 24px clamp(16px, 2.8vw, 40px) 56px">
+<div class="uk-hero-g">
+<div style="min-width: 0; display: flex; flex-direction: column; gap: 20px; padding-bottom: 46px">
+<h1 id="uk-h1" style="margin: 0; max-width: 720px; font-family: 'Inter Tight', 'Inter', system-ui, sans-serif; font-weight: 300; font-size: clamp(38px, 4.45vw, 64px); line-height: 1.125; letter-spacing: -0.02em; color: #ffffff; text-wrap: balance">Guardrails para agentes conversacionais de IA</h1>
+<p class="uk-lead" style="max-width: 540px">O time de Responsible AI pesquisa, desenvolve e implementa os guardrails dos agentes conversacionais da companhia: do ataque simulado à proteção de cada conversa em produção.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px">
+<a class="uk-btn uk-btn-w" href="#">Testar um guardrail</a>
+<a class="uk-btn uk-btn-o" href="#">Ver os dados</a>
+</div>
+</div>
+<div class="uk-hero-logo" style="min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<div style="width: 100%; aspect-ratio: 1 / 1"><dc-import name="LogoLab1" fundo="#040406" hint-size="100%,100%"></dc-import></div>
+<div class="uk-legend">
+<span><span aria-hidden="true" style="color: #EC5B48">×</span>ataque</span>
+<span><span aria-hidden="true" style="color: #5A90F8">:</span>guardrails</span>
+<span><span aria-hidden="true" style="color: #C9D1D6">*</span>agente</span>
+</div>
+</div>
+</div>
+</section>
+
+<section aria-label="Marcas" style="border-bottom: 1px solid #2e3038">
+<div class="uk-brands-vp" style="max-width: 1440px; margin: 0 auto; padding: 26px 0 30px">
+<div class="uk-brands-track">
+<ul class="uk-brands-set">
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5" fill="currentColor"></circle></svg>[MARCA 1]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"></rect></svg>[MARCA 2]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 18 17H2z" fill="currentColor"></path></svg>[MARCA 3]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.8"></circle><circle cx="10" cy="10" r="2.5" fill="currentColor"></circle></svg>[MARCA 4]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M10 2 18 10 10 18 2 10z" fill="currentColor"></path></svg>[MARCA 5]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M10 3v14M3 10h14" fill="none" stroke="currentColor" stroke-width="2.2"></path></svg>[MARCA 6]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.2 16.8 6.1v7.8L10 17.8 3.2 13.9V6.1z" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg>[MARCA 7]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M3 17V3h7a7 7 0 0 1 0 14z" fill="currentColor"></path></svg>[MARCA 8]</li>
+</ul>
+<ul class="uk-brands-set" aria-hidden="true">
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5" fill="currentColor"></circle></svg>[MARCA 1]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"></rect></svg>[MARCA 2]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.5 18 17H2z" fill="currentColor"></path></svg>[MARCA 3]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.8"></circle><circle cx="10" cy="10" r="2.5" fill="currentColor"></circle></svg>[MARCA 4]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M10 2 18 10 10 18 2 10z" fill="currentColor"></path></svg>[MARCA 5]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M10 3v14M3 10h14" fill="none" stroke="currentColor" stroke-width="2.2"></path></svg>[MARCA 6]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M10 2.2 16.8 6.1v7.8L10 17.8 3.2 13.9V6.1z" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg>[MARCA 7]</li>
+<li class="uk-brand-i"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path d="M3 17V3h7a7 7 0 0 1 0 14z" fill="currentColor"></path></svg>[MARCA 8]</li>
+</ul>
+</div>
+</div>
+</section>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 0 clamp(16px, 2.8vw, 40px)">
+<div style="border-left: 1px solid #2e3038; border-right: 1px solid #2e3038">
+
+<section id="solucoes" aria-labelledby="uk-sol" style="padding-top: clamp(96px, 12.5vw, 176px)">
+<div style="max-width: 820px; padding: 0 clamp(20px, 2.4vw, 32px); display: flex; flex-direction: column; gap: 24px">
+<h2 id="uk-sol" class="uk-h2" style="font-size: clamp(32px, 3.1vw, 44px)">Do ataque simulado à proteção de cada conversa em produção.</h2>
+<p class="uk-lead" style="max-width: 520px">Quatro frentes, duas de cada time, que os times de produto podem acionar para os seus agentes conversacionais.</p>
+</div>
+<div class="uk-teams" style="margin-top: clamp(64px, 8vw, 112px)">
+
+<div class="uk-team-g" role="group" aria-labelledby="uk-rt">
+<div class="uk-team-h"><span aria-hidden="true" class="uk-neon uk-neon-s uk-neon-red"><i></i><i></i><i></i></span><span id="uk-rt" class="uk-team-n">Red Team</span><span>Ofensiva · antes da produção</span></div>
+<ul role="list" class="uk-g2">
+
+<li class="uk-card">
+<h3>Agente de Ataque</h3>
+<div class="uk-mini" role="img" aria-label="Ilustração: a conversa com o agente de atendimento segue numa linha e o agente de ataque abre desvios de estratégia, troca de persona, injeção indireta e ofuscação, que voltam para a conversa." style="background: repeating-linear-gradient(180deg, transparent 0 26px, #16171c 26px 27px)">
+<span class="uk-br-l" style="left: 34%; top: 16%; width: 6%; height: 42%; border-left-width: 1px; border-top-width: 1px; border-top-left-radius: 6px"></span>
+<span class="uk-br-l" style="left: 81%; top: 16%; width: 11%; height: 42%; border-right-width: 1px; border-top-width: 1px; border-top-right-radius: 6px"></span>
+<span class="uk-br-l" style="left: 38%; top: 36%; width: 6%; height: 22%; border-left-width: 1px; border-top-width: 1px; border-top-left-radius: 6px"></span>
+<span class="uk-br-l" style="left: 85%; top: 36%; width: 3%; height: 22%; border-right-width: 1px; border-top-width: 1px; border-top-right-radius: 6px"></span>
+<span class="uk-br-l" style="left: 46%; top: 58%; width: 6%; height: 26%; border-left-width: 1px; border-bottom-width: 1px; border-bottom-left-radius: 6px"></span>
+<span class="uk-br-l" style="left: 77%; top: 58%; width: 6%; height: 26%; border-right-width: 1px; border-bottom-width: 1px; border-bottom-right-radius: 6px"></span>
+<span aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 58%; height: 1px; background: #ff5b3d"></span>
+<span class="uk-br-chip" style="left: 40%; top: 16%; transform: translateY(-50%)">troca-de-persona</span>
+<span class="uk-br-chip" style="left: 44%; top: 36%; transform: translateY(-50%)">injeção-indireta</span>
+<span class="uk-br-chip" style="left: 52%; top: 84%; transform: translateY(-50%)">ofuscação</span>
+<span class="uk-br-chip" style="left: 0; top: 58%; transform: translateY(-50%); background: #ff5b3d; border-color: #ff5b3d; color: #040406">atendimento</span>
+<span class="uk-dot" style="left: 34%; top: 58%"></span>
+<span class="uk-dot" style="left: 38%; top: 58%"></span>
+<span class="uk-dot" style="left: 46%; top: 58%"></span>
+<span class="uk-dot" style="left: 83%; top: 58%"></span>
+<span class="uk-dot" style="left: 88%; top: 58%"></span>
+<span class="uk-dot" style="left: 92%; top: 58%"></span>
+</div>
+<p class="uk-cap"><strong>Adapta a cada turno.</strong> Um agente autônomo que conversa com o agente-alvo, muda de estratégia a cada turno e registra tudo o que conseguiu.</p>
+</li>
+
+<li class="uk-card">
+<h3>Semana Vermelha</h3>
+<div class="uk-mini" role="img" aria-label="Ilustração: uma semana de simulação de ataques, de segunda a domingo, com o dia em andamento destacado." style="display: flex; flex-direction: column">
+<div style="display: flex; align-items: baseline; gap: 8px"><span style="font-family: 'Inter Tight', 'Inter', system-ui, sans-serif; font-size: 30px; font-weight: 300; line-height: 1; color: #9194a1">7</span><span style="font-size: 11px; color: #80838f">dias</span></div>
+<div style="position: relative; flex: 1 1 auto; display: flex; align-items: flex-end; gap: 9px; margin-top: 10px">
+<span class="uk-hbar" style="height: 46%"></span>
+<span class="uk-hbar" style="height: 58%"></span>
+<span class="uk-hbar" style="height: 40%"></span>
+<span class="uk-hbar uk-hbar-on" style="height: 92%"></span>
+<span class="uk-hbar" style="height: 62%"></span>
+<span class="uk-hbar" style="height: 50%"></span>
+<span class="uk-hbar" style="height: 34%"></span>
+<svg aria-hidden="true" viewBox="0 0 700 100" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible"><polyline points="50,62 150,50 250,70 350,34 450,48 550,56 650,72" fill="none" stroke="#9194a1" stroke-width="1.2" vector-effect="non-scaling-stroke"></polyline></svg>
+</div>
+<div style="display: flex; gap: 9px; margin-top: 8px; font-size: 10px; text-align: center"><span style="flex: 1 1 0">seg</span><span style="flex: 1 1 0">ter</span><span style="flex: 1 1 0">qua</span><span style="flex: 1 1 0; color: #c7c9d1">qui</span><span style="flex: 1 1 0">sex</span><span style="flex: 1 1 0">sáb</span><span style="flex: 1 1 0">dom</span></div>
+</div>
+<p class="uk-cap"><strong>Do início ao fim.</strong> Uma semana completa de simulação de ataques contra os agentes conversacionais, numa plataforma própria do time.</p>
+</li>
+
+</ul>
+</div>
+
+<div class="uk-team-g" role="group" aria-labelledby="uk-bt">
+<div class="uk-team-h"><span aria-hidden="true" class="uk-neon uk-neon-s uk-neon-blu"><i></i><i></i><i></i></span><span id="uk-bt" class="uk-team-n">Blue Team</span><span>Defensiva · em produção</span></div>
+<ul role="list" class="uk-g2">
+
+<li class="uk-card">
+<h3>Guardrail Antiataque</h3>
+<div class="uk-mini" role="img" aria-label="Ilustração: guardrails de entrada avaliam uma mensagem; prompt injection dá score 0,93 e bloqueia; jailbreak, PII e escopo liberam." style="display: flex; flex-direction: column; justify-content: center">
+<div class="uk-krow" style="font-size: 10.5px"><span>guardrail</span><span>score</span><span>veredito</span></div>
+<div class="uk-krow"><span>jailbreak</span><span>—</span><span>liberada</span></div>
+<div class="uk-krow uk-krow-on"><span>prompt_injection</span><span>0,93</span><span>bloqueada</span></div>
+<div class="uk-krow"><span>pii</span><span>—</span><span>liberada</span></div>
+<div class="uk-krow"><span>escopo</span><span>—</span><span>liberada</span></div>
+</div>
+<p class="uk-cap"><strong>Antes do agente.</strong> Avalia a mensagem do cliente e barra prompt injection, jailbreak e outras tentativas de ataque.</p>
+</li>
+
+<li class="uk-card">
+<h3>Guardrail Ética Saída</h3>
+<div class="uk-mini" role="img" aria-label="Ilustração: a resposta do agente passa pelo guardrail de saída antes de chegar ao cliente.">
+<span aria-hidden="true" style="position: absolute; left: 6%; top: 16%; width: 82%; height: 1px; background: #1c1d23"></span>
+<span aria-hidden="true" style="position: absolute; left: 12%; top: 8%; width: 1px; height: 82%; background: #1c1d23"></span>
+<span class="uk-sq-o" style="left: 12%; top: 16%; width: 64%; height: 72%"></span>
+<span class="uk-sq-o" style="left: 30%; top: 36%; width: 34%; height: 40%"></span>
+<span class="uk-sq-b" style="left: 22%; top: 26%; width: 50%; height: 56%"></span>
+<span class="uk-corner" style="left: 22%; top: 26%"></span>
+<span class="uk-corner" style="left: 72%; top: 26%"></span>
+<span class="uk-corner" style="left: 22%; top: 82%"></span>
+<span class="uk-corner" style="left: 72%; top: 82%"></span>
+<span aria-hidden="true" style="position: absolute; left: 47%; top: 54%; width: 36px; height: 36px; transform: translate(-50%, -50%); background: #3d8bff"></span>
+<span class="uk-handle" style="left: 76%; top: 16%"></span>
+<span class="uk-handle" style="left: 12%; top: 88%"></span>
+</div>
+<p class="uk-cap"><strong>Antes do cliente.</strong> Confere a resposta do agente para que siga os princípios éticos e as políticas da companhia.</p>
+</li>
+
+</ul>
+</div>
+
+</div>
+</section>
+
+<section id="ciclo" aria-labelledby="uk-ciclo" style="padding-top: clamp(96px, 12.5vw, 176px)">
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 56px; padding: 0 clamp(20px, 2.4vw, 32px) 64px">
+<div style="flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 28px">
+<span class="uk-eyebrow"><span aria-hidden="true" class="uk-neon"><i></i><i></i><i></i></span>Ciclo integrado</span>
+<h2 id="uk-ciclo" class="uk-h2" style="max-width: 860px">Dois times, um ciclo. O Red Team procura a falha. O Blue Team fecha a falha.</h2>
+</div>
+<p class="uk-lead" style="flex: 0 1 380px">O que um descobre vira o backlog do outro, a cada nova versão de agente.</p>
+</div>
+
+<div id="uk-tabsbar" class="uk-tabsbar">
+<nav aria-label="Etapas do ciclo">
+<ul class="uk-tabs">
+<li><a class="uk-tab {{c1}}" href="#uk-step-1" aria-current="{{a1}}" onClick="{{go1}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="9" cy="9" r="5.5"></circle><path d="M9 1.5v3.2M9 13.3v3.2M1.5 9h3.2M13.3 9h3.2"></path></svg>Atacar</a></li>
+<li><a class="uk-tab {{c2}}" href="#uk-step-2" aria-current="{{a2}}" onClick="{{go2}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7.8" cy="7.8" r="5"></circle><path d="M11.6 11.6 16 16"></path></svg>Descobrir</a></li>
+<li><a class="uk-tab {{c3}}" href="#uk-step-3" aria-current="{{a3}}" onClick="{{go3}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6.2 4.8 2 9l4.2 4.2M11.8 4.8 16 9l-4.2 4.2"></path></svg>Desenvolver</a></li>
+<li><a class="uk-tab {{c4}}" href="#uk-step-4" aria-current="{{a4}}" onClick="{{go4}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M9 1.8 3.2 4.1v4.3c0 3.5 2.4 6.2 5.8 7.7 3.4-1.5 5.8-4.2 5.8-7.7V4.1z"></path></svg>Proteger</a></li>
+<li><a class="uk-tab {{c5}}" href="#uk-step-5" aria-current="{{a5}}" onClick="{{go5}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 15.5V10M7 15.5V5.5M11 15.5V8.5M15 15.5V3"></path></svg>Medir</a></li>
+</ul>
+</nav>
+</div>
+
+<div id="uk-step-1" class="uk-step">
+<div class="uk-ptext">
+<span class="uk-steplabel"><span aria-hidden="true" class="uk-neon uk-neon-s uk-neon-red"><i></i><i></i><i></i></span>Red Team · etapa 1 de 5</span>
+<h3 class="uk-ptitle">Atacar os agentes<span>antes que alguém de fora ataque</span></h3>
+<p class="uk-lead" style="max-width: 440px; color: #c7c9d1">O Red Team cria agentes de ataque que simulam adversários reais em conversas com os agentes da companhia, turno a turno, até descobrir onde eles cedem.</p>
+</div>
+<div class="uk-ph"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 6:5</span></div>
+</div>
+<div class="uk-hatch" aria-hidden="true"></div>
+
+<div id="uk-step-2" class="uk-step">
+<div class="uk-ptext">
+<span class="uk-steplabel"><span aria-hidden="true" class="uk-neon uk-neon-s uk-neon-red"><i></i><i></i><i></i></span>Red Team · etapa 2 de 5</span>
+<h3 class="uk-ptitle">Encontrar onde o agente cede<span>e registrar tudo</span></h3>
+<p class="uk-lead" style="max-width: 440px; color: #c7c9d1">O agente de ataque adapta a estratégia a cada turno e registra tudo o que conseguiu. O que passou vira um achado novo, enviado ao Blue Team.</p>
+</div>
+<div class="uk-ph"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 6:5</span></div>
+</div>
+<div class="uk-hatch" aria-hidden="true"></div>
+
+<div id="uk-step-3" class="uk-step">
+<div class="uk-ptext">
+<span class="uk-steplabel"><span aria-hidden="true" class="uk-neon uk-neon-s uk-neon-blu"><i></i><i></i><i></i></span>Blue Team · etapa 3 de 5</span>
+<h3 class="uk-ptitle">Transformar a falha em guardrail<span>testável, versionado e medido</span></h3>
+<p class="uk-lead" style="max-width: 440px; color: #c7c9d1">O Blue Team transforma cada falha conhecida em um guardrail testável, versionado e medido antes de chegar a qualquer cliente.</p>
+</div>
+<div class="uk-ph"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 6:5</span></div>
+</div>
+<div class="uk-hatch" aria-hidden="true"></div>
+
+<div id="uk-step-4" class="uk-step">
+<div class="uk-ptext">
+<span class="uk-steplabel"><span aria-hidden="true" class="uk-neon uk-neon-s uk-neon-blu"><i></i><i></i><i></i></span>Blue Team · etapa 4 de 5</span>
+<h3 class="uk-ptitle">Proteger cada conversa<span>em produção e em tempo real</span></h3>
+<p class="uk-lead" style="max-width: 440px; color: #c7c9d1">Os guardrails de entrada avaliam a mensagem do cliente antes de ela chegar ao agente. Os de saída conferem a resposta antes de ela chegar ao cliente.</p>
+</div>
+<div class="uk-ph"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 6:5</span></div>
+</div>
+<div class="uk-hatch" aria-hidden="true"></div>
+
+<div id="uk-step-5" class="uk-step">
+<div class="uk-ptext">
+<span class="uk-steplabel"><span aria-hidden="true" class="uk-neon uk-neon-s uk-neon-blu"><i></i><i></i><i></i></span>Blue Team · etapa 5 de 5</span>
+<h3 class="uk-ptitle">Acompanhar o resultado<span>todos os dias</span></h3>
+<p class="uk-lead" style="max-width: 440px; color: #c7c9d1">Acionamentos, falsos positivos e latência de cada guardrail. A cada nova versão de agente, o ciclo recomeça com o Red Team.</p>
+</div>
+<div class="uk-ph"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 6:5</span></div>
+</div>
+</section>
+
+<section id="integracoes" aria-labelledby="uk-int" style="padding-top: clamp(96px, 12.5vw, 176px)">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 0 clamp(20px, 2.4vw, 32px) 72px; text-align: center">
+<span class="uk-eyebrow" style="align-self: center"><span aria-hidden="true" class="uk-neon"><i></i><i></i><i></i></span>Integrações</span>
+<h2 id="uk-int" class="uk-h2" style="max-width: 1060px; font-size: clamp(32px, 3.6vw, 52px)">Protegemos cada conversa entre clientes e agentes, em produção e em tempo real.</h2>
+</div>
+<div class="uk-bento">
+<div class="uk-bcard">
+<p class="uk-cap"><strong>Entrada.</strong> Os guardrails de entrada avaliam a mensagem do cliente antes de ela chegar ao agente.</p>
+<div class="uk-ph" style="aspect-ratio: 16 / 10"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 16:10</span></div>
+</div>
+<div class="uk-bcard uk-bento-tall">
+<p class="uk-cap"><strong>API de avaliação.</strong> Envie a mensagem e receba o veredito de cada guardrail, com o score e a latência da avaliação.</p>
+<div class="uk-ph" style="flex: 1 1 auto; min-height: 320px"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 3:5</span></div>
+</div>
+<div class="uk-bcard">
+<p class="uk-cap"><strong>Saída.</strong> Os guardrails de saída conferem a resposta do agente antes de ela chegar ao cliente, para que siga os princípios éticos e as políticas da companhia.</p>
+<div class="uk-ph" style="aspect-ratio: 16 / 10"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 16:10</span></div>
+</div>
+<div class="uk-bcard">
+<p class="uk-cap"><strong>Guardrails por etapa.</strong> Entrada: prompt injection, jailbreak, PII e escopo. Saída: política, PII e fundamentação.</p>
+<div class="uk-ph" style="aspect-ratio: 16 / 10"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 16:10</span></div>
+</div>
+<div class="uk-bcard">
+<p class="uk-cap"><strong>Em tempo real.</strong> Dentro da conversa entre clientes e agentes, a cada mensagem e a cada resposta.</p>
+<div class="uk-ph" style="aspect-ratio: 16 / 10"><span aria-hidden="true" class="uk-ph-mark">inserir gif · 16:10</span></div>
+</div>
+</div>
+</section>
+
+<section id="dados" aria-labelledby="uk-dados" style="padding-top: clamp(96px, 12.5vw, 176px)">
+<div style="display: flex; flex-direction: column; gap: 28px; padding: 0 clamp(20px, 2.4vw, 32px) 56px">
+<span class="uk-eyebrow"><span aria-hidden="true" class="uk-neon"><i></i><i></i><i></i></span>Dados</span>
+<h2 id="uk-dados" class="uk-h2" style="max-width: 1000px; font-size: clamp(32px, 3.1vw, 44px)">Acompanhamos o resultado todos os dias. <span style="display: block; color: #9194a1">Acionamentos, falsos positivos e latência.</span></h2>
+</div>
+<figure style="margin: 0">
+<div class="uk-chart" role="img" aria-label="Gráfico ilustrativo, sem valores: barras de acionamentos por dia, com o trecho de falsos positivos destacado.">
+<div class="uk-bar" style="height: 46%"><span class="uk-seg"></span></div>
+<div class="uk-bar" style="height: 46%"><span class="uk-seg"></span></div>
+<div class="uk-bar" style="height: 62%"></div>
+<div class="uk-bar" style="height: 52%"><span style="flex: 0 0 22px; background: #2e3038"></span></div>
+<div class="uk-bar" style="height: 46%"><span class="uk-seg"></span></div>
+<div class="uk-bar" style="height: 30%"></div>
+<div class="uk-bar" style="height: 70%"><span style="flex: 0 0 22px; background: #2e3038"></span><span class="uk-seg"></span></div>
+<div class="uk-bar" style="height: 84%"><span class="uk-seg uk-seg-hot" style="flex-basis: 50px"></span></div>
+<div class="uk-bar" style="height: 70%"><span style="flex: 0 0 22px; background: #2e3038"></span><span class="uk-seg"></span></div>
+<div class="uk-bar" style="height: 52%"><span class="uk-seg"></span></div>
+<div class="uk-bar" style="height: 30%"></div>
+<div class="uk-bar" style="height: 36%"><span class="uk-seg"></span></div>
+<div class="uk-bar" style="height: 30%"></div>
+<div class="uk-bar" style="height: 40%"></div>
+</div>
+<figcaption class="uk-mono" style="display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 16px clamp(20px, 2.4vw, 32px) 0; font-size: 12px; color: #9194a1">
+<span style="display: inline-flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 10px; height: 10px; background: #25262d; border: 1px solid #3a3c45"></span>Acionamentos</span>
+<span style="display: inline-flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 10px; height: 10px; background: #e2ebb4"></span>Falsos positivos</span>
+<span>Gráfico ilustrativo</span>
+</figcaption>
+</figure>
+<div style="display: flex; flex-wrap: wrap; gap: 40px 56px; padding: 72px clamp(20px, 2.4vw, 32px) 96px">
+<div style="flex: 0 0 auto"><a class="uk-btn uk-btn-w" href="#">Ver os dados</a></div>
+<div class="uk-feat" style="flex: 1 1 640px; min-width: 0; max-width: 900px; margin-left: auto">
+<p class="uk-cap"><strong>Acionamentos.</strong> Quantas vezes cada guardrail entrou em ação, por agente e por dia.</p>
+<p class="uk-cap"><strong>Falsos positivos.</strong> Mensagens e respostas legítimas barradas por engano, para calibrar cada guardrail.</p>
+<p class="uk-cap"><strong>Latência.</strong> Quanto cada avaliação acrescenta à conversa, como os 14 ms do exemplo.</p>
+<p class="uk-cap"><strong>Veredito por guardrail.</strong> A decisão e o score de cada avaliação, como prompt_injection · score 0,93.</p>
+</div>
+</div>
+</section>
+
+</div>
+
+<section aria-labelledby="uk-cta" class="uk-ph" style="display: flex; flex-direction: column; justify-content: space-between; gap: 48px; min-height: clamp(520px, 47vw, 680px); margin-top: clamp(96px, 12.5vw, 176px); padding: clamp(40px, 4.6vw, 64px) clamp(24px, 2.8vw, 40px) clamp(36px, 4vw, 56px); border-radius: 0; place-items: initial">
+<span aria-hidden="true" class="uk-ph-mark" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%)">inserir gif · 2:1</span>
+<div style="position: relative; z-index: 1; display: flex; flex-direction: column; gap: 20px; max-width: 600px">
+<h2 id="uk-cta" style="margin: 0; font-family: 'Inter Tight', 'Inter', system-ui, sans-serif; font-weight: 300; font-size: clamp(26px, 2.25vw, 32px); line-height: 1.13; letter-spacing: -0.015em; color: #ffffff; text-wrap: pretty">Coloque seu agente à prova. <span style="display: block; color: #9194a1">Cole uma mensagem, escolha os guardrails e veja o veredito de cada um.</span></h2>
+<p class="uk-lead" style="max-width: 420px; color: #c7c9d1">Ou deixe o agente de ataque do Red Team tentar primeiro.</p>
+</div>
+<div style="position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px">
+<a class="uk-btn uk-btn-w" href="#">Testar um guardrail</a>
+<a class="uk-btn uk-btn-o" href="#">Ver integrações</a>
+</div>
+</section>
+</main>
+
+<footer id="contato" class="uk-foot" style="max-width: 1440px; margin: 0 auto; padding: 56px clamp(16px, 2.8vw, 40px) 72px">
+<div style="display: flex; flex-wrap: wrap; gap: 40px 32px">
+<div style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<a href="#topo" style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; font-family: 'Inter Tight', 'Inter', system-ui, sans-serif; font-size: 22px; font-weight: 500; letter-spacing: -0.03em; color: #ffffff">Responsible AI</a>
+<p style="margin: 0; font-size: 14px; font-weight: 500; color: #ffffff">Atacamos primeiro. Protegemos sempre.</p>
+<p style="margin: 0; font-size: 13px; color: #9194a1">[NOME DA COMPANHIA]</p>
+</div>
+<div style="flex: 3 1 720px; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 40px 32px">
+<nav aria-label="Portal" style="display: flex; flex-direction: column; gap: 0; font-size: 14px">
+<h3 style="margin: 0 0 8px; font-size: 15px; font-weight: 500; letter-spacing: -0.02em; color: #ffffff">Portal</h3>
+<a class="uk-flink" href="#topo">Home</a>
+<a class="uk-flink" href="#">Dados</a>
+<a class="uk-flink" href="#">Playground</a>
+<a class="uk-flink" href="#">Integrações</a>
+</nav>
+<nav aria-label="Times" style="display: flex; flex-direction: column; gap: 0; font-size: 14px">
+<h3 style="margin: 0 0 8px; font-size: 15px; font-weight: 500; letter-spacing: -0.02em; color: #ffffff">Times</h3>
+<a class="uk-flink" href="#ciclo">Red Team</a>
+<a class="uk-flink" href="#ciclo">Blue Team</a>
+</nav>
+<nav aria-label="Soluções" style="display: flex; flex-direction: column; gap: 0; font-size: 14px">
+<h3 style="margin: 0 0 8px; font-size: 15px; font-weight: 500; letter-spacing: -0.02em; color: #ffffff">Soluções</h3>
+<a class="uk-flink" href="#solucoes">Agente de Ataque</a>
+<a class="uk-flink" href="#solucoes">Semana Vermelha</a>
+<a class="uk-flink" href="#solucoes">Guardrail Antiataque</a>
+<a class="uk-flink" href="#solucoes">Guardrail Ética Saída</a>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 0; font-size: 14px; color: #9194a1">
+<h3 style="margin: 0 0 8px; font-size: 15px; font-weight: 500; letter-spacing: -0.02em; color: #ffffff">Contato</h3>
+<span style="display: inline-flex; align-items: center; min-height: 44px">[CANAL DO TIME]</span>
+<span style="display: inline-flex; align-items: center; min-height: 44px">[E-MAIL DO TIME]</span>
+<a class="uk-flink" href="#topo">Voltar ao topo ↑</a>
+</div>
+</div>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":8772}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var self = this;
+    this.state = { step: 0 };
+    this._go = [0, 1, 2, 3, 4].map(function (i) { return function () { self.setState({ step: i }); }; });
+    // Etapa ativa pelo scroll: vale a última etapa cujo topo já passou de um terço da área visível
+    // abaixo das abas fixas. O clique na aba só leva até a etapa (âncora) e já marca a aba.
+    this._spy = function () {
+      if (self._raf) return;
+      self._raf = requestAnimationFrame(function () {
+        self._raf = 0;
+        var bar = document.getElementById('uk-tabsbar');
+        if (!bar) return;
+        var base = bar.getBoundingClientRect().bottom;
+        var room = Math.max(0, Math.min(window.innerHeight - base, 900));
+        var lim = base + room * 0.33, step = 0;
+        for (var i = 0; i < 5; i++) {
+          var el = document.getElementById('uk-step-' + (i + 1));
+          if (el && el.getBoundingClientRect().top <= lim) step = i;
+        }
+        if (step !== self.state.step) self.setState({ step: step });
+      });
+    };
+  }
+  componentDidMount() {
+    window.addEventListener('scroll', this._spy, { passive: true });
+    window.addEventListener('resize', this._spy);
+    this._spy();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._spy);
+    window.removeEventListener('resize', this._spy);
+    if (this._raf) cancelAnimationFrame(this._raf);
+  }
+  renderVals() {
+    var s = this.state.step, v = {};
+    for (var i = 0; i < 5; i++) {
+      v['c' + (i + 1)] = s === i ? 'is-on' : '';
+      v['a' + (i + 1)] = s === i ? 'step' : 'false';
+      v['go' + (i + 1)] = this._go[i];
+    }
+    return v;
+  }
+}
+</script>
+</body>
+</html>
