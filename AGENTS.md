@@ -1,92 +1,92 @@
 # AGENTS.md
 
-This repo is the Catálogo, a public catalog of exploratory web interfaces. Each Projeto holds one or more Temas. A Tema is a design born in a design tool, mostly Claude Design, and reimplemented here as a self-sufficient Next.js app, next to the documents a Consumidor needs to rebuild it in their own project: the Tema folder is a reference to read, not a template to copy. It is frontend only: no backend code, no CI, no deploy.
+Este repositório é o Catálogo, um catálogo público de interfaces web exploratórias. Cada Projeto reúne um ou mais Temas. Um Tema é um design nascido numa ferramenta de design, quase sempre o Claude Design, e reimplementado aqui como um app Next.js autossuficiente. Ao lado do app ficam os documentos de que um Consumidor precisa para reconstruí-lo no próprio projeto: a pasta do Tema é referência para ler, não template para copiar. É só front end: sem código de backend, sem CI, sem deploy.
 
-The decisions behind this standard, each with the alternative it beat, are in `docs/adr/`. Read the matching ADR before changing a rule below.
+As decisões por trás deste padrão, cada uma com a alternativa que venceu, estão em `docs/adr/`. Leia o ADR correspondente antes de mudar uma regra abaixo.
 
-## Layout of the Catálogo
+## A árvore do Catálogo
 
 ```
 stunning-web-pages/
 ├── README.md · AGENTS.md · CLAUDE.md · GLOSSARY.md · LICENSE · .gitignore · mise.toml
 ├── docs/adr/ · docs/agents/
-├── scripts/                  captures the original for the Capturas de referência; Puxada step by step
+├── scripts/                  captura do original para as Capturas de referência; passo a passo da Puxada
 └── projects/<project>/
-    ├── README.md             context, Telas, table of Temas with a Captura each
+    ├── README.md             contexto, Telas, tabela de Temas com uma Captura de cada
     └── themes/<theme>/
-        ├── README.md         Captura, Telas covered, date, versions, how to run, folder map
-        ├── DESIGN.md         the Sistema de design, in the sections of the Google Labs format
-        ├── HANDOFF.md        the briefing the Consumidor hands to their agent
-        ├── web/              the app: its Telas plus the /design-system route
-        ├── screenshots/      Capturas of the app
-        ├── presentation.html the Deck
-        └── origin/           the Origem: raw Quadros, Capturas de referência, Ponteiro
+        ├── README.md         Captura, Telas cobertas, data, versões, como rodar, mapa da pasta
+        ├── DESIGN.md         o Sistema de design, nas seções do formato do Google Labs
+        ├── HANDOFF.md        o briefing que o Consumidor entrega ao agente dele
+        ├── web/              o app: as Telas e a rota /design-system
+        ├── screenshots/      Capturas do app
+        ├── presentation.html o Deck
+        └── origin/           a Origem: Quadros crus, Capturas de referência, Ponteiro
 ```
 
-- Each Tema is self-sufficient: nothing in it imports from another Tema or from the root, and code repeated across Temas is accepted. The framework is an attribute the Tema declares in its README, with no folder level of its own.
-- There is no workspace at the root. `scripts/` holds the only code outside the Temas and loads its own dependencies.
-- Each app pins exact versions in its own manifest and lockfile, frozen at its implementation date. An old Tema changes only in a new Ciclo on it, which makes a new Versão. The root `mise.toml` fixes the Node and pnpm majors every Tema is born with.
-- The root `README.md` indexes every Projeto and Tema; a Projeto's `README.md` holds the table of its Temas.
+- Cada Tema é autossuficiente: nada nele importa de outro Tema nem da raiz, e código repetido entre Temas é aceito. O framework é um atributo que o Tema declara no README, sem nível de pasta próprio.
+- Não há workspace na raiz. `scripts/` guarda o único código fora dos Temas e carrega as próprias dependências.
+- Cada app fixa versões exatas no próprio manifesto e no próprio lockfile, congeladas na data da implementação. Um Tema antigo só muda num Ciclo novo sobre ele, que gera uma nova Versão. O `mise.toml` da raiz fixa as versões maiores de Node e pnpm com que todo Tema nasce.
+- O `README.md` da raiz indexa todo Projeto e todo Tema; o `README.md` de um Projeto traz a tabela dos Temas dele.
 
-## The loop with Claude Design
+## O laço com o Claude Design
 
-One vehicle per direction: Telas come down, the Sistema de design goes up.
+Um veículo por sentido: as Telas descem, o Sistema de design sobe.
 
-- **Puxada**, down: copies the Tema's Quadros from the Artefato into `origin/` exactly as they are, records the Artefato's version in the Ponteiro and generates the Capturas de referência. The step by step is in `scripts/README.md`. After a Puxada, `git diff` on `origin/` shows what the Autor changed in the design: that diff is the work for the app.
-- **Subida**, up: publishes the Tema's Sistema de design, built from the app, as a private Design System Artefato in the Autor's Claude account, and Claude Design draws the Tema's next Telas on top of it. It carries the tokens from `@theme`, the app's fonts, brand copy and static component previews.
-- The Quadros are the Autor's canvas: the agent reads them and leaves them as they are. An adjustment born in code is a Desvio: list it in the Tema's `HANDOFF.md`; it reaches the Quadro only when the Autor asks.
-- The Ponteiro is the one file in `origin/` that holds Artefato addresses, the Subida's included. It declares itself the Autor's. No other file cites an address, and no document depends on the Ponteiro.
-- The editor runtime the Quadros load as `support.js` belongs to the publisher of the Artefato type. The Puxada downloads it to a temporary folder every time, and `.gitignore` keeps it out of git.
+- **Puxada**, para baixo: copia os Quadros do Tema do Artefato para `origin/` exatamente como estão, grava a versão do Artefato no Ponteiro e gera as Capturas de referência. O passo a passo está em `scripts/README.md`. Depois de uma Puxada, o `git diff` de `origin/` mostra o que o Autor mudou no design: esse diff é o trabalho do app.
+- **Subida**, para cima: publica o Sistema de design do Tema, montado a partir do app, como Artefato Design System privado na conta do Claude do Autor, e o Claude Design desenha as próximas Telas do Tema em cima dele. Leva os tokens do `@theme`, as fontes do app, o texto de marca e prévias estáticas dos componentes.
+- Os Quadros são o canvas do Autor: o agente os lê e os deixa como estão. Um ajuste nascido no código é um Desvio: anote-o no `HANDOFF.md` do Tema; ele chega ao Quadro só quando o Autor pedir.
+- O Ponteiro é o único arquivo de `origin/` que guarda endereços de Artefato, inclusive o da Subida. Ele se declara coisa do Autor. Nenhum outro arquivo cita endereço, e nenhum documento depende do Ponteiro.
+- O runtime do editor, que os Quadros carregam como `support.js`, pertence ao publicador do tipo de Artefato. A Puxada o baixa para uma pasta temporária a cada vez, e o `.gitignore` o mantém fora do git.
 
-## Reproducing the design
+## Reproduzir o design
 
-The app reproduces the design as it is. Fixing the design belongs to the Autor, in Claude Design, or to the Consumidor, in their own project.
+O app reproduz o design como ele está. Corrigir o design cabe ao Autor, no Claude Design, ou ao Consumidor, no projeto dele.
 
-- **Name without normalizing.** Every value in the design gets its own token, named as found; close values stay separate. Whatever looks inconsistent becomes an Observação in `DESIGN.md`.
-- **Keep the Lacunas.** A media placeholder stays a placeholder, and a link to a Tela that does not exist stays inert. `HANDOFF.md` lists them.
-- **Interface text as written**, placeholders such as `[NOME DA COMPANHIA]` included.
-- **One logo per Tema.** The app reproduces one logo; the other logo variants stay in the Artefato.
-- **Only the Quadros that form the Tema.** `origin/` holds the Quadros of the Tema's Telas and of the components they draw, such as the Quadro of its logo, even when the Artefato files that Quadro among its labs. What does not form the Tema stays in the Artefato: a logo briefing, the rest of a lab, other logo variants and comparison Quadros. None of it becomes a Tela of the app.
-- **Fidelity is measured** against the Capturas de referência. The app's captures are taken under the same conditions as the Puxada's: the same browser, 1440 and 390 px wide, reduced motion, and a viewport as tall as the document.
+- **Nomear sem normalizar.** Cada valor do design ganha um token próprio, com o nome como foi achado; valores parecidos ficam separados. O que parecer inconsistência vira uma Observação no `DESIGN.md`.
+- **Manter as Lacunas.** Um espaço reservado de mídia continua espaço reservado, e um link para uma Tela que não existe continua inerte. O `HANDOFF.md` as lista.
+- **Texto de interface como foi escrito**, com os espaços reservados como `[NOME DA COMPANHIA]`.
+- **Um logo por Tema.** O app reproduz um logo; as outras variantes de logo ficam no Artefato.
+- **Só os Quadros que formam o Tema.** `origin/` guarda os Quadros das Telas do Tema e dos componentes que elas desenham, como o Quadro do logo, mesmo quando o Artefato arquiva esse Quadro entre os laboratórios. O que não forma o Tema fica no Artefato: o briefing de um logo, o resto de um laboratório, as outras variantes de logo e os Quadros de comparação. Nada disso vira Tela do app.
+- **A fidelidade é medida** contra as Capturas de referência. As capturas do app são tiradas nas mesmas condições da Puxada: o mesmo navegador, 1440 e 390 px de largura, movimento reduzido e viewport da altura do documento.
 
 ## Tema pronto
 
-A Tema is pronto, and the agent merges its Ciclo on its own, when all of this holds:
+Um Tema está pronto, e o agente mescla o Ciclo sozinho, quando tudo isto vale:
 
-- The Origem and its Capturas de referência are in git.
-- The app builds and its test passes.
-- `README.md`, `DESIGN.md` and `HANDOFF.md` are written.
-- The app's Capturas are saved in `screenshots/`.
-- The Deck exists.
-- The Sistema de design is published.
-- The Projeto and root indexes list the Tema.
+- A Origem e as Capturas de referência estão no git.
+- O app compila e o teste passa.
+- `README.md`, `DESIGN.md` e `HANDOFF.md` estão escritos.
+- As Capturas do app estão guardadas em `screenshots/`.
+- O Deck existe.
+- O Sistema de design foi publicado.
+- Os índices do Projeto e da raiz listam o Tema.
 
-## Agent skills
+## Skills de agente
 
 ### Issue tracker
 
-Issues and specs live in GitHub Issues at `ThiagoPanini/stunning-web-pages` (via `gh`), and tickets are sliced for `/implement-spec`. See `docs/agents/issue-tracker.md`.
+Issues e specs vivem no GitHub Issues em `ThiagoPanini/stunning-web-pages` (pelo `gh`), e os tickets são fatiados para o `/implement-spec`. Veja `docs/agents/issue-tracker.md`.
 
-### Triage labels
+### Etiquetas de triagem
 
-Default vocabulary: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+Vocabulário padrão: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. Veja `docs/agents/triage-labels.md`.
 
-### Domain docs
+### Documentos de domínio
 
-Single-context: one `GLOSSARY.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+Contexto único: um `GLOSSARY.md` e um `docs/adr/` na raiz. Veja `docs/agents/domain.md`.
 
-## Conventions
+## Convenções
 
-- Code in English, prose in Brazilian Portuguese. Identifiers, components, tokens, folders and code files are named in English. Documents, tickets, commits and interface copy are written in Portuguese. Agent instructions (this file and `docs/agents/`) stay in English.
-- Name domain concepts with the words of `GLOSSARY.md`, in Portuguese even inside English text, as this file does. Code uses each term's `Em código` form.
-- Commits and PR titles follow Conventional Commits, in Portuguese: `tipo(escopo): assunto`.
+- **Código em inglês**: identificadores, componentes, tokens, pastas, arquivos de código, comentários, títulos de teste e mensagens de erro. No código, um conceito do domínio aparece pela forma `Em código` do `GLOSSARY.md`.
+- **Português no resto**: documentos, tickets, commits, PRs, texto de interface e as instruções de agente (este arquivo, `CLAUDE.md` e `docs/agents/`). Na prosa, um conceito do domínio aparece pelo termo do `GLOSSARY.md`.
+- Commits e títulos de PR seguem Conventional Commits em português: `tipo(escopo): assunto`.
 
-## Delivering a Ciclo
+## Entregar um Ciclo
 
-Every change reaches `main` as the squash of a pull request. The agent that opens the PR merges it: nobody else reviews it, and no PR is left open for the Autor.
+Toda mudança chega à `main` como o squash de um pull request. O agente que abre o PR o mescla: ninguém mais o revisa, e nenhum PR fica aberto para o Autor.
 
-1. Work on `feature/<project_slug>`, one Projeto per branch, or on `feature/catalog` for work on the root alone. `/implement-spec` uses that branch as its integration branch.
-2. Commit and push on your own as the work advances.
-3. At the end of the Ciclo, open the PR with `gh pr create` and merge it with `gh pr merge --squash --delete-branch`. The next Ciclo of the same Projeto starts a new branch from `main`.
+1. Trabalhe em `feature/<project_slug>`, um Projeto por branch, ou em `feature/catalog` para trabalho só na raiz. O `/implement-spec` usa essa branch como branch de integração.
+2. Commite e faça push por conta própria conforme o trabalho avança.
+3. No fim do Ciclo, abra o PR com `gh pr create` e mescle com `gh pr merge --squash --delete-branch`. O Ciclo seguinte do mesmo Projeto começa uma branch nova a partir da `main`.
 
-There is no CI. The gate is local: the check each ticket names, run green, and, for a Ciclo that touches a Tema, the Tema pronto list above.
+Não há CI. O portão é local: a conferência que cada ticket nomeia, rodada e verde, e, num Ciclo que toca um Tema, a lista de Tema pronto acima.
