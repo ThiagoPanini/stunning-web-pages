@@ -26,6 +26,10 @@
    that way, with no pointer over it. */
 @custom-variant hover (&:is(:hover, [data-show-state="hover"] *));
 
+/* The same for the keyboard focus: inside data-show-state="focus" a component is drawn focused, as the
+   focus ring of the base rules below is. */
+@custom-variant focus-visible (&:is(:focus-visible, [data-show-state="focus"] *));
+
 /* The board's breakpoints. At 760px and below the header stops sticking, the nav gets a row, and the
    grids take one column; at 480px and below the section titles and the cycle steps shrink. */
 @custom-variant narrow (@media (max-width: 760px));
@@ -286,11 +290,12 @@
 }
 
 /* The chip strip: two copies of the chips side by side that run left by one copy, over and over, and
-   pause while the pointer is over the strip's frame, marked as the group: rf-tags-track. */
+   pause while the pointer is over the strip's frame, marked as the group: rf-tags-track. Inside
+   data-show-state="hover" the strip is drawn paused, as the hover variant draws a component hovered. */
 @utility marquee {
   @media (prefers-reduced-motion: no-preference) {
     animation: var(--animate-marquee);
-    &:is(:where(.group):hover *) {
+    &:is(:where(.group):is(:hover, [data-show-state="hover"] *) *) {
       animation-play-state: paused;
     }
   }
@@ -308,8 +313,13 @@
   }
 }
 
-/* Text that lights up as it enters the view: rf-lit. */
+/* Text that lights up as it enters the view: rf-lit. Inside data-show-state="unlit" it is drawn before it
+   lights up, with no motion: the /design-system route shows that state. */
 @utility light-up {
+  &:is([data-show-state="unlit"] *) {
+    color: var(--color-unlit);
+    animation: none;
+  }
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       animation: rf-lit linear both;
