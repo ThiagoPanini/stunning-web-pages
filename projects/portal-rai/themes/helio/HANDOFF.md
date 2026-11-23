@@ -25,11 +25,11 @@ Reimplementar fiel é o ponto de partida. O que corrigir no design é decisão d
 
 1. Este arquivo, até o fim.
 2. [`DESIGN.md`](DESIGN.md): o Sistema de design papel por papel (cores, tipografia, layout, formas, movimento, componentes) e as Observações.
-3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor e cada peça isolada, nos seus estados. As Capturas são altas: a da Home em 390 px tem 5.753 px, e a do Sistema de design em 1440 px, 15.027 px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar, ou compare pixel a pixel. Os valores vêm de `globals.css`, não da imagem.
+3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor e cada peça isolada, nos seus estados. As Capturas são altas: a da Home em 390 px tem 5.753 px, e a do Sistema de design em 1440 px, 15.493 px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar, ou compare pixel a pixel. Os valores vêm de `globals.css`, não da imagem.
 4. [`web/app/globals.css`](web/app/globals.css): o `@theme` com todos os valores, as duas variantes próprias (`hover` e `narrow`), os keyframes e as utilidades de movimento.
 5. [`web/app/fonts.ts`](web/app/fonts.ts) e a pasta [`web/fonts/`](web/fonts/): as duas fontes, o subconjunto e a licença.
 6. [`web/app/layout.tsx`](web/app/layout.tsx) e [`web/app/page.tsx`](web/app/page.tsx): a Home montada a partir dos blocos.
-7. [`web/components/`](web/components/), na ordem da página: `site-header.tsx`, `hero.tsx`, `mission.tsx`, `teams.tsx`, `solutions.tsx`, `start.tsx` e `site-footer.tsx`, abrindo as peças que cada um importa. Cada peça importa só `react` e as peças irmãs, então dá para levar uma de cada vez. O logo, em `eclusa-logo.tsx`, é o arquivo mais longo: ele é o porte linha a linha do desenho original e pode ser levado inteiro.
+7. [`web/components/`](web/components/), na ordem da página: `site-header.tsx`, `hero.tsx`, `mission.tsx`, `teams.tsx`, `solutions.tsx`, `start.tsx` e `site-footer.tsx`, abrindo as peças que cada um importa. Cada peça importa só `react` e as peças irmãs, então dá para levar uma de cada vez. O logo, em `ondas-logo.tsx`, é o arquivo mais longo: ele é o porte linha a linha do script do design do logo e pode ser levado inteiro, com a legenda em `ondas-caption.tsx`.
 
 Para ver o app rodando, siga [Como rodar](README.md#como-rodar) no README. A rota `/design-system` mostra os estados de hover e foco desenhados lado a lado.
 
@@ -42,8 +42,8 @@ O código, comentários incluídos, está em inglês; só o texto da interface f
 - O texto da interface como está, em português, com os espaços reservados.
 - Os tokens com nome e valor, e os valores parecidos separados.
 - As fontes no próprio projeto, sem serviço externo, com as pilhas de fallback de `globals.css`.
-- O logo como componente SVG cujo desenho é função do quadro, parado com movimento reduzido.
-- Um logo só: a Eclusa. O design original tinha uma propriedade para trocar de logo; o Hélio fixou a Eclusa, e as outras variantes ficaram de fora.
+- O logo como componente de texto cujo desenho é função do quadro, parado com movimento reduzido no quadro de repouso.
+- O logo da abertura, as Ondas, que é o padrão do design. O design tem uma propriedade para trocar de logo; o app reproduz só o padrão.
 
 ## Lacunas
 
@@ -82,15 +82,18 @@ Onde o app difere do design original, e por quê. Cada um nasceu no código. No 
 6. **Tamanho do texto no link.** `NavLink` leva o tamanho `--text-14` e `FooterLink` leva `--text-13`, para cada um funcionar isolado. No design, os 14 px estão na pílula da navegação e os 13 px no contêiner do rodapé. O pixel não muda.
 7. **Estados desenhados para a rota.** A rota `/design-system` desenha hover e foco sem ponteiro nem teclado, dentro de `data-show-state="hover"` ou `"focus"`. Para isso, a variante `hover:` é `&:is(:hover, [data-show-state="hover"] *)`, e a regra de foco inclui `[data-show-state="focus"] :is(a, button, textarea)`. Na Home nada muda. Ao levar um componente, você pode voltar para `&:hover` e para a regra de foco simples.
 
-**Logo Eclusa**
+**Logo Ondas**
 
 8. **Preferência de movimento mudada com a página aberta.** Ao reduzir o movimento, o app volta ao quadro de partida; quando o movimento volta, ele recomeça desse quadro. O design congela onde estava e, ao voltar, pula o tempo parado. No carregamento os dois se comportam igual.
 9. **Propriedades em inglês.** `fundo` virou `background`, `animado` virou `animated` e `quadro` virou `frame`. `frame` recebe só número; o design também aceitava texto.
-10. **Cores por classe de token**, em vez de hex dentro do SVG. Os valores são os mesmos.
+10. **Cores e tipo por classe de token**, em vez dos valores escritos no `style` do design. Os valores são os mesmos.
+11. **Centramento das camadas.** Cada camada de caracteres é centrada pela propriedade `translate`, do Tailwind 4, e não por `transform: translateX(-50%)`. O desenho é o mesmo.
+12. **Relógio.** O app começa a contar o tempo no efeito, depois de montar o componente; o design conta do primeiro desenho. A diferença é de um instante e não muda o quadro de partida.
+13. **Fundo passado.** Na Home, o design não passa fundo ao logo, que desenha o fundo padrão dele, `--color-logo-night`. O app passa a cor da página, `--color-night`, com o mesmo valor, e o pixel não muda.
 
 **Rota do Sistema de design**
 
-11. **Sem design de origem.** A rota `/design-system` nasceu no código, com os tokens e o vocabulário da Home. O cabeçalho dela é próprio, com a marca e "← Home", e a Home não tem link para ela, porque o design não tem.
+14. **Sem design de origem.** A rota `/design-system` nasceu no código, com os tokens e o vocabulário da Home. O cabeçalho dela é próprio, com a marca e "← Home", e a Home não tem link para ela, porque o design não tem.
 
 ## Num projeto sem Tailwind
 
@@ -101,9 +104,10 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`. Para outro arranjo:
 
   | Classe | CSS |
   |---|---|
-  | `bg-night`, `text-muted`, `border-rule`, `fill-disc`, `stroke-red` | `background-color`, `color`, `border-color`, `fill` ou `stroke` com `var(--color-…)` |
-  | `text-15`, `text-36-80` | `font-size: var(--text-…)`, só o tamanho; a altura de linha vem de `leading-*` ou é herdada |
+  | `bg-night`, `text-muted`, `border-rule`, `text-logo-red` | `background-color`, `color` ou `border-color` com `var(--color-…)` |
+  | `text-15`, `text-36-80`, `text-logo` | `font-size: var(--text-…)`, só o tamanho; a altura de linha vem de `leading-*` ou é herdada |
   | `font-light`, `leading-160`, `tracking-tight-35` | `font-weight`, `line-height` e `letter-spacing` com o token do mesmo nome |
+  | `font-mono`, `font-logo` | `font-family: var(--font-…)` |
   | `rounded-16`, `shadow-glow`, `backdrop-blur-16` | `border-radius`, `box-shadow` e `backdrop-filter: blur(…)` com o token |
   | `px-gutter`, `p-card`, `max-w-page` | `padding-inline: var(--spacing-gutter)`, `padding: var(--spacing-card)`, `max-width: var(--container-page)` |
   | `gap-2.5`, `py-24`, `basis-120` | um passo da escala: `calc(var(--spacing) * 2.5)` e assim por diante |
@@ -118,7 +122,7 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`. Para outro arranjo:
 - **Movimento.** As utilidades de movimento (`enter-*`, `reveal-*`, `slide-from-*`, `light-up-*`, `scroll-progress` e `fade-on-exit`) estão em `globals.css` como `@utility nome { … }`, com as guardas `@media` e `@supports` aninhadas dentro. Troque `@utility nome` por `.nome`, porque o aninhamento já é CSS nativo, e copie os `@keyframes` junto. Em `scroll-progress`, o `transform: scaleX(0)` fora das guardas é a barra em repouso e vai junto.
 - **Reset.** O app conta com o preflight do Tailwind: margens zeradas; títulos que herdam tamanho e peso; links que herdam a cor, sem sublinhado; `svg` em bloco; e `border-box` em tudo, menos nos quatro elementos `content-box` do Desvio 5. Reproduza essa combinação no seu reset.
 - **Fontes.** Dois `@font-face`, com as famílias "Geist" e "Geist Mono", os arquivos de `web/fonts/`, o eixo de peso de 100 a 900, `font-display: swap` e o `unicode-range` latin que está em `fonts.ts`.
-- **Logo.** `eclusa-logo.tsx` vai inteiro, mas traz classes do Tailwind. As seis de cor (`fill-disc`, `stroke-blue`, `stroke-blue-soft`, `stroke-blue-pale`, `stroke-red` e `stroke-subtle`) viram regras com a variável da cor. A do contêiner vira `position: relative; aspect-ratio: 1; width: 100%; overflow: hidden; background-color: var(--color-night)`, e a do `svg`, `position: absolute; top: 0; left: 0; display: block`.
+- **Logo.** `ondas-logo.tsx` vai inteiro, mas traz classes do Tailwind. O contêiner (`@container relative aspect-square w-full overflow-hidden bg-logo-night font-logo text-logo-bright`) vira `container-type: inline-size; position: relative; aspect-ratio: 1; width: 100%; overflow: hidden`, com o fundo, a família e a cor dos três tokens; o fundo passado pela propriedade `background` vai no `style` e ganha deles. Cada camada (`absolute top-0 left-1/2 -translate-x-1/2 whitespace-pre text-logo leading-1200`) vira `position: absolute; top: 0; left: 50%; translate: -50% 0; white-space: pre; font-size: var(--text-logo); line-height: var(--leading-1200)`, mais a cor dela (`text-logo-agent`, `text-logo-blue`, `text-logo-red` ou `text-logo-gray`). `--text-logo` é medido em `cqw`, a largura do contêiner: sem o `container-type`, os caracteres saem do tamanho errado. A legenda, `ondas-caption.tsx`, são classes de layout e de token, sem nada à parte.
 
 ## Num projeto que já usa Tailwind 4
 
@@ -128,6 +132,6 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`. Para outro arranjo:
 
 ## Fora do Next.js
 
-- `"use client"` marca os dois componentes que rodam no navegador, `InertLink` e `EclusaLogo`. Fora do Next, a diretiva não tem efeito.
+- `"use client"` marca os dois componentes que rodam no navegador, `InertLink` e `OndasLogo`. Fora do Next, a diretiva não tem efeito.
 - `LayoutProps<"/">`, em `layout.tsx`, é um tipo das rotas tipadas do Next.
 - `fonts.ts` usa o carregador de fonte local do Next. Fora dele, os dois `@font-face` da nota acima fazem o mesmo.
