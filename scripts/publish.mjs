@@ -30,7 +30,7 @@ const PLACEMENT = [
   ['letterSpacing', /^--tracking-/],
   ['lineHeight', /^--leading-/],
   ['spacing', /^--spacing$/],
-  ['layout', /^--(spacing-|container-|grid-template-columns-|grid-auto-columns-|grow-)/],
+  ['layout', /^--(spacing-|container-|grid-template-columns-|grid-auto-columns-|grow-|aspect-)/],
   ['radius', /^--radius-/],
   ['shadow', /^--shadow-/],
   ['blur', /^--blur-/],

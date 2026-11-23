@@ -116,9 +116,18 @@ test('a draft without color themes or text styles is refused', () => {
 
 test('a token in no known family stops the build', () => {
   const theme = readTheme(
-    makeTheme(tempDir(), { 'web/app/globals.css': '@theme {\n  --color-a: #000;\n  --aspect-video: 16 / 9;\n}\n' }),
+    makeTheme(tempDir(), { 'web/app/globals.css': '@theme {\n  --color-a: #000;\n  --perspective-near: 300px;\n}\n' }),
   );
-  assert.throws(() => buildTokens({ theme, faces: FACES, draft: DRAFT, meta: META }), /--aspect-video/);
+  assert.throws(() => buildTokens({ theme, faces: FACES, draft: DRAFT, meta: META }), /--perspective-near/);
+});
+
+test('an aspect ratio goes to the layout family', () => {
+  const theme = readTheme(
+    makeTheme(tempDir(), { 'web/app/globals.css': '@theme {\n  --color-ink: #101010;\n  --aspect-4-3: 4 / 3;\n}\n' }),
+  );
+  const draft = { ...DRAFT, layout: { tokens: [{ name: 'aspect-4-3', usage: 'Media.' }] } };
+  const { tokens } = buildTokens({ theme, faces: FACES, draft, meta: META });
+  assert.deepEqual(tokens.layout, { tokens: [{ name: 'aspect-4-3', value: '4 / 3', usage: 'Media.' }] });
 });
 
 test('a grid of auto columns goes to the layout family, with the named grids', () => {
