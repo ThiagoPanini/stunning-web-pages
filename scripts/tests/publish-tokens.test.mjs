@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildTokens, parseFontFaces } from '../subida.mjs';
+import { buildTokens, parseFontFaces } from '../publish.mjs';
 import { readTheme } from '../theme.mjs';
 import { makeTheme, tempDir } from './fixtures.mjs';
 

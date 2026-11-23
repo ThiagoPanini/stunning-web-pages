@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { checkProject, compareProjects } from '../subida.mjs';
+import { checkProject, compareProjects } from '../publish.mjs';
 import { readTheme } from '../theme.mjs';
 import { makeTheme, tempDir, writeTree } from './fixtures.mjs';
 

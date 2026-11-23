@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildIndex, readSource } from '../subida.mjs';
+import { buildIndex, readSource } from '../publish.mjs';
 import { tempDir, writeTree } from './fixtures.mjs';
 
 const THEME = { title: 'demo-portal · Aurora', namespace: 'Aurora' };

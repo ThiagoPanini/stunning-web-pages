@@ -1,5 +1,11 @@
-// The Subida: the files of a theme's Design System artifact, built from the theme's app, and the checks
-// around their publication. See scripts/README.md for the whole step by step.
+// The publish of a theme's design system: the files of its Design System artifact, built from the theme's
+// app and the text the artifact already holds, and the checks around their publication.
+// See scripts/README.md for the whole step by step.
+//
+// Usage:
+//   node scripts/publish.mjs build <theme dir> --from <source dir> --out <build dir> --note "<one line>" [--ref <branch@sha>]
+//   node scripts/publish.mjs check <theme dir> <dir with project/>
+//   node scripts/publish.mjs diff <dir with project/> <dir with project/>
 
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -61,7 +67,7 @@ export function buildTokens({ theme, faces, source, meta }) {
     else (families[family] ??= []).push({ name: name.slice(2), value, usage: usage.get(name) });
   }
   if (unplaced.length) {
-    throw new Error(`no tokens.json family for ${unplaced.join(', ')}: add the namespace to PLACEMENT in scripts/subida.mjs`);
+    throw new Error(`no tokens.json family for ${unplaced.join(', ')}: add the namespace to PLACEMENT in scripts/publish.mjs`);
   }
   if (missing.length) {
     throw new Error(`the source tokens.json has no usage note for:\n  ${missing.join('\n  ')}`);
@@ -478,8 +484,8 @@ const stripComments = (html) => html.replace(/<!--[\s\S]*?-->/g, '');
 
 // The markup of each component, from the static export: a piece is the specimen the /design-system route
 // shows in its <article data-component="<Name>">, inside a frame with the classes of that page's root; a
-// block is the element of the Home whose data-block its component file names, inside the elements that
-// hold it on the page, with their classes.
+// block is the element of the screen at / whose data-block its component file names, inside the elements
+// that hold it on the page, with their classes.
 async function extractMarkup(browser, theme, components, files) {
   const page = await browser.newPage();
   const out = join(theme.web, 'out');
@@ -510,7 +516,7 @@ async function extractMarkup(browser, theme, components, files) {
       }
       return { markup: element.outerHTML, holders };
     }, ids[0]);
-    if (!block) throw new Error(`${name}: the Home has no [data-block="${ids[0]}"]`);
+    if (!block) throw new Error(`${name}: the screen at / has no [data-block="${ids[0]}"]`);
     const opens = block.holders.map((h) => (h.className ? `<${h.tag} class="${h.className}">` : `<${h.tag}>`));
     const closes = block.holders.map((h) => `</${h.tag}>`).reverse();
     result.set(name, { kind: 'block', body: [...opens, stripComments(block.markup), ...closes].join('\n') });
@@ -643,9 +649,9 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
 // ---------------------------------------------------------------- command line
 
 const USAGE = `usage:
-  node scripts/subida.mjs build <theme dir> --from <source dir> --out <build dir> --note "<one line>" [--ref <branch@sha>]
-  node scripts/subida.mjs check <theme dir> <dir with project/>
-  node scripts/subida.mjs diff <dir with project/> <dir with project/>`;
+  node scripts/publish.mjs build <theme dir> --from <source dir> --out <build dir> --note "<one line>" [--ref <branch@sha>]
+  node scripts/publish.mjs check <theme dir> <dir with project/>
+  node scripts/publish.mjs diff <dir with project/> <dir with project/>`;
 
 async function main(argv) {
   const { values, positionals } = parseArgs({
