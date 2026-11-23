@@ -15,6 +15,7 @@ import { CycleTab } from "@/components/cycle-tab";
 import { type CycleTabItem, CycleTabs } from "@/components/cycle-tabs";
 import { DataChartIllustration } from "@/components/data-chart-illustration";
 import { Eyebrow } from "@/components/eyebrow";
+import { FooterLink } from "@/components/footer-link";
 import { HeaderBlockLink } from "@/components/header-block-link";
 import { IllustrationFrame } from "@/components/illustration-frame";
 import { InertLink } from "@/components/inert-link";
@@ -559,6 +560,25 @@ export function ComponentSpecimens() {
             <DataChartIllustration />
           </div>
         </State>
+      </Specimen>
+
+      <Specimen
+        name="FooterLink"
+        title="<FooterLink>"
+        file="footer-link.tsx"
+        about={
+          <>
+            Um link do rodapé: cinza, branco em hover, com alvo de 44 px; toma o tamanho da coluna
+            onde está. <Prop>href</Prop> é uma âncora da Home; sem ele o link leva a uma Tela que
+            ainda não existe, é Lacuna e fica inerte.
+          </>
+        }
+      >
+        <Interactive>
+          <div className="flex flex-col text-14">
+            <FooterLink>Playground</FooterLink>
+          </div>
+        </Interactive>
       </Specimen>
     </div>
   );
