@@ -2,22 +2,13 @@
 // Captura de referência, mais os links do fim da página e a largura dos três blocos.
 
 import type { Page } from "@playwright/test";
-import { type BlockName, blockBox, expectBandToMatchReference, WIDTHS } from "./support/reference";
+import { type BlockName, expectBandToMatchReference, WIDTHS } from "./support/reference";
 import { expect, test } from "./support/test";
 
 const OWN_BLOCKS: BlockName[] = ["solutions", "start", "footer"];
 
-// These blocks sit below Missão and Times, and a band only matches the reference at the reference's
-// exact place: the same block one subpixel higher or lower draws some of its lines one pixel off. While
-// those two blocks are still empty, the comparison is skipped; it runs as soon as both have content.
-async function blocksAboveAreEmpty(page: Page): Promise<boolean> {
-  const above: BlockName[] = ["mission", "teams"];
-  const boxes = await Promise.all(above.map((block) => blockBox(page, block)));
-  return boxes.some((box) => box.height === 0);
-}
-
-const SKIP_REASON = "Missão e Times ainda estão vazios: a faixa não está no lugar da referência";
-
+// Each band must also sit where the reference's sits, so it depends on every block above it: the same
+// block one subpixel higher or lower draws some of its lines one pixel off.
 const BANDS: [BlockName, string][] = [
   ["solutions", "Principais soluções"],
   ["start", "Comece"],
@@ -30,7 +21,6 @@ for (const width of WIDTHS) {
   for (const [block, title] of BANDS) {
     test(`${title} bate com a referência em ${width} px`, async ({ referencePage }) => {
       const page = await referencePage(width);
-      test.skip(await blocksAboveAreEmpty(page), SKIP_REASON);
       await expectBandToMatchReference(page, { width, from: block });
     });
   }
