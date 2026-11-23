@@ -145,8 +145,11 @@ function literalValues(value: string): string[] {
 }
 
 // Where a component would write a value of its own: the arbitrary values of its classes (grow-[1.2],
-// grid-cols-[…]). The brand mark's ring keeps its stroke widths, part of its drawing (globals.css).
+// grid-cols-[…]) and a proportion in Tailwind's fraction syntax (aspect-16/10). The other fractions of the
+// components (left-1/2, -translate-x-1/2) are Tailwind's own halves, which center. The brand mark's ring
+// keeps its stroke widths, part of its drawing (globals.css).
 const DRAWINGS = ["brand-mark.tsx"];
+const ASPECT_FRACTION = /[\w:-]*\baspect-(\d+\/\d+)/g;
 
 // The body of an at-rule block of a stylesheet, braces balanced: `@layer base` gives its rules.
 function blockBody(css: string, header: string): string {
@@ -169,6 +172,9 @@ test("no component or base rule writes a design value outside @theme", () => {
     for (const [className, value] of source.matchAll(/[\w:-]+-\[([^\]\s"'`]+)\]/g)) {
       const literals = literalValues(value);
       if (literals.length > 0) found.push(`${file}: ${className} (${literals.join(", ")})`);
+    }
+    for (const [className, ratio] of source.matchAll(ASPECT_FRACTION)) {
+      found.push(`${file}: ${className} (${ratio})`);
     }
   }
   // Outside the @theme, globals.css has the motion, with its own geometry (its header says why), and
