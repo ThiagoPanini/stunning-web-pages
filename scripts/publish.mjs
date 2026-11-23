@@ -38,6 +38,10 @@ const PLACEMENT = [
   ['out', /^--(default-|ease-|duration-|delay-|animate-|transition-|background-image-)/],
 ];
 
+// The place of an @theme token in tokens.json: its family, 'family' for a font stack, 'out' for what the
+// type has no place for, or undefined when no namespace of PLACEMENT matches it.
+const placementOf = (name) => PLACEMENT.find(([, pattern]) => pattern.test(name))?.[0];
+
 // The order of the families in tokens.json: the type's own, then the further ones.
 const FAMILY_ORDER = ['spacing', 'radius', 'shadow', 'layout', 'fontSize', 'fontWeight', 'letterSpacing', 'lineHeight', 'blur', 'focus'];
 
@@ -61,7 +65,7 @@ export function buildTokens({ theme, faces, draft, meta }) {
   const unplaced = [];
   const missing = [];
   for (const [name, value] of theme.tokens) {
-    const family = PLACEMENT.find(([, pattern]) => pattern.test(name))?.[0];
+    const family = placementOf(name);
     if (!family) unplaced.push(name);
     else if (family === 'out') leftOut.push(name);
     else if (family === 'family') fontFamilies[name.slice('--font-'.length)] = value;
@@ -265,7 +269,7 @@ export function checkProject(theme, dir) {
   const leftOut = [];
   for (const name of theme.tokens.keys()) {
     if (seen.has(name)) continue;
-    if (PLACEMENT.find(([, pattern]) => pattern.test(name))?.[0] === 'out') leftOut.push(name);
+    if (placementOf(name) === 'out') leftOut.push(name);
     else failures.push(`${name}: in @theme, missing from tokens.json`);
   }
 
