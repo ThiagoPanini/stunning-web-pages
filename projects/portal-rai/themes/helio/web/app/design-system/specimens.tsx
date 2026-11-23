@@ -128,12 +128,12 @@ export function ComponentSpecimens() {
         }
       >
         <State label="animado" size="medium">
-          <div data-logo="animado" className="w-full max-w-80">
+          <div className="w-full max-w-80">
             <EclusaLogo />
           </div>
         </State>
         <State label="parado" size="medium">
-          <div data-logo="parado" className="w-full max-w-80">
+          <div className="w-full max-w-80">
             <EclusaLogo animated={false} />
           </div>
         </State>

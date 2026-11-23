@@ -218,3 +218,30 @@ test("hover e foco de cada componente aparecem na rota como são de verdade", as
   expect(checked, "componentes com link ou botão").toBeGreaterThan(3);
   expect(problems).toEqual([]);
 });
+
+// The logo with animated off is the only place it is used that way: with normal motion, the animated
+// one changes from one instant to the next and the stopped one does not.
+test("com movimento normal o logo animado muda e o parado não", async ({ browser, baseURL }) => {
+  const context = await browser.newContext({
+    baseURL,
+    viewport: { width: 1440, height: 900 },
+    reducedMotion: "no-preference",
+  });
+  const page = await context.newPage();
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const logo = (state: string) =>
+    page.locator(`[data-component="EclusaLogo"] [data-state="${state}"] [role="img"]`);
+  await logo("animado").scrollIntoViewIfNeeded();
+  const pictures = async () => [
+    await logo("animado").screenshot(),
+    await logo("parado").screenshot(),
+  ];
+
+  // 400 ms is almost 5 frames of the drawing.
+  const [animated, stopped] = await pictures();
+  await page.waitForTimeout(400);
+  const [animatedLater, stoppedLater] = await pictures();
+  expect(animatedLater.equals(animated), "o logo animado mudou").toBe(false);
+  expect(stoppedLater.equals(stopped), "o logo parado ficou igual").toBe(true);
+  await context.close();
+});
