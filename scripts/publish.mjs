@@ -34,7 +34,7 @@ const PLACEMENT = [
   ['shadow', /^--shadow-/],
   ['blur', /^--blur-/],
   ['focus', /^--outline-(width|offset)-/],
-  ['out', /^--(default-|ease-|duration-|delay-|animate-)/],
+  ['out', /^--(default-|ease-|duration-|delay-|animate-|transition-)/],
 ];
 
 // The order of the families in tokens.json: the type's own, then the further ones.
@@ -486,6 +486,14 @@ body {
 
 const stripComments = (html) => html.replace(/<!--[\s\S]*?-->/g, '');
 
+// The block a component file names: the data-block its own element writes, or the one it passes to a
+// component that writes it (`<Section block="faq">`). The file must name a single one, however many times;
+// otherwise it names none.
+export function blockOf(componentFile) {
+  const names = new Set([...componentFile.matchAll(/(?<![\w-])(?:data-)?block="([\w-]+)"/g)].map((m) => m[1]));
+  return names.size === 1 ? [...names][0] : undefined;
+}
+
 // The markup of each component, from the static export: a piece is the specimen the /design-system route
 // shows in its <article data-component="<Name>">, inside a frame with the classes of that page's root; a
 // block is the element of the screen at / whose data-block its component file names, inside the elements
@@ -507,9 +515,9 @@ async function extractMarkup(browser, theme, components, files) {
   await page.setContent(readFileSync(join(out, 'index.html'), 'utf8'), { waitUntil: 'domcontentloaded' });
   const lang = await page.evaluate(() => document.documentElement.lang);
   for (const name of blocks) {
-    const ids = [...readFileSync(join(theme.web, 'components', files.get(name)), 'utf8').matchAll(/data-block="([\w-]+)"/g)].map((m) => m[1]);
-    if (new Set(ids).size !== 1) {
-      throw new Error(`${name}: neither a specimen of /design-system (article[data-component]) nor a component with one data-block`);
+    const id = blockOf(readFileSync(join(theme.web, 'components', files.get(name)), 'utf8'));
+    if (!id) {
+      throw new Error(`${name}: neither a specimen of /design-system (article[data-component]) nor a component file that names one block`);
     }
     const block = await page.evaluate((id) => {
       const element = document.querySelector(`[data-block="${id}"]`);
@@ -519,8 +527,8 @@ async function extractMarkup(browser, theme, components, files) {
         holders.unshift({ tag: node.localName, className: node.getAttribute('class') });
       }
       return { markup: element.outerHTML, holders };
-    }, ids[0]);
-    if (!block) throw new Error(`${name}: the screen at / has no [data-block="${ids[0]}"]`);
+    }, id);
+    if (!block) throw new Error(`${name}: the screen at / has no [data-block="${id}"]`);
     const opens = block.holders.map((h) => (h.className ? `<${h.tag} class="${h.className}">` : `<${h.tag}>`));
     const closes = block.holders.map((h) => `</${h.tag}>`).reverse();
     result.set(name, { kind: 'block', body: [...opens, stripComments(block.markup), ...closes].join('\n') });

@@ -73,6 +73,22 @@ test('the tokens take their values from @theme and their text from the source', 
   assert.deepEqual(dropped, ['--color-gone']);
 });
 
+test('a transition duration is motion, left out with the other motion tokens', () => {
+  const theme = readTheme(
+    makeTheme(tempDir(), {
+      'web/app/globals.css': `@theme {
+  --color-ink: #101010;
+  --default-transition-duration: 0.2s;
+  --transition-duration-slow: 0.25s;
+}
+`,
+    }),
+  );
+  const { tokens, leftOut } = buildTokens({ theme, faces: FACES, source: SOURCE, meta: META });
+  assert.deepEqual(leftOut, ['--default-transition-duration', '--transition-duration-slow']);
+  assert.equal(JSON.stringify(tokens).includes('transition'), false);
+});
+
 test('every @theme token without a usage note in the source is named, with its family', () => {
   const theme = readTheme(makeTheme(tempDir()));
   const source = { ...SOURCE, radius: { tokens: [] }, spacing: undefined };
