@@ -28,6 +28,7 @@ const teamDot = { "Red Team": "bg-red", "Blue Team": "bg-blue" };
 function StepIcon({ icon }: { icon: Step["icon"] }) {
   return (
     <svg
+      aria-hidden="true"
       width="18"
       height="18"
       viewBox="0 0 20 20"
