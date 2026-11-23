@@ -5,7 +5,7 @@ date: 2026-11-22
 
 # Reproduzir o design como está
 
-O app de um Tema reproduz o design como ele está, inclusive no que parece inconsistente ou incompleto. São três regras. Nomear sem normalizar: cada valor do design ganha um token com nome próprio, e valores parecidos não são fundidos. Manter as Lacunas: espaço reservado de mídia continua espaço reservado, e link para Tela que não existe fica inerte. Um logo por Tema: no `portal-rai`, o Hélio fica com a Eclusa, o Unkey com as Ondas e o Refined com o Selo. O Tema é a referência do design para o Consumidor; corrigir o design cabe ao Autor, no Claude Design, ou ao Consumidor, no projeto dele. Decidido na [spec #1](https://github.com/ThiagoPanini/stunning-web-pages/issues/1).
+O app de um Tema reproduz o design como ele está, inclusive no que parece inconsistente ou incompleto. São duas regras. Nomear sem normalizar: cada valor do design ganha um token com nome próprio, e valores parecidos não são fundidos. Manter as Lacunas: espaço reservado de mídia continua espaço reservado, e link para Tela que não existe fica inerte. O Tema é a referência do design para o Consumidor; corrigir o design cabe ao Autor, no Claude Design, ou ao Consumidor, no projeto dele. Decidido na [spec #1](https://github.com/ThiagoPanini/stunning-web-pages/issues/1).
 
 ## Considered Options
 
