@@ -93,7 +93,7 @@ test("the text uses the design's families, from the app's own font files", async
   );
   // The header and the hero draw in three families; the logo brings Geist Mono. Next preloads the
   // four files of the layout's fonts.
-  expect(loaded).toEqual(["Inter", "Inter Tight", "JetBrains Mono"]);
+  expect(loaded).toEqual(["Geist Mono", "Inter", "Inter Tight", "JetBrains Mono"]);
   expect([...new Set(files)].sort()).toEqual([
     "geist_mono_latin",
     "inter_latin",
