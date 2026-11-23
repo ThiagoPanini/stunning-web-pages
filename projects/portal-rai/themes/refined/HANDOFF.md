@@ -76,6 +76,8 @@ O que o design deixou em aberto e o app reproduz como está. Não são defeitos.
 
 **Espaços reservados de texto**: `[NOME DA COMPANHIA]`, na barra do rodapé, e `[CANAL DO TIME]` e `[E-MAIL DO TIME]`, na linha "Ou fale direto" do Contato e nas duas pílulas do rodapé.
 
+**Dados de exemplo.** O que Na prática mostra são exemplos: o "1 achado novo" do agente de ataque e os quatro turnos do checklist dele, a mensagem citada no cartão dos guardrails, o "bloqueada" "em 14 ms" e o score 0,93 de `prompt_injection`.
+
 Estes funcionam: a marca do cabeçalho, o "Home" da navegação e o do rodapé levam ao topo da página; "Ver o ciclo" leva ao Ciclo; os links das colunas Times e Soluções do rodapé levam às seções deles; e "Voltar ao topo ↑" leva ao início da página.
 
 ## Desvios
@@ -104,17 +106,21 @@ Onde o app difere do design original, e por quê. Cada um nasceu no código. No 
 9. **Números gerados.** O número de cada solução ("01." a "04.") e o "etapa 1 de 5" de cada etapa do Ciclo saem da posição na lista, e não estão escritos à mão. O texto é o mesmo.
 10. **Peças em arquivos soltos.** O design escreve tudo dentro das seções. O app separa em arquivos as peças que se repetem ou que têm estado próprio, para a rota `/design-system` mostrá-las isoladas: `CycleStep`, `CheckRow`, `PortalCardLink`, `FaqAccordion` com `FaqItem` e `AnswerLink`, `FormField`, `ScrollProgress`, `IconDisc` e as outras da tabela de peças do `DESIGN.md`. `FormField` junta o rótulo e o campo, que o design escreve à mão, três vezes.
 
+**Fontes**
+
+11. **Uma `@font-face` para o Geist Mono.** O Google Fonts declara uma `@font-face` para cada peso que o design do logo pede, 400 e 500, as duas no mesmo arquivo. O app declara uma só, com o eixo de peso inteiro do arquivo, de 100 a 900. O desenho é o mesmo. Para a Instrument Sans, o Google Fonts e o app declaram uma só, com os dois eixos.
+
 **Logo Ondas**
 
-11. **Preferência de movimento mudada com a página aberta.** Ao reduzir o movimento, o app volta ao quadro de partida; quando o movimento volta, ele recomeça desse quadro. O design congela onde estava e, ao voltar, pula o tempo parado. No carregamento os dois se comportam igual.
-12. **Propriedades em inglês.** `fundo` virou `background`, `animado` virou `animated` e `quadro` virou `frame`. `frame` recebe só número; o design também aceitava texto.
-13. **Cores e tipo por classe de token**, em vez dos valores escritos no `style` do design. Os valores são os mesmos. O fundo que a abertura passa, `fundo="#0D0D0C"` no design, é `var(--color-night)` no app.
-14. **Centramento das camadas.** Cada camada de caracteres é centrada pela propriedade `translate`, do Tailwind 4, e não por `transform: translateX(-50%)`. O desenho é o mesmo.
-15. **Relógio.** O app começa a contar o tempo no efeito, depois de montar o componente; o design conta do primeiro desenho. A diferença é de um instante e não muda o quadro de partida.
+12. **Preferência de movimento mudada com a página aberta.** Ao reduzir o movimento, o app volta ao quadro de partida; quando o movimento volta, ele recomeça desse quadro. O design congela onde estava e, ao voltar, pula o tempo parado. No carregamento os dois se comportam igual.
+13. **Propriedades em inglês.** `fundo` virou `background`, `animado` virou `animated` e `quadro` virou `frame`. `frame` recebe só número; o design também aceitava texto.
+14. **Cores e tipo por classe de token**, em vez dos valores escritos no `style` do design. Os valores são os mesmos. O fundo que a abertura passa, `fundo="#0D0D0C"` no design, é `var(--color-night)` no app.
+15. **Centramento das camadas.** Cada camada de caracteres é centrada pela propriedade `translate`, do Tailwind 4, e não por `transform: translateX(-50%)`. O desenho é o mesmo.
+16. **Relógio.** O app começa a contar o tempo no efeito, depois de montar o componente; o design conta do primeiro desenho. A diferença é de um instante e não muda o quadro de partida.
 
 **Rota do Sistema de design**
 
-16. **Sem design de origem.** A rota `/design-system` nasceu no código, com os tokens e o vocabulário da Home. O cabeçalho dela é próprio, com a marca e a pílula de navegação com "Home" e "Sistema de design", e a Home não tem link para ela, porque o design não tem.
+17. **Sem design de origem.** A rota `/design-system` nasceu no código, com os tokens e o vocabulário da Home. O cabeçalho dela é próprio, com a marca e a pílula de navegação com "Home" e "Sistema de design", e a Home não tem link para ela, porque o design não tem. No topo da rota fica o logo como o design do logo o desenha sozinho: 560 px, no fundo próprio dele, `--color-logo-night`.
 
 ## Num projeto sem Tailwind
 
