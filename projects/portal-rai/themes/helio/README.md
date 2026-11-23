@@ -12,7 +12,7 @@ Um Tema do Projeto [`portal-rai`](../../README.md): a Home do portal de um time 
 | Framework | Next.js 16.4.6, com export estático |
 | Capturas | Home em [1440 px](screenshots/home-1440.png) e [390 px](screenshots/home-390.png); Sistema de design em [1440 px](screenshots/design-system-1440.png) e [390 px](screenshots/design-system-390.png) |
 
-Para entender o Sistema de design, leia o [`DESIGN.md`](DESIGN.md). Para reimplementar o Tema no seu projeto com um agente, entregue a ele o [`HANDOFF.md`](HANDOFF.md).
+Para entender o Sistema de design, leia o [`DESIGN.md`](DESIGN.md). Para reimplementar o Tema no seu projeto com um agente, entregue a ele o [`HANDOFF.md`](HANDOFF.md). Para apresentar o Tema, abra o Deck, [`presentation.html`](presentation.html), no navegador: é um arquivo só e abre sem servidor.
 
 ## Versões
 
