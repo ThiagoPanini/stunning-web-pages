@@ -43,17 +43,33 @@ const INITIAL_VIEWPORT_HEIGHT = 100;
 const MAX_GROW_STEPS = 6;
 const SETTLE_MS = 500;
 
-// pixelmatch's own default: the per-pixel color distance (OKLab HyAB, 0 to 1) below which two pixels are
-// equal. Anti-aliased pixels are detected and ignored.
-export const PIXEL_THRESHOLD = 0.1;
+// The limit of every comparison with a Captura de referência, calibrated on the whole Home (home.spec.ts)
+// on 2026-11-22:
+//
+// - Measured: the whole Home matches its reference byte for byte at 1440 and at 390 px, in 20 runs out of
+//   20 with 8 workers in parallel, and so does every band, cut from the same two images. The first
+//   calibration, on the header and hero band, had seen one level of one channel in the blurred header.
+// - So no pixel may differ. Any slack lets real changes through: the former 0.01% was 521 pixels of the
+//   whole Home at 1440 px, and these changes, provoked one at a time, stayed under it: a section title
+//   1 px lower (429 pixels), the four team badges in another color (234), the letter spacing of a heading
+//   off by 0.001em (45), the radius of the team cards from 16 to 12 px (12).
+// - The per-pixel threshold stays above that one-level noise and below a swap of close tokens, which
+//   this dark palette is full of. At pixelmatch's default, 0.1, these swaps left 0 pixels different on
+//   the whole Home: the cards painted night instead of surface, every rule drawn rule-strong, the nav
+//   pill white-6 instead of white-4, the paragraphs 16 levels lighter. At 0.02 each one fails, from
+//   12,892 to 499,391 pixels.
+// - The match holds only for the Chromium of this Playwright on Linux, where the references were taken:
+//   another browser or system renders text differently, and no limit near zero survives that.
+//
+// A comparison that cannot be exact loosens its own limit, with the reason next to it, as logo.spec.ts
+// does.
 
-// Default share of a band's pixels that may differ. First calibration, on the header and hero band with
-// the logo masked: 0 differing pixels at 1440 and at 390 px. Compared byte for byte, the bands differ
-// only in the header at 1440 px, by one level of one channel (its translucent, blurred background), which
-// the threshold above absorbs. The limit stays near zero, so a moved line of text or a wrong color fails:
-// 0.01% is 85 pixels of the header and hero band at 1440 px. The calibration of the whole Home may
-// revise it.
-export const MAX_DIFF_PIXEL_RATIO = 0.0001;
+// The per-pixel color distance (0 to 1) below which two pixels are equal. Anti-aliased pixels are
+// detected and ignored.
+export const PIXEL_THRESHOLD = 0.02;
+
+// Share of the compared pixels that may differ.
+export const MAX_DIFF_PIXEL_RATIO = 0;
 
 export async function readReference(width: Width): Promise<ReferenceRecord & { image: PNG }> {
   const record = JSON.parse(
