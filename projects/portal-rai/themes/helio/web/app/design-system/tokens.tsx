@@ -188,6 +188,42 @@ export function SpacingTokens({ tokens }: { tokens: Token[] }) {
   );
 }
 
+// A grid of the page with four cells: as many columns as fit the row, each at least its minimum.
+export function GridTokens({ tokens }: { tokens: Token[] }) {
+  return (
+    <ul className="flex flex-col">
+      {tokens.map((token) => (
+        <TokenRow key={token.name} token={token}>
+          <Sample className="grid gap-4" style={{ gridTemplateColumns: variable(token) }}>
+            {[1, 2, 3, 4].map((cell) => (
+              <div key={cell} className="h-10 rounded-10 border border-rule bg-surface" />
+            ))}
+          </Sample>
+        </TokenRow>
+      ))}
+    </ul>
+  );
+}
+
+// Two parts of a row that start from the same basis: the first grows by 1, the sample by the token.
+export function GrowTokens({ tokens }: { tokens: Token[] }) {
+  return (
+    <ul className="flex flex-col">
+      {tokens.map((token) => (
+        <TokenRow key={token.name} token={token}>
+          <div className="flex gap-2">
+            <div className="h-2 grow basis-0 rounded-pill bg-rule-strong" />
+            <Sample
+              className="h-2 basis-0 rounded-pill bg-blue"
+              style={{ flexGrow: variable(token) }}
+            />
+          </div>
+        </TokenRow>
+      ))}
+    </ul>
+  );
+}
+
 export function RadiusTokens({ tokens }: { tokens: Token[] }) {
   return (
     <TokenGrid min="narrow">
@@ -231,6 +267,29 @@ export function EffectTokens({ tokens }: { tokens: Token[] }) {
               />
             </div>
           )}
+        </TokenCell>
+      ))}
+    </TokenGrid>
+  );
+}
+
+// The focus ring, drawn whole in each cell: its width and its offset, in the color of the focus.
+export function FocusTokens({ tokens }: { tokens: Token[] }) {
+  const width = tokens.find((token) => token.name.startsWith("--outline-width-"));
+  const offset = tokens.find((token) => token.name.startsWith("--outline-offset-"));
+  const ring: CSSProperties = {
+    outlineStyle: "solid",
+    outlineColor: "var(--color-blue)",
+    outlineWidth: width && variable(width),
+    outlineOffset: offset && variable(offset),
+  };
+  return (
+    <TokenGrid min="wide">
+      {tokens.map((token) => (
+        <TokenCell key={token.name} token={token}>
+          <div className="flex h-24 items-center px-6">
+            <Sample className="h-11 w-44 rounded-10 bg-bright" style={ring} />
+          </div>
         </TokenCell>
       ))}
     </TokenGrid>

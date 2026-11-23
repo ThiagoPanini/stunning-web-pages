@@ -5,34 +5,30 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { Locator } from "@playwright/test";
 import { PNG } from "pngjs";
+import { parseThemeTokens } from "../app/design-system/theme-tokens";
 import { WIDTHS } from "./support/reference";
-import { expect, test } from "./support/test";
+import { expectSavedScreenshot } from "./support/screenshots";
+import { expect, load, test } from "./support/test";
 
 const ROUTE = "/design-system";
 
-// The tokens as app/globals.css declares them in its @theme block, comments and the reset left out:
-// [name, value with its spaces collapsed].
+// The tokens as app/globals.css declares them in its @theme block: [name, value].
 function themeTokens(): [string, string][] {
   const css = readFileSync(join(import.meta.dirname, "..", "app", "globals.css"), "utf8");
-  const block = css.match(/@theme static \{([\s\S]*?)\n\}/)?.[1] ?? "";
-  return [...block.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)]
-    .map((match): [string, string] => [match[1], match[2].trim().replace(/\s+/g, " ")])
-    .filter(([name]) => name !== "--");
+  return parseThemeTokens(css).map(({ name, value }) => [name, value]);
 }
 
 for (const width of WIDTHS) {
   test(`a rota renderiza sem erro de console e sem transbordo em ${width} px`, async ({
-    browser,
-    baseURL,
+    newWindow,
   }) => {
-    const context = await browser.newContext({ baseURL, viewport: { width, height: 900 } });
-    const page = await context.newPage();
+    const page = await newWindow(width, { height: 900 });
     const errors: string[] = [];
     page.on("console", (message) => {
       if (message.type() === "error" || message.type() === "warning") errors.push(message.text());
     });
     page.on("pageerror", (error) => errors.push(error.message));
-    const response = await page.goto(ROUTE, { waitUntil: "networkidle" });
+    const response = await load(page, ROUTE);
     expect(response?.status(), "status da rota").toBe(200);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sistema de design.");
     await page.mouse.wheel(0, 100_000);
@@ -42,7 +38,6 @@ for (const width of WIDTHS) {
       await page.evaluate(() => document.documentElement.scrollWidth),
       "largura rolável da página",
     ).toBe(width);
-    await context.close();
   });
 }
 
@@ -65,7 +60,8 @@ test("todo token do @theme aparece na rota com nome e valor", async ({ page }) =
 });
 
 // For each kind of token the route draws: the property its sample shows and another value for the
-// token, different from any the @theme holds.
+// token, different from any the @theme holds. The kinds are Tailwind's namespaces, as in the route's
+// grouping (theme-tokens.ts); this list is written apart on purpose, as what the test expects to see.
 const DRAWN: [RegExp, string, string][] = [
   [/^--color-/, "background-color", "rgb(1, 2, 3)"],
   [/^--font-weight-/, "font-weight", "900"],
@@ -77,6 +73,10 @@ const DRAWN: [RegExp, string, string][] = [
   [/^--radius-/, "border-top-left-radius", "3px"],
   [/^--shadow-/, "box-shadow", "0 0 0 3px rgb(1, 2, 3)"],
   [/^--blur-/, "backdrop-filter", "3px"],
+  [/^--outline-width-/, "outline-width", "7px"],
+  [/^--outline-offset-/, "outline-offset", "7px"],
+  [/^--grid-template-columns-/, "grid-template-columns", "1px 2px 3px"],
+  [/^--grow-/, "flex-grow", "7"],
 ];
 
 // The samples follow the variable: another value for a token, set on the page while it is open, changes
@@ -222,14 +222,9 @@ test("hover e foco de cada componente aparecem na rota como são de verdade", as
 
 // The logo with animated off is the only place it is used that way: with normal motion, the animated
 // one changes from one instant to the next and the stopped one does not.
-test("com movimento normal o logo animado muda e o parado não", async ({ browser, baseURL }) => {
-  const context = await browser.newContext({
-    baseURL,
-    viewport: { width: 1440, height: 900 },
-    reducedMotion: "no-preference",
-  });
-  const page = await context.newPage();
-  await page.goto(ROUTE, { waitUntil: "networkidle" });
+test("com movimento normal o logo animado muda e o parado não", async ({ newWindow }) => {
+  const page = await newWindow(1440, { motion: "no-preference" });
+  await load(page, ROUTE);
   const logo = (state: string) =>
     page.locator(`[data-component="EclusaLogo"] [data-state="${state}"] [role="img"]`);
   await logo("animado").scrollIntoViewIfNeeded();
@@ -244,24 +239,21 @@ test("com movimento normal o logo animado muda e o parado não", async ({ browse
   const [animatedLater, stoppedLater] = await pictures();
   expect(animatedLater.equals(animated), "o logo animado mudou").toBe(false);
   expect(stoppedLater.equals(stopped), "o logo parado ficou igual").toBe(true);
-  await context.close();
 });
 
 // The Capturas of the route, in the Tema's screenshots/, taken under the conditions of the Capturas de
 // referência: reduced motion, so both logos rest on the same frame, and a viewport as tall as the
-// document. Every run rewrites them, so they show the route as it is.
-const SCREENSHOTS_DIR = join(import.meta.dirname, "..", "..", "screenshots");
-
+// document. Each one must be the route as it is now (support/screenshots.ts).
 for (const width of WIDTHS) {
-  test(`guarda a Captura da rota em ${width} px`, async ({ referencePage }) => {
+  test(`a Captura da rota em ${width} px é a rota de agora`, async ({ referencePage }) => {
     const page = await referencePage(width, ROUTE);
-    const path = join(SCREENSHOTS_DIR, `design-system-${width}.png`);
-    await page.screenshot({ path, animations: "disabled" });
+    const screenshot = await page.screenshot({ animations: "disabled" });
     const height = await page.evaluate(() => document.documentElement.scrollHeight);
-    const capture = PNG.sync.read(readFileSync(path));
+    const capture = PNG.sync.read(screenshot);
     expect({ width: capture.width, height: capture.height }, "a Captura é a rota inteira").toEqual({
       width,
       height,
     });
+    await expectSavedScreenshot(`design-system-${width}`, screenshot);
   });
 }

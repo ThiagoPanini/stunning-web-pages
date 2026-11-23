@@ -1,6 +1,6 @@
-// Guarda de texto: o endereço de um Artefato do Claude só aparece no Ponteiro, dentro da Origem.
-// Nenhum outro arquivo do Tema pode citá-lo, porque o Consumidor não abre o Artefato e o Tema tem de
-// ser completo por si.
+// A text guard: the address of a Claude Artefato appears only in the Ponteiro, inside the Origem. No
+// other file of the Tema may cite one, because the Consumidor does not open the Artefato and the Tema
+// has to be complete on its own.
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";

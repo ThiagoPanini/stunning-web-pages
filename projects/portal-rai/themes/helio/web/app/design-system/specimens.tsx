@@ -6,10 +6,21 @@ import { EclusaCaption } from "@/components/eclusa-caption";
 import { EclusaLogo } from "@/components/eclusa-logo";
 import { FooterLink } from "@/components/footer-link";
 import { InertLink } from "@/components/inert-link";
+import { missionSteps } from "@/components/mission";
+import { MissionColumn } from "@/components/mission-column";
 import { NavLink } from "@/components/nav-link";
 import { NavPill } from "@/components/nav-pill";
+import { SectionLabel } from "@/components/section-label";
 import { TeamBadge } from "@/components/team-badge";
 import { TeamCard } from "@/components/team-card";
+import {
+  attackTurns,
+  BlueTeamPanel,
+  blueTeamCard,
+  guardStages,
+  RedTeamPanel,
+  redTeamCard,
+} from "@/components/teams";
 import {
   TerminalLeaderRow,
   TerminalNote,
@@ -18,9 +29,10 @@ import {
 } from "@/components/terminal-panel";
 import { TextLink } from "@/components/text-link";
 
-// Each component of the Home on its own, with the same files the Home is built with. A link or a button
-// is shown at rest, then hovered and focused: inside data-show-state the theme draws that state with no
-// pointer or keyboard on it (app/globals.css). Components with no state of their own show their variants.
+// Each component of the Home on its own, with the same files the Home is built with and, where the Home
+// has it, the same text. A link or a button is shown at rest, then hovered and focused: inside
+// data-show-state the theme draws that state with no pointer or keyboard on it (app/globals.css).
+// Components with no state of their own show their variants.
 
 type SpecimenProps = {
   name: string;
@@ -80,45 +92,8 @@ const Prop = ({ children }: { children: ReactNode }) => (
   <code className="font-mono text-13 text-bright">{children}</code>
 );
 
-function TeamCardRed() {
-  return (
-    <TeamCard
-      team="red"
-      stance="Ofensiva · antes da produção"
-      title="Ataca os agentes antes que alguém de fora ataque."
-      description="Cria agentes de ataque que simulam adversários reais em conversas com os agentes da companhia, turno a turno, até descobrir onde eles cedem."
-    >
-      <TerminalPanel>
-        <TerminalNote>$ agente-de-ataque --alvo atendimento</TerminalNote>
-        <TerminalLeaderRow step="turno 2 · injeção indireta" outcome="contido" tone="blue" />
-        <TerminalLeaderRow step="turno 4 · ofuscação com números" outcome="passou" tone="red" />
-      </TerminalPanel>
-    </TeamCard>
-  );
-}
-
-function TeamCardBlue() {
-  return (
-    <TeamCard
-      team="blue"
-      stance="Defensiva · em produção"
-      title="Protege cada conversa entre clientes e agentes."
-      description="Implementa os guardrails que avaliam o que entra e o que sai de cada interação entre clientes e agentes, em produção e em tempo real."
-    >
-      <TerminalPanel>
-        <TerminalNote>{"cliente -> guardrails -> agente -> guardrails -> cliente"}</TerminalNote>
-        <TerminalStageRow stage="entrada" tone="blue">
-          prompt injection · jailbreak · PII · escopo
-        </TerminalStageRow>
-        <TerminalStageRow stage="agente" tone="subtle">
-          gera a resposta
-        </TerminalStageRow>
-      </TerminalPanel>
-    </TeamCard>
-  );
-}
-
 export function ComponentSpecimens() {
+  const [firstStep] = missionSteps;
   return (
     <div className="flex flex-col gap-14">
       <Specimen
@@ -315,6 +290,40 @@ export function ComponentSpecimens() {
       </Specimen>
 
       <Specimen
+        name="SectionLabel"
+        file="section-label.tsx"
+        about={
+          <>
+            O rótulo mono em caixa alta que abre a abertura e cada seção numerada, no formato “01 ·
+            Missão”. <Prop>className</Prop> recebe o movimento de entrada.
+          </>
+        }
+      >
+        <State label="seção" size="medium">
+          <SectionLabel>01 · Missão</SectionLabel>
+        </State>
+        <State label="abertura" size="medium">
+          <SectionLabel>Guardrails para agentes conversacionais de IA</SectionLabel>
+        </State>
+      </Specimen>
+
+      <Specimen
+        name="MissionColumn"
+        file="mission-column.tsx"
+        about={
+          <>
+            Uma coluna da Missão: o nome do passo sobre o que o time faz nele, sob um filete forte.{" "}
+            <Prop>title</Prop> é o passo, <Prop>children</Prop> o texto; <Prop>className</Prop>{" "}
+            recebe a subida escalonada.
+          </>
+        }
+      >
+        <State label="padrão" size="medium">
+          <MissionColumn title={firstStep.title}>{firstStep.body}</MissionColumn>
+        </State>
+      </Specimen>
+
+      <Specimen
         name="TeamBadge"
         file="team-badge.tsx"
         about={
@@ -343,24 +352,30 @@ export function ComponentSpecimens() {
         }
       >
         <State label="red" size="large">
-          <TeamCardRed />
+          <TeamCard {...redTeamCard}>
+            <RedTeamPanel />
+          </TeamCard>
         </State>
         <State label="blue" size="large">
-          <TeamCardBlue />
+          <TeamCard {...blueTeamCard}>
+            <BlueTeamPanel />
+          </TeamCard>
         </State>
       </Specimen>
 
       <Specimen
         name="TerminalPanel"
         file="terminal-panel.tsx"
-        about="O painel em estilo de terminal que fecha os cartões dos times: linhas em mono sobre a cor da página."
+        about="O painel em estilo de terminal que fecha os cartões dos times: linhas em mono sobre a cor da página. Os dois da Home, como estão nos cartões."
       >
-        <State label="padrão" size="medium">
+        <State label="Red Team" size="medium">
           <div className="w-full">
-            <TerminalPanel>
-              <TerminalNote>$ agente-de-ataque --alvo atendimento</TerminalNote>
-              <TerminalNote>1 achado novo enviado ao Blue Team</TerminalNote>
-            </TerminalPanel>
+            <RedTeamPanel />
+          </div>
+        </State>
+        <State label="Blue Team" size="medium">
+          <div className="w-full">
+            <BlueTeamPanel />
           </div>
         </State>
       </Specimen>
@@ -393,13 +408,14 @@ export function ComponentSpecimens() {
         <State label="tons" size="medium">
           <div className="w-full">
             <TerminalPanel>
-              <TerminalLeaderRow step="turno 1 · pedido legítimo" outcome="respondeu" />
-              <TerminalLeaderRow step="turno 2 · injeção indireta" outcome="contido" tone="blue" />
-              <TerminalLeaderRow
-                step="turno 4 · ofuscação com números"
-                outcome="passou"
-                tone="red"
-              />
+              {attackTurns.map((turn) => (
+                <TerminalLeaderRow
+                  key={turn.label}
+                  step={turn.label}
+                  outcome={turn.detail}
+                  tone={turn.tone}
+                />
+              ))}
             </TerminalPanel>
           </div>
         </State>
@@ -418,12 +434,11 @@ export function ComponentSpecimens() {
         <State label="tons" size="medium">
           <div className="w-full">
             <TerminalPanel>
-              <TerminalStageRow stage="entrada" tone="blue">
-                prompt injection · jailbreak · PII · escopo
-              </TerminalStageRow>
-              <TerminalStageRow stage="agente" tone="subtle">
-                gera a resposta
-              </TerminalStageRow>
+              {guardStages.map((stage) => (
+                <TerminalStageRow key={stage.label} stage={stage.label} tone={stage.tone}>
+                  {stage.detail}
+                </TerminalStageRow>
+              ))}
             </TerminalPanel>
           </div>
         </State>

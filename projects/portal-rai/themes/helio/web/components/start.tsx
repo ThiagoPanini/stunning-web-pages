@@ -1,5 +1,6 @@
 import { ApiCallCard } from "./api-call-card";
 import { ButtonLink } from "./button-link";
+import { SectionLabel } from "./section-label";
 import { TextLink } from "./text-link";
 
 // 04 · Comece: the closing call, with the button and a link to Integrações, next to the card that
@@ -13,7 +14,7 @@ export function Start() {
       className="flex flex-wrap items-center gap-x-16 gap-y-10 border-rule border-t pt-24 pb-26"
     >
       <div className="reveal-1 flex min-w-0 grow basis-105 flex-col gap-6">
-        <div className="font-mono text-12 text-subtle uppercase tracking-wide-80">04 · Comece</div>
+        <SectionLabel>04 · Comece</SectionLabel>
         <h2 className="font-light text-32-56 leading-105 tracking-tight-30">
           Coloque seu agente à prova.
         </h2>

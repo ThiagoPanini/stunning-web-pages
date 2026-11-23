@@ -1,6 +1,7 @@
 import { ButtonLink } from "./button-link";
 import { EclusaCaption } from "./eclusa-caption";
 import { EclusaLogo } from "./eclusa-logo";
+import { SectionLabel } from "./section-label";
 import { TextLink } from "./text-link";
 
 // The opening of the Home, in two columns that stack when narrow: the pitch on one side, the logo and
@@ -9,9 +10,9 @@ export function Hero() {
   return (
     <section data-block="hero" className="flex flex-wrap items-end gap-x-12 gap-y-10 pt-12 pb-24">
       <div className="flex min-w-0 grow basis-120 flex-col gap-7 pb-9">
-        <div className="enter-1 font-mono text-12 text-subtle uppercase tracking-wide-80">
+        <SectionLabel className="enter-1">
           Guardrails para agentes conversacionais de IA
-        </div>
+        </SectionLabel>
         <h1 className="enter-2 font-light text-36-80 leading-104 tracking-tight-35">
           Atacamos primeiro<span className="text-red">.</span>
           <br />

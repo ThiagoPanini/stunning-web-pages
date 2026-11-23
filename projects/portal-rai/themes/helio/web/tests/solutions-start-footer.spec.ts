@@ -2,6 +2,7 @@
 // Captura de referência, mais os links do fim da página e a largura dos três blocos.
 
 import type { Page } from "@playwright/test";
+import { spilledElements } from "./support/overflow";
 import { type BlockName, expectBandToMatchReference, WIDTHS } from "./support/reference";
 import { expect, test } from "./support/test";
 
@@ -39,19 +40,7 @@ for (const width of WIDTHS) {
 
   test(`o fim da Home não transborda na horizontal em ${width} px`, async ({ referencePage }) => {
     const page = await referencePage(width);
-    const selector = OWN_BLOCKS.map((block) => `[data-block="${block}"]`).join(", ");
-    const outside = await page.locator(selector).evaluateAll(
-      (blocks, viewportWidth) =>
-        blocks
-          .flatMap((block) => [block, ...block.querySelectorAll("*")])
-          .filter((element) => {
-            const { left, right } = element.getBoundingClientRect();
-            return left < 0 || right > viewportWidth;
-          })
-          .map((element) => element.outerHTML.slice(0, 120)),
-      width,
-    );
-    expect(outside).toEqual([]);
+    expect(await spilledElements(page, width, OWN_BLOCKS)).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
   });
 }

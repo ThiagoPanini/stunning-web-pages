@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BrandMark } from "@/components/brand-mark";
+import { SectionLabel } from "@/components/section-label";
 import { TextLink } from "@/components/text-link";
 import { DesignGroup, DesignSection } from "./parts";
 import { ComponentSpecimens } from "./specimens";
@@ -8,6 +9,9 @@ import {
   ColorTokens,
   EffectTokens,
   FamilyTokens,
+  FocusTokens,
+  GridTokens,
+  GrowTokens,
   LeadingTokens,
   PlainTokens,
   RadiusTokens,
@@ -41,9 +45,7 @@ export default function DesignSystem() {
       </header>
       <main className="mx-auto box-content max-w-page px-gutter">
         <section className="flex flex-col gap-7 pt-16 pb-20">
-          <div className="font-mono text-12 text-subtle uppercase tracking-wide-80">
-            Tema Hélio · Sistema de design
-          </div>
+          <SectionLabel>Tema Hélio · Sistema de design</SectionLabel>
           <h1 className="font-light text-36-80 leading-104 tracking-tight-35">
             Sistema de design.
           </h1>
@@ -91,24 +93,35 @@ export default function DesignSystem() {
 
         <DesignSection
           number="03"
-          label="Espaçamentos"
-          title="Espaçamentos."
-          lead="A escala de espaçamento do Tailwind fica, com a base de 4 px; os espaçamentos fluidos e a largura da página têm nome próprio."
+          label="Layout"
+          title="Espaçamentos e grades."
+          lead="A escala de espaçamento do Tailwind fica, com a base de 4 px; os espaçamentos fluidos e a largura da página têm nome próprio. As grades da Missão e dos Times põem quantas colunas couberem, cada uma com a sua largura mínima, e as linhas das soluções crescem em proporções que não são números inteiros."
         >
-          <SpacingTokens tokens={tokens.spacing} />
+          <DesignGroup title="Espaçamentos e larguras">
+            <SpacingTokens tokens={tokens.spacing} />
+          </DesignGroup>
+          <DesignGroup title="Grades">
+            <GridTokens tokens={tokens.grids} />
+          </DesignGroup>
+          <DesignGroup title="Crescimento">
+            <GrowTokens tokens={tokens.grow} />
+          </DesignGroup>
         </DesignSection>
 
         <DesignSection
           number="04"
           label="Formas"
-          title="Raios, sombra e desfoque."
-          lead="Raios nomeados em px, a pílula e o círculo; o brilho do botão em hover e o desfoque do cabeçalho."
+          title="Raios, sombra, desfoque e foco."
+          lead="Raios nomeados em px, a pílula e o círculo; o brilho do botão em hover, o desfoque do cabeçalho e o anel do foco de teclado."
         >
           <DesignGroup title="Raios">
             <RadiusTokens tokens={tokens.radii} />
           </DesignGroup>
           <DesignGroup title="Sombra e desfoque">
             <EffectTokens tokens={tokens.effects} />
+          </DesignGroup>
+          <DesignGroup title="Foco">
+            <FocusTokens tokens={tokens.focus} />
           </DesignGroup>
         </DesignSection>
 

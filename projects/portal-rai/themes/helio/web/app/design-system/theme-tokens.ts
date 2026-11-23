@@ -6,9 +6,13 @@ export type Token = { name: string; value: string };
 // The tokens of the @theme block of app/globals.css, the only source of the Sistema de design, in the
 // order they are declared. The route reads them when it is built, so the value it prints next to a name
 // is the one written there, and each sample uses the variable itself, never a copy of the value.
-// The reset of Tailwind's theme (--*: initial) is not a token.
 export function readThemeTokens(): Token[] {
-  const css = readFileSync(join(process.cwd(), "app", "globals.css"), "utf8");
+  return parseThemeTokens(readFileSync(join(process.cwd(), "app", "globals.css"), "utf8"));
+}
+
+// The tokens of the @theme block of a stylesheet, with comments left out and spaces collapsed. The
+// reset of Tailwind's theme (--*: initial) is not a token. The tests read globals.css with this too.
+export function parseThemeTokens(css: string): Token[] {
   const block = css.match(/@theme static \{([\s\S]*?)\n\}/)?.[1];
   if (!block) throw new Error("app/globals.css não tem o bloco @theme static");
   return [...block.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)]
@@ -24,12 +28,16 @@ export type TokenGroup =
   | "tracking"
   | "leading"
   | "spacing"
+  | "grids"
+  | "grow"
   | "radii"
   | "effects"
+  | "focus"
   | "motion"
   | "others";
 
-// Tailwind's namespaces, as the @theme uses them. A token outside all of them still shows, in "others".
+// Tailwind's namespaces, as the @theme uses them, and --grow-*, which is the Tema's own: Tailwind has no
+// namespace for flex grow. A token outside all of them still shows, in "others".
 const NAMESPACES: [TokenGroup, RegExp][] = [
   ["colors", /^--color-/],
   ["weights", /^--font-weight-/],
@@ -38,8 +46,11 @@ const NAMESPACES: [TokenGroup, RegExp][] = [
   ["tracking", /^--tracking-/],
   ["leading", /^--leading-/],
   ["spacing", /^--(spacing|container-)/],
+  ["grids", /^--grid-template-columns-/],
+  ["grow", /^--grow-/],
   ["radii", /^--radius-/],
   ["effects", /^--(shadow|blur)-/],
+  ["focus", /^--outline-(width|offset)-/],
   ["motion", /^--(default-transition-|ease-|duration-|delay-|animate-)/],
 ];
 
@@ -52,8 +63,11 @@ export function groupTokens(tokens: Token[]): Record<TokenGroup, Token[]> {
     tracking: [],
     leading: [],
     spacing: [],
+    grids: [],
+    grow: [],
     radii: [],
     effects: [],
+    focus: [],
     motion: [],
     others: [],
   };
