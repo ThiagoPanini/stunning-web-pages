@@ -9,7 +9,7 @@
  *
  * Naming: a color or a length with one job is named after the job (night, gutter); a value that belongs
  * to a scale is named after its value (text-15 is 15px, text-46-96 grows from 46 to 96px, leading-150 is
- * 1.5, tracking-tight-45 is -0.045em, radius-12 is 12px).
+ * 1.5, tracking-tight-45 is -0.045em, radius-12 is 12px, aspect-21-9 is 21 / 9).
  *
  * Left out on purpose: the captions of the Selo and Eclusa logos, which the board shows only for those
  * logos (the Home shows the Ondas), with the 11px size and the 0.12em spacing of the Selo's, and the
@@ -149,6 +149,11 @@
   --grid-template-columns-1: minmax(0, 1fr); /* every grid at 760px and below */
   --grid-template-columns-2: repeat(2, minmax(0, 1fr)); /* solutions, practice, portal, contact */
   --grid-template-columns-3: repeat(3, minmax(0, 1fr)); /* footer columns */
+
+  /* The proportions of the media placeholders, named after their ratio. */
+  --aspect-16-10: 16 / 10; /* team videos */
+  --aspect-21-9: 21 / 9; /* the first portal card, across the row */
+  --aspect-4-3: 4 / 3; /* the other two portal cards */
 
   --radius-9: 9px; /* bezel cores */
   --radius-10: 10px; /* header button, form fields */

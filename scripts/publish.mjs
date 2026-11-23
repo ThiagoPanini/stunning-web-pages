@@ -3,7 +3,7 @@
 // See scripts/README.md for the whole step by step.
 //
 // Usage:
-//   node scripts/publish.mjs build <theme dir> --from <source dir> --out <build dir> --note "<one line>" [--ref <branch@sha>]
+//   node scripts/publish.mjs build <theme dir> --from <draft dir> --out <build dir> --note "<one line>" [--ref <branch@sha>]
 //   node scripts/publish.mjs check <theme dir> <dir with project/>
 //   node scripts/publish.mjs diff <dir with project/> <dir with project/>
 
@@ -30,7 +30,7 @@ const PLACEMENT = [
   ['letterSpacing', /^--tracking-/],
   ['lineHeight', /^--leading-/],
   ['spacing', /^--spacing$/],
-  ['layout', /^--(spacing-|container-|grid-template-columns-|grid-auto-columns-|grow-)/],
+  ['layout', /^--(spacing-|container-|grid-template-columns-|grid-auto-columns-|grow-|aspect-)/],
   ['radius', /^--radius-/],
   ['shadow', /^--shadow-/],
   ['blur', /^--blur-/],
@@ -38,18 +38,23 @@ const PLACEMENT = [
   ['out', /^--(default-|ease-|duration-|delay-|animate-|transition-|background-image-)/],
 ];
 
+// The place of an @theme token in tokens.json: its family, 'family' for a font stack, 'out' for what the
+// type has no place for, or undefined when no namespace of PLACEMENT matches it.
+const placementOf = (name) => PLACEMENT.find(([, pattern]) => pattern.test(name))?.[0];
+
 // The order of the families in tokens.json: the type's own, then the further ones.
 const FAMILY_ORDER = ['spacing', 'radius', 'shadow', 'layout', 'fontSize', 'fontWeight', 'letterSpacing', 'lineHeight', 'blur', 'focus'];
 
 const isFamily = (value) => value && typeof value === 'object' && Array.isArray(value.tokens);
 
-// tokens.json from the theme's @theme and the source's text. Values come from @theme, in its order; each
-// token's usage note, each family's note, the color themes and the text styles come from the source
-// tokens.json (a read-back of the artifact, or what the agent wrote for a first publication).
-// Returns the object, the @theme tokens left out, and the tokens the source had that @theme no longer has.
-export function buildTokens({ theme, faces, source, meta }) {
+// tokens.json from the theme's @theme and the draft's text. Values come from @theme, in its order; each
+// token's usage note, each family's note, the color themes and the text styles come from the draft
+// tokens.json (the read-back of the artifact with the agent's changes, or what the agent wrote for a first
+// publication).
+// Returns the object, the @theme tokens left out, and the tokens the draft had that @theme no longer has.
+export function buildTokens({ theme, faces, draft, meta }) {
   const usage = new Map();
-  for (const family of Object.values(source)) {
+  for (const family of Object.values(draft)) {
     if (!isFamily(family)) continue;
     for (const token of family.tokens) if (token.usage) usage.set(`--${token.name}`, token.usage);
   }
@@ -60,7 +65,7 @@ export function buildTokens({ theme, faces, source, meta }) {
   const unplaced = [];
   const missing = [];
   for (const [name, value] of theme.tokens) {
-    const family = PLACEMENT.find(([, pattern]) => pattern.test(name))?.[0];
+    const family = placementOf(name);
     if (!family) unplaced.push(name);
     else if (family === 'out') leftOut.push(name);
     else if (family === 'family') fontFamilies[name.slice('--font-'.length)] = value;
@@ -71,25 +76,25 @@ export function buildTokens({ theme, faces, source, meta }) {
     throw new Error(`no tokens.json family for ${unplaced.join(', ')}: add the namespace to PLACEMENT in scripts/publish.mjs`);
   }
   if (missing.length) {
-    throw new Error(`the source tokens.json has no usage note for:\n  ${missing.join('\n  ')}`);
+    throw new Error(`the draft tokens.json has no usage note for:\n  ${missing.join('\n  ')}`);
   }
-  if (!Array.isArray(source.color?.themes) || source.color.themes.length === 0) {
-    throw new Error('the source tokens.json needs color.themes, e.g. [{"id": "dark", "name": "Escuro"}]');
+  if (!Array.isArray(draft.color?.themes) || draft.color.themes.length === 0) {
+    throw new Error('the draft tokens.json needs color.themes, e.g. [{"id": "dark", "name": "Escuro"}]');
   }
-  if (!Array.isArray(source.type?.groups) || source.type.groups.length === 0) {
-    throw new Error('the source tokens.json needs type.groups, the text styles');
+  if (!Array.isArray(draft.type?.groups) || draft.type.groups.length === 0) {
+    throw new Error('the draft tokens.json needs type.groups, the text styles');
   }
 
   const tokens = {
     name: theme.title,
-    version: source.version ?? 1,
+    version: draft.version ?? 1,
     meta,
-    color: { themes: source.color.themes, tokens: families.color ?? [] },
-    type: { fonts: faces, families: fontFamilies, groups: source.type.groups },
+    color: { themes: draft.color.themes, tokens: families.color ?? [] },
+    type: { fonts: faces, families: fontFamilies, groups: draft.type.groups },
   };
   for (const key of FAMILY_ORDER) {
     if (!families[key]) continue;
-    const note = source[key]?.note;
+    const note = draft[key]?.note;
     tokens[key] = note ? { note, tokens: families[key] } : { tokens: families[key] };
   }
   const dropped = [...usage.keys()].filter((name) => !theme.tokens.has(name));
@@ -114,7 +119,7 @@ export function parseFontFaces(fontsTs) {
   });
 }
 
-// ---------------------------------------------------------------- source and index
+// ---------------------------------------------------------------- draft and index
 
 const sha256 = (path) => createHash('sha256').update(readFileSync(path)).digest('hex');
 
@@ -140,22 +145,27 @@ function listFiles(dir) {
   return walk('').sort();
 }
 
-// Line 1 of a preview.html: <!-- @dsCard group="…" height=N … -->.
-function markerGroup(previewHtml) {
-  const marker = previewHtml.split('\n', 1)[0];
-  return /^<!-- @dsCard\b/.test(marker) ? marker.match(/\bgroup="([^"]*)"/)?.[1] : undefined;
+// The card marker on line 1 of a preview.html, <!-- @dsCard group="…" height=N … -->: its group and
+// height, each undefined when the marker does not give it, or undefined when line 1 is not the marker.
+function dsCardMarker(previewHtml) {
+  const line = previewHtml.split('\n', 1)[0];
+  if (!/^<!-- @dsCard\b.*-->$/.test(line)) return undefined;
+  const height = line.match(/\bheight=(\d+)/)?.[1];
+  return { group: line.match(/\bgroup="([^"]*)"/)?.[1], height: height === undefined ? undefined : Number(height) };
 }
 
-// The text of a Design System artifact, from a directory holding its project/: the brand book, tokens.json
-// (its usage notes, family notes, color themes and text styles), the index, the cover, the README and the
-// group of each component, and the files under assets/. On a new publication it is the read-back of the
-// published artifact; on a first one, what the agent wrote from DESIGN.md and the code.
-export function readSource(fromDir) {
-  const project = join(fromDir, 'project');
+// The draft of a Design System artifact: a directory holding its project/, where the agent prepares the
+// text the build starts from. What the build takes from it: the brand book, tokens.json (its usage notes,
+// family notes, color themes and text styles), the index, the cover, the README and the group of each
+// component, and the files under assets/. On a new publication the draft is a copy of the read-back of the
+// published artifact, with the text the app's change asks for; on a first one, what the agent wrote from
+// DESIGN.md and the code.
+export function readDraft(draftDir) {
+  const project = join(draftDir, 'project');
   const read = (path) => readFileSync(join(project, path), 'utf8');
   const has = (path) => existsSync(join(project, path));
   for (const required of ['README.md', 'tokens.json']) {
-    if (!has(required)) throw new Error(`${fromDir}: the source needs project/${required}`);
+    if (!has(required)) throw new Error(`${draftDir}: the draft needs project/${required}`);
   }
   const tokens = JSON.parse(read('tokens.json'));
   const folders = componentFolders(project).filter((name) => has(`components/${name}/README.md`));
@@ -169,10 +179,10 @@ export function readSource(fromDir) {
     components: names.map((name) => ({
       name,
       readme: read(`components/${name}/README.md`),
-      group: has(`components/${name}/preview.html`) ? markerGroup(read(`components/${name}/preview.html`)) : undefined,
+      group: has(`components/${name}/preview.html`) ? dsCardMarker(read(`components/${name}/preview.html`))?.group : undefined,
     })),
     assets: listFiles(join(project, 'assets')).map((path) => `assets/${path}`),
-    // The files of the source the build did not make (a section or a file someone added on the page, a
+    // The files of the draft the build did not make (a section or a file someone added on the page, a
     // component's types), which go up as they are. Fonts are the app's: one it no longer has is dropped.
     keep: (built) => listFiles(project).filter((path) => !built.has(path) && !path.startsWith('fonts/')),
   };
@@ -187,7 +197,7 @@ export function buildIndex({ index, theme, groups, lastChange, now }) {
   let built;
   if (index) {
     if (!hasMarker(index)) {
-      throw new Error('the source design-system.json has no marker of a system kept in files: write nothing over it');
+      throw new Error('the draft design-system.json has no marker of a system kept in files: write nothing over it');
     }
     built = { ...index, title: theme.title, namespace: theme.namespace, lastChange };
   } else {
@@ -262,7 +272,7 @@ export function checkProject(theme, dir) {
   const leftOut = [];
   for (const name of theme.tokens.keys()) {
     if (seen.has(name)) continue;
-    if (PLACEMENT.find(([, pattern]) => pattern.test(name))?.[0] === 'out') leftOut.push(name);
+    if (placementOf(name) === 'out') leftOut.push(name);
     else failures.push(`${name}: in @theme, missing from tokens.json`);
   }
 
@@ -303,7 +313,7 @@ export function checkProject(theme, dir) {
     if (!existsSync(join(project, 'components', name, 'README.md'))) failures.push(`components/${name}: no README.md`);
     const preview = join(project, 'components', name, 'preview.html');
     if (!existsSync(preview)) failures.push(`components/${name}: no preview.html`);
-    else if (!/^<!-- @dsCard\b.*-->$/.test(readFileSync(preview, 'utf8').split('\n', 1)[0])) {
+    else if (!dsCardMarker(readFileSync(preview, 'utf8'))) {
       failures.push(`components/${name}/preview.html: line 1 is not the @dsCard marker`);
     }
   }
@@ -488,12 +498,12 @@ async function bundleCss(theme, declared) {
   const cssFiles = readdirSync(chunks).filter((f) => f.endsWith('.css'));
   if (cssFiles.length !== 1) throw new Error(`${chunks}: expected one CSS chunk, found ${cssFiles.length}`);
   const css = await previewCss(readFileSync(join(chunks, cssFiles[0]), 'utf8'), declared);
-  return `/* ${theme.name}: o CSS do app (Tailwind 4, compilado no export estático), sem o que tokens.json declara.
-   Os valores dos tokens vêm de tokens.css; daqui saíram as @font-face, que tokens.css também declara,
-   e as animações, guardadas por prefers-reduced-motion: as prévias mostram o estado final, como o app
-   com movimento reduzido. */
+  return `/* ${theme.name}: the app's CSS (Tailwind 4, compiled in the static export), without what tokens.json declares.
+   The token values come from tokens.css; the @font-face rules, which tokens.css declares too, left this
+   file, and so did the animations, guarded by prefers-reduced-motion: the previews show the final state,
+   as the app does with reduced motion. */
 ${css}
-/* Moldura das prévias. */
+/* The previews' frame. */
 body {
   margin: 0;
 }
@@ -566,8 +576,8 @@ export async function extractMarkup(browser, theme, components, files) {
 }
 
 // Builds <outDir>/project/ (the artifact's files) and <outDir>/harness/ (each preview rendered in a local
-// frame like the artifact's, to look at), from the theme's app and the text of the source.
-export async function build({ themeDir, fromDir, outDir, note, ref }) {
+// frame like the artifact's, to look at), from the theme's app and the text of the draft.
+export async function build({ themeDir, draftDir, outDir, note, ref }) {
   const theme = readTheme(themeDir);
   for (const page of ['index.html', 'design-system.html']) {
     if (!existsSync(join(theme.web, 'out', page))) throw new Error(`${join(theme.web, 'out', page)} is missing: run pnpm build in ${theme.web}`);
@@ -575,11 +585,11 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
   if (existsSync(outDir) && readdirSync(outDir).length && !existsSync(join(outDir, 'summary.json'))) {
     throw new Error(`${outDir} exists and is not a previous build: give an empty or new folder`);
   }
-  const source = readSource(fromDir);
-  if (source.components.length === 0) throw new Error(`${fromDir}: the source has no components/<Name>/README.md`);
+  const draft = readDraft(draftDir);
+  if (draft.components.length === 0) throw new Error(`${draftDir}: the draft has no components/<Name>/README.md`);
   const faces = parseFontFaces(readFileSync(join(theme.web, 'app', 'fonts.ts'), 'utf8'));
   const files = componentFiles(join(theme.web, 'components'));
-  for (const { name } of source.components) {
+  for (const { name } of draft.components) {
     if (!files.has(name)) throw new Error(`${name}: no file of ${join(theme.web, 'components')} exports it`);
   }
   const info = gitInfo(theme.dir);
@@ -589,12 +599,12 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
     source: 'github',
     repo: info.repo,
     ref: label,
-    package: theme.package,
+    package: theme.appPath,
     paths: { tokens: ['app/globals.css'], fonts: [...faces.map((f) => f.file), 'app/fonts.ts'], docs: ['../DESIGN.md'] },
-    components: Object.fromEntries(source.components.map(({ name }) => [name, `components/${files.get(name)}`])),
+    components: Object.fromEntries(draft.components.map(({ name }) => [name, `components/${files.get(name)}`])),
     synced: new Date().toLocaleDateString('sv-SE'),
   };
-  const { tokens, leftOut, dropped } = buildTokens({ theme, faces, source: source.tokens, meta });
+  const { tokens, leftOut, dropped } = buildTokens({ theme, faces, draft: draft.tokens, meta });
   const declared = new Set([
     ...Object.values(tokens).filter(isFamily).flatMap((family) => family.tokens.map((t) => `--${t.name}`)),
     ...Object.keys(tokens.type.families).map((key) => `--font-${key}`),
@@ -608,10 +618,10 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
     writeFileSync(join(project, path), content);
     written.add(path);
   };
-  const warnings = dropped.map((name) => `${name}: has a usage note in the source but is no longer in @theme; dropped`);
+  const warnings = dropped.map((name) => `${name}: has a usage note in the draft but is no longer in @theme; dropped`);
 
-  write('README.md', source.readme);
-  for (const path of source.assets) write(path, readFileSync(join(fromDir, 'project', path)));
+  write('README.md', draft.readme);
+  for (const path of draft.assets) write(path, readFileSync(join(draftDir, 'project', path)));
   for (const file of readdirSync(join(theme.web, 'fonts')).filter((f) => !FONT_FILE.test(f))) {
     write(`assets/Licenses/${file}`, readFileSync(join(theme.web, 'fonts', file)));
   }
@@ -619,7 +629,7 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
     ? readdirSync(join(project, 'assets')).filter((name) => statSync(join(project, 'assets', name)).isDirectory()).sort()
     : [];
   for (const group of groups) {
-    if (!existsSync(join(project, 'assets', group, 'README.md'))) warnings.push(`assets/${group}: no README.md in the source`);
+    if (!existsSync(join(project, 'assets', group, 'README.md'))) warnings.push(`assets/${group}: no README.md in the draft`);
   }
   for (const face of faces) write(face.file, readFileSync(join(theme.web, face.file)));
   write('tokens.json', `${JSON.stringify(tokens, null, 2)}\n`);
@@ -632,25 +642,33 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
   const browser = await chromium.launch();
   const heights = {};
   try {
-    const { markup, lang } = await extractMarkup(browser, theme, source.components, files);
+    const { markup, lang } = await extractMarkup(browser, theme, draft.components, files);
     const frame = (body) =>
       `<!doctype html><html lang="${lang}" data-theme="${tokens.color.themes[0].id}"><head><meta charset="utf-8"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="../project/components/bundle.css"></head><body>${body}</body></html>`;
-    const measure = async (name, body, width) => {
+    // Writes <name>.html in the harness, opens it at the width given with reduced motion, waits for its
+    // fonts and saves <name>.png. Without a height, the page's first element gives it (40px at least), and
+    // the viewport takes it before the capture. Returns the height.
+    const render = async (name, html, width, height) => {
       const file = join(harnessDir, `${name}.html`);
-      writeFileSync(file, frame(body));
-      const page = await browser.newPage({ viewport: { width, height: 40 }, reducedMotion: 'reduce' });
-      await page.goto(pathToFileURL(file).href);
-      await page.evaluate(() => document.fonts.ready);
-      const height = await page.evaluate(() => Math.max(40, Math.ceil(document.querySelector('body > :first-child').getBoundingClientRect().height)));
-      await page.setViewportSize({ width, height });
-      await page.screenshot({ path: join(harnessDir, `${name}.png`) });
-      await page.close();
-      return height;
+      writeFileSync(file, html);
+      const page = await browser.newPage({ viewport: { width, height: height ?? 40 }, reducedMotion: 'reduce' });
+      try {
+        await page.goto(pathToFileURL(file).href);
+        await page.evaluate(() => document.fonts.ready);
+        if (height === undefined) {
+          height = await page.evaluate(() => Math.max(40, Math.ceil(document.querySelector('body > :first-child').getBoundingClientRect().height)));
+          await page.setViewportSize({ width, height });
+        }
+        await page.screenshot({ path: join(harnessDir, `${name}.png`) });
+        return height;
+      } finally {
+        await page.close();
+      }
     };
-    for (const { name, readme, group } of source.components) {
+    for (const { name, readme, group } of draft.components) {
       const { kind, body } = markup.get(name);
       const file = files.get(name);
-      const height = await measure(name, body, kind === 'piece' ? PIECE_WIDTH : BLOCK_WIDTH);
+      const height = await render(name, frame(body), kind === 'piece' ? PIECE_WIDTH : BLOCK_WIDTH);
       heights[name] = height;
       const groupAttr = group === undefined ? '' : ` group="${group}"`;
       const marker =
@@ -663,30 +681,24 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
       );
       write(`components/${name}/README.md`, readme);
     }
-    if (source.cover) {
-      write('components/Cover/preview.html', source.cover);
-      const coverHeight = Number(source.cover.split('\n', 1)[0].match(/\bheight=(\d+)/)?.[1] ?? 288);
-      const file = join(harnessDir, 'Cover.html');
-      writeFileSync(file, source.cover.replace('<head>', '<head><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="../project/components/bundle.css">'));
-      const page = await browser.newPage({ viewport: { width: PIECE_WIDTH, height: coverHeight }, reducedMotion: 'reduce' });
-      await page.goto(pathToFileURL(file).href);
-      await page.evaluate(() => document.fonts.ready);
-      await page.screenshot({ path: join(harnessDir, 'Cover.png') });
-      await page.close();
+    if (draft.cover) {
+      write('components/Cover/preview.html', draft.cover);
+      const cover = draft.cover.replace('<head>', '<head><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="../project/components/bundle.css">');
+      await render('Cover', cover, PIECE_WIDTH, dsCardMarker(draft.cover)?.height ?? 288);
     } else {
-      warnings.push('the source has no components/Cover/preview.html: the system has no cover');
+      warnings.push('the draft has no components/Cover/preview.html: the system has no cover');
     }
   } finally {
     await browser.close();
   }
 
-  const kept = source.keep(new Set([...written, 'design-system.json']));
-  for (const path of kept) write(path, readFileSync(join(fromDir, 'project', path)));
+  const kept = draft.keep(new Set([...written, 'design-system.json']));
+  for (const path of kept) write(path, readFileSync(join(draftDir, 'project', path)));
 
   const lastChange = { by: info.user, at: now, via: `GitHub · ${info.repo}@${label.split('@').pop()}`, note };
-  write('design-system.json', `${JSON.stringify(buildIndex({ index: source.index, theme, groups, lastChange, now }), null, 2)}\n`);
+  write('design-system.json', `${JSON.stringify(buildIndex({ index: draft.index, theme, groups, lastChange, now }), null, 2)}\n`);
 
-  const summary = { title: theme.title, ref: label, components: source.components.length, leftOut, kept, heights, warnings };
+  const summary = { title: theme.title, ref: label, components: draft.components.length, leftOut, kept, heights, warnings };
   writeFileSync(join(outDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
   return summary;
 }
@@ -694,7 +706,7 @@ export async function build({ themeDir, fromDir, outDir, note, ref }) {
 // ---------------------------------------------------------------- command line
 
 const USAGE = `usage:
-  node scripts/publish.mjs build <theme dir> --from <source dir> --out <build dir> --note "<one line>" [--ref <branch@sha>]
+  node scripts/publish.mjs build <theme dir> --from <draft dir> --out <build dir> --note "<one line>" [--ref <branch@sha>]
   node scripts/publish.mjs check <theme dir> <dir with project/>
   node scripts/publish.mjs diff <dir with project/> <dir with project/>`;
 
@@ -706,10 +718,10 @@ async function main(argv) {
   });
   const [command, ...rest] = positionals;
   if (command === 'build' && rest.length === 1 && values.from && values.out && values.note) {
-    const summary = await build({ themeDir: rest[0], fromDir: values.from, outDir: values.out, note: values.note, ref: values.ref });
+    const summary = await build({ themeDir: rest[0], draftDir: values.from, outDir: values.out, note: values.note, ref: values.ref });
     console.log(`built ${summary.title} at ${summary.ref}: ${summary.components} components, in ${join(values.out, 'project')}`);
     console.log(`left out of tokens.json (no place in the type): ${summary.leftOut.join(', ') || 'none'}`);
-    console.log(`kept from the source as they are: ${summary.kept.join(', ') || 'none'}`);
+    console.log(`kept from the draft as they are: ${summary.kept.join(', ') || 'none'}`);
     for (const [name, height] of Object.entries(summary.heights)) console.log(`  ${name}: ${height} px`);
     for (const warning of summary.warnings) console.log(`warning: ${warning}`);
     return 0;

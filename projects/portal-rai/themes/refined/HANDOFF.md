@@ -136,12 +136,13 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`. Para outro arranjo:
   | `font-medium`, `leading-150`, `tracking-tight-45` | `font-weight`, `line-height` e `letter-spacing` com o token do mesmo nome |
   | `font-sans`, `font-logo` | `font-family: var(--font-…)` |
   | `rounded-16`, `shadow-glow-16`, `backdrop-blur-16` | `border-radius`, `box-shadow` e `backdrop-filter: blur(…)` com o token |
+  | `aspect-16-10`, `aspect-21-9`, `aspect-4-3` | `aspect-ratio: var(--aspect-…)` |
   | `px-gutter`, `pt-section-top`, `max-w-column` | `padding-inline: var(--spacing-gutter)`, `padding-top: var(--spacing-section-top)`, `max-width: var(--container-column)` |
   | `gap-2.5`, `min-h-86`, `max-w-140` | um passo da escala: `calc(var(--spacing) * 2.5)` e assim por diante |
   | `grid-cols-2`, `narrow:grid-cols-1` | `grid-template-columns: var(--grid-template-columns-…)` |
   | `duration-slow` | `transition-duration: var(--transition-duration-slow)` |
   | `focus-visible:outline-offset-field` | `outline-offset: var(--outline-offset-field)` no `:focus-visible` |
-  | `aspect-[16/10]`, `border-[1.5px]`, `flex-[1_1_0]` | o valor entre colchetes, com `_` no lugar de espaço |
+  | `border-[1.5px]`, `flex-[1_1_0]` | o valor entre colchetes, com `_` no lugar de espaço |
   | `border-t`, `border-b`, `border` | um filete de `1px solid`, na cor da classe `border-*` ao lado |
 
   As outras classes são utilidades padrão do Tailwind 4, com o CSS da documentação dele. As que o nome não entrega: `antialiased` é `-webkit-font-smoothing: antialiased` com `-moz-osx-font-smoothing: grayscale`, e no Linux não muda o pixel, então as Capturas não conferem a falta dela; `text-balance` e `text-pretty` são `text-wrap: balance` e `pretty`; `tabular-nums` é `font-variant-numeric: tabular-nums`; `size-4.5` é largura e altura no passo da escala; `-bottom-px` é `bottom: -1px`; `hover:-translate-y-px` é `translate: 0 -1px` no `:hover`; `-translate-x-1/2` é `translate: -50% 0`; `rotate-45` é `rotate: 45deg`; `scroll-mt-18` é `scroll-margin-top` no passo 18 da escala; `placeholder:text-mark` é a cor do `::placeholder`; `@container` é `container-type: inline-size`.

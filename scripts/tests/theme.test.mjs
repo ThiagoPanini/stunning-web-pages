@@ -4,11 +4,11 @@ import { readTheme } from '../theme.mjs';
 import { makeTheme, tempDir } from './fixtures.mjs';
 
 test('a theme is named by its README heading and its project folder', () => {
-  const theme = readTheme(makeTheme(tempDir(), { 'README.md': '# Neônio Claro\n\nText.\n' }));
+  const theme = readTheme(makeTheme(tempDir(), { 'README.md': '# Aurora Índigo\n\nText.\n' }));
   assert.equal(theme.project, 'demo-portal');
-  assert.equal(theme.name, 'Neônio Claro');
-  assert.equal(theme.title, 'demo-portal · Neônio Claro');
-  assert.equal(theme.namespace, 'NeonioClaro');
+  assert.equal(theme.name, 'Aurora Índigo');
+  assert.equal(theme.title, 'demo-portal · Aurora Índigo');
+  assert.equal(theme.namespace, 'AuroraIndigo');
 });
 
 test('the @theme tokens come in order, with comments and namespace resets left out', () => {

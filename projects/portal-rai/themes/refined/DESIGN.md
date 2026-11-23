@@ -4,7 +4,7 @@ O Refined é um Tema do Projeto `portal-rai`: a Home do portal de um time de Res
 
 Os valores não estão aqui. A única fonte deles é o bloco `@theme` de [`web/app/globals.css`](web/app/globals.css), e este documento cita cada token pelo nome da variável. Para ver os valores desenhados, abra a rota `/design-system` do app (como rodar está no [README](README.md#como-rodar)) ou as Capturas dela: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) e [`screenshots/design-system-390.png`](screenshots/design-system-390.png).
 
-**Como ler os nomes.** A classe do Tailwind é o nome do token sem o prefixo do namespace: `--color-night` dá `bg-night`, `text-night` e `border-night`; `--text-16` dá `text-16`; `--radius-16` dá `rounded-16`; `--spacing-section-top` dá `pt-section-top`; `--container-column` dá `max-w-column`; `--grid-template-columns-2` dá `grid-cols-2`; `--transition-duration-slow` dá `duration-slow`. Uma cor ou um comprimento de um papel só leva o nome do papel (`--color-cream`, `--spacing-gutter`). Um valor de escala leva o nome do valor: `--text-15` é o tamanho de 15 px, `--text-46-96` cresce de 46 a 96 px, `--leading-150` é a altura de linha 1,5, `--tracking-tight-45` é o espaçamento de 45 milésimos de em negativos, `--radius-12` é o raio de 12 px, `--shadow-glow-16` é o brilho de alfa 0,16. Os tokens do logo Ondas guardam os nomes do componente dele, com `logo` no nome (`--color-logo-blue`, `--font-logo`, `--text-logo`), e por isso ficam separados dos tokens da página de mesmo valor.
+**Como ler os nomes.** A classe do Tailwind é o nome do token sem o prefixo do namespace: `--color-night` dá `bg-night`, `text-night` e `border-night`; `--text-16` dá `text-16`; `--radius-16` dá `rounded-16`; `--spacing-section-top` dá `pt-section-top`; `--container-column` dá `max-w-column`; `--grid-template-columns-2` dá `grid-cols-2`; `--aspect-21-9` dá `aspect-21-9`; `--transition-duration-slow` dá `duration-slow`. Uma cor ou um comprimento de um papel só leva o nome do papel (`--color-cream`, `--spacing-gutter`). Um valor de escala leva o nome do valor: `--text-15` é o tamanho de 15 px, `--text-46-96` cresce de 46 a 96 px, `--leading-150` é a altura de linha 1,5, `--tracking-tight-45` é o espaçamento de 45 milésimos de em negativos, `--radius-12` é o raio de 12 px, `--shadow-glow-16` é o brilho de alfa 0,16, `--aspect-21-9` é a proporção 21 por 9. Os tokens do logo Ondas guardam os nomes do componente dele, com `logo` no nome (`--color-logo-blue`, `--font-logo`, `--text-logo`), e por isso ficam separados dos tokens da página de mesmo valor.
 
 **Nomear sem normalizar.** Cada valor do design tem o seu token, com o nome do valor como ele foi achado, e valores parecidos não foram fundidos. O que parece inconsistente está em [Observações](#observações), para você decidir o que corrigir no seu projeto.
 
@@ -149,6 +149,12 @@ Os títulos e as frases curtas equilibram as linhas (`text-balance`), e os pará
 | `--radius-pill` | pílula de navegação e links dela, chips, pílulas, etiquetas de ação |
 | `--radius-circle` | marca, pontos dos times, discos dos ícones, ícone das perguntas |
 
+| Token | Onde |
+|---|---|
+| `--aspect-16-10` | mídia dos times |
+| `--aspect-21-9` | mídia do cartão do Playground, o primeiro do portal, que ocupa a linha inteira |
+| `--aspect-4-3` | mídia dos cartões de Dados e de Integrações |
+
 - **Superfície em vez de filete.** A página separa as partes pelo tom: `--color-surface` e `--color-raised` sobre `--color-night`. Filete só há na régua do cabeçalho de seção, entre as etapas do Ciclo e no topo da barra do rodapé, em `--color-bright-9`, e embaixo do cabeçalho, em `--color-white-7`.
 - **Moldura.** O cartão das soluções e de Na prática é uma moldura em `--color-raised`, `p-2` em volta de um miolo em `--color-night` com o raio menor, `--radius-9`.
 - **Profundidade.** Os únicos brilhos são creme, nos botões: `--shadow-glow-16` no botão creme em repouso, `--shadow-glow-28` nele em hover e `--shadow-glow-22` no botão do cabeçalho em hover. Os desfoques são dois: `--blur-16` no cabeçalho e `--blur-10` na pílula sobre mídia. A faixa de chips esmaece nas bordas por uma máscara, a utilidade `fade-sides`.
@@ -197,7 +203,7 @@ O texto da Home fica nos blocos.
 | `BrandMark` | `brand-mark.tsx` | `variant`: `header` (padrão) ou `footer` | cabeçalho, rodapé |
 | `NavPill` | `nav-pill.tsx` | `label`, o nome acessível; `children`, os links | |
 | `NavLink` | `nav-link.tsx` | `href?`, `current?` | repouso, hover, foco, atual; sem `href`, inerte |
-| `ButtonLink` | `button-link.tsx` | `href?`; `variant`: `primary` (padrão, o creme), `secondary` (o escuro) ou `header`; `className?`, para o lugar | repouso, hover, foco, em cada variante; sem `href`, inerte. `buttonClassName(variant, extra)` dá as mesmas classes a um `<button>` |
+| `ButtonLink` | `button-link.tsx` | `variant`: `primary` (padrão, o creme), `secondary` (o escuro) ou `header`; `className?`, para o lugar | repouso, hover, foco, em cada variante; sempre inerte. `buttonClassName(variant, extra)` dá as mesmas classes a um `<button>` |
 | `ScrollProgress` | `scroll-progress.tsx` | nenhuma; a moldura dela é posicionada | cresce com o scroll; parada em zero com movimento reduzido |
 | `ChipStrip` | `chip-strip.tsx` | `className?`, para o movimento de entrada | correndo, pausada sob o ponteiro |
 | `SectionHeader` | `section-header.tsx` | `id`, do título; `title`; `count?`; `link?`, com `label` e `href` | com contagem e link (repouso, hover, foco do link), sem contagem |

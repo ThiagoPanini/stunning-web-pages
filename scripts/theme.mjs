@@ -28,7 +28,7 @@ export function parseThemeTokens(css) {
   return tokens;
 }
 
-// ASCII identifier from a display name: "Neônio Claro" -> "NeonioClaro".
+// ASCII identifier from a display name: "Aurora Índigo" -> "AuroraIndigo".
 function identifier(name) {
   return name
     .normalize('NFD')
@@ -59,7 +59,7 @@ export function readTheme(themeDir) {
     title: `${project} · ${name}`,
     namespace: identifier(name),
     // The app's path from the catalog's root, for the provenance a tool records.
-    package: relative(REPO_ROOT, web).split('\\').join('/'),
+    appPath: relative(REPO_ROOT, web).split('\\').join('/'),
     css,
     tokens: parseThemeTokens(css),
   };

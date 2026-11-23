@@ -25,21 +25,12 @@ export function buttonClassName(variant: ButtonVariant, extra = ""): string {
 type ButtonLinkProps = {
   children: ReactNode;
   variant?: ButtonVariant;
-  // Without a destination the button stays inert: the design left every button of the Home open.
-  href?: string;
   // Classes of its place, such as w-full.
   className?: string;
 };
 
-// A link drawn as a button ("Testar um guardrail", "Ver os dados").
-export function ButtonLink({ children, variant = "primary", href, className }: ButtonLinkProps) {
-  const classes = buttonClassName(variant, className);
-  if (href) {
-    return (
-      <a href={href} className={classes}>
-        {children}
-      </a>
-    );
-  }
-  return <InertLink className={classes}>{children}</InertLink>;
+// A link drawn as a button ("Testar um guardrail", "Ver os dados"). The design left every button of the
+// Home open, so it is an inert link.
+export function ButtonLink({ children, variant = "primary", className }: ButtonLinkProps) {
+  return <InertLink className={buttonClassName(variant, className)}>{children}</InertLink>;
 }

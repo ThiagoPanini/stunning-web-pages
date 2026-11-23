@@ -215,7 +215,7 @@ O texto da Home fica nos blocos. As partes que só um bloco usa, sem estado pró
 | `HeaderBlockLink` | `header-block-link.tsx` | `children`; `href?` | repouso, hover, foco; sem `href`, inerte |
 | `NavLink` | `nav-link.tsx` | `children` | repouso, hover, foco; sempre inerte, porque as Telas dele não existem |
 | `InertLink` | `inert-link.tsx` | os de um `<a>`, menos `href` | repouso, foco; é o link de uma Lacuna, que não navega |
-| `ButtonLink` | `button-link.tsx` | `children`; `variant`: `white` ou `outline`; `href?` | repouso, hover, foco, em cada variante; sem `href`, inerte |
+| `ButtonLink` | `button-link.tsx` | `children`; `variant`: `white` ou `outline` | repouso, hover, foco, em cada variante; sempre inerte |
 | `FooterLink` | `footer-link.tsx` | `children`; `href?`, uma âncora da Home | repouso, hover, foco; sem `href`, inerte |
 | `Lead` | `lead.tsx` | `children`; `tone?`: `muted` (padrão) ou `secondary`; `className?`, para a largura | muted, secondary |
 | `SectionTitle` | `section-title.tsx` | `children`; `id?`; `size?`: `32-48` (padrão), `32-44` ou `32-52`; `className?` | cada tamanho |

@@ -30,6 +30,7 @@ export type TokenGroup =
   | "spacing"
   | "grids"
   | "radii"
+  | "aspects"
   | "effects"
   | "focus"
   | "motion"
@@ -46,6 +47,7 @@ const NAMESPACES: [TokenGroup, RegExp][] = [
   ["spacing", /^--(spacing|container-)/],
   ["grids", /^--grid-template-columns-/],
   ["radii", /^--radius-/],
+  ["aspects", /^--aspect-/],
   ["effects", /^--(shadow|blur)-/],
   ["focus", /^--outline-(width|offset)-/],
   ["motion", /^--(default-transition-|transition-duration-|ease-|duration-|delay-|animate-)/],
@@ -62,6 +64,7 @@ export function groupTokens(tokens: Token[]): Record<TokenGroup, Token[]> {
     spacing: [],
     grids: [],
     radii: [],
+    aspects: [],
     effects: [],
     focus: [],
     motion: [],

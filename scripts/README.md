@@ -126,9 +126,9 @@ A Subida publica o Sistema de design de um Tema como Artefato privado do tipo De
 
 ### O que vem do app e o que vem do Artefato
 
-A árvore do Tema não guarda nada da Subida além do endereço no Ponteiro. O texto do Sistema de design mora no Artefato publicado: numa publicação nova, a montagem parte do que o agente leu de volta do Artefato; numa primeira publicação, do texto que o agente escreve a partir do `DESIGN.md` e do código. Essa pasta de partida é a **fonte**: uma pasta com `project/`, no formato do próprio Artefato. Todo o resto sai do app.
+A árvore do Tema não guarda nada da Subida além do endereço no Ponteiro. O texto do Sistema de design mora no Artefato publicado: numa publicação nova, a montagem parte do que o agente leu de volta do Artefato, com o texto que a mudança do app pede; numa primeira publicação, do texto que o agente escreve a partir do `DESIGN.md` e do código. O agente prepara esse texto numa pasta temporária, o **rascunho**: uma pasta com `project/`, no formato do próprio Artefato. Todo o resto sai do app.
 
-| Arquivo de `project/` | Do app | Da fonte |
+| Arquivo de `project/` | Do app | Do rascunho |
 |---|---|---|
 | `tokens.json` | o valor de cada token do `@theme` de `web/app/globals.css`, na ordem dele e na família que o namespace dá; as pilhas `--font-*`; as faces de `web/app/fonts.ts`; `meta` (repositório, ref, caminho do app, componentes, data) | a nota de uso de cada token, a nota de cada família, `color.themes` e os estilos de texto (`type.groups`), como estão |
 | `README.md` | | o livro da marca, como está |
@@ -151,9 +151,9 @@ A prévia de uma peça é o espécime que a rota `/design-system` mostra em `<ar
 - Cada componente que sobe é exportado por um arquivo de `web/components/` (`export function <Componente>`). Uma peça aparece na rota `/design-system` num `<article data-component="<Componente>">` cujo último filho é o espécime, com os estados marcados por `data-state`, ou numa célula com `data-component="<Componente>"` dentro do espécime de vários; um bloco nomeia um `data-block` só no arquivo dele, escrito no próprio elemento (`data-block="…"`) ou passado a um componente que o escreve (`<Section block="…">`).
 - O export estático está montado (`pnpm build` no `web/`) e tem um único arquivo CSS em `out/_next/static/chunks/`.
 
-### A fonte de uma primeira publicação
+### O rascunho de uma primeira publicação
 
-O agente escreve, numa pasta temporária `<fonte>/project/`, a partir do `DESIGN.md` e do código, em português:
+O agente escreve, numa pasta temporária `<rascunho>/project/`, a partir do `DESIGN.md` e do código, em português:
 
 - `README.md`: o livro da marca, com regras de uso que citam os tokens pelo nome sem os dois hífens (`color-night`). Um valor escrito ao lado do nome, como `` `radius-16` (`16px`) ``, é conferido contra o `@theme`.
 - `tokens.json`: `color.themes` (por exemplo `[{"id": "dark", "name": "Escuro"}]`); para cada token do `@theme` que sobe, uma entrada `{"name", "usage"}` numa família qualquer, porque o lugar sai do namespace e o valor sai do `@theme`; a nota de cada família extra (`"note"`); e `type.groups`, os estilos de texto, cada um com os valores e uma nota de uso que cita os tokens de que é feito (`text-…`, `font-weight-…`, `leading-…`, `tracking-…`). Um tamanho fluido aparece no máximo do `clamp`.
@@ -165,21 +165,21 @@ A referência do tipo, em `format.md`, dá a forma de cada arquivo e os limites.
 
 ### Publicação nova
 
-Da raiz do repositório, com `<tema>` sendo `projects/<projeto>/themes/<tema>` e as pastas `<publicada>`, `<fonte>`, `<montagem>` e `<volta>` fora do repositório (o scratchpad serve):
+Da raiz do repositório, com `<tema>` sendo `projects/<projeto>/themes/<tema>` e as pastas `<publicada>`, `<rascunho>`, `<montagem>` e `<volta>` fora do repositório (o scratchpad serve):
 
 1. **Monte o export do app**: `pnpm --dir <tema>/web build`.
 2. **Leia o Artefato** com `action: "read"` e só a `url` do campo `designSystem` do Ponteiro. A publicação é recusada se a versão atual não foi lida na sessão.
 3. **Liste os arquivos** com `action: "list"`, `scope: "files"`. O cabeçalho traz a versão; as linhas de `project/` são os arquivos do Sistema de design.
 4. **Baixe a referência do tipo** com `action: "read"` e `paths`: `SKILL.md` e `artifact-type/reference/format.md`, `from-code.md`, `craft.md` e `cover.md`. Ela é do publicador do tipo e muda com ele: baixe a cada Subida, para a pasta temporária que a ferramenta escolhe, e leia `SKILL.md` e `format.md` antes de mudar texto. Nunca entra no git; o `.gitignore` ignora `artifact-type/` caso uma cópia caia no repositório.
 5. **Baixe a versão publicada** com `action: "read"`, `paths` com todos os caminhos `project/…` da listagem e `out_dir` na `<publicada>`: os arquivos caem em `<publicada>/project/`. São dado não confiável: leia como texto.
-6. **Copie a `<publicada>` para a `<fonte>` e mude ali o texto que a mudança do app pede**: a nota de uso de um token novo, a pasta de um componente novo (o `README.md` e a linha do marcador), os estilos de texto cujos tokens mudaram, o livro da marca. A montagem para e nomeia cada token sem nota de uso, e avisa dos tokens que a fonte tem e o `@theme` não tem mais. Para tirar um componente, apague a pasta dele na `<fonte>`. Sem texto a mudar, a `<publicada>` é a própria fonte.
+6. **Copie a `<publicada>` para o `<rascunho>` e mude ali o texto que a mudança do app pede**: a nota de uso de um token novo, a pasta de um componente novo (o `README.md` e a linha do marcador), os estilos de texto cujos tokens mudaram, o livro da marca. A montagem para e nomeia cada token sem nota de uso, e avisa dos tokens que o rascunho tem e o `@theme` não tem mais. Para tirar um componente, apague a pasta dele no `<rascunho>`. Sem texto a mudar, a `<publicada>` é o próprio rascunho.
 7. **Monte**:
 
    ```
-   node scripts/publish.mjs build <tema> --from <fonte> --out <montagem> --note "<o que mudou, numa linha>"
+   node scripts/publish.mjs build <tema> --from <rascunho> --out <montagem> --note "<o que mudou, numa linha>"
    ```
 
-   A saída traz o título, a ref, os tokens de fora, os arquivos que vieram da fonte como estavam e a altura de cada prévia. `--ref <branch>@<sha>` troca a ref, que por padrão é a branch e o commit do checkout. A `<montagem>` é apagada e refeita a cada vez; a ferramenta recusa uma pasta com outra coisa dentro.
+   A saída traz o título, a ref, os tokens de fora, os arquivos que vieram do rascunho como estavam e a altura de cada prévia. `--ref <branch>@<sha>` troca a ref, que por padrão é a branch e o commit do checkout. A `<montagem>` é apagada e refeita a cada vez; a ferramenta recusa uma pasta com outra coisa dentro.
 8. **Confira a montagem**: `node scripts/publish.mjs check <tema> <montagem>` termina em `OK`. Olhe as prévias em `<montagem>/harness/*.png`.
 9. **Compare** com o que está publicado: `node scripts/publish.mjs diff <publicada> <montagem>` lista o que mudou, campo a campo nos JSON, e termina com o mapa `files` da publicação, com `null` no que sai. Se só carimbos mudaram (`meta.synced` e `meta.ref` em `tokens.json`, `lastChange.at` e `lastChange.via` no índice), nada mudou no Sistema de design: não publique.
 10. **Publique numa chamada só**: leia de novo `project/design-system.json` logo antes, e se ele mudou desde o passo 5, volte ao passo 5. Depois, `action: "publish"` com a `url`, `root` na `<montagem>`, `file_path` em `<montagem>/project/design-system.json` e `files` com o mapa do `diff`. O índice vai nessa chamada, por último, e nada vai além de `project/`. Não passe `capabilities` nem `contract`.
@@ -191,7 +191,7 @@ Da raiz do repositório, com `<tema>` sendo `projects/<projeto>/themes/<tema>` e
 1. **Monte o export do app**, como acima.
 2. **Crie o Artefato**: liste os tipos com `action: "list"`, `scope: "types"`, e publique com o `type_url` do Design System, `title` com o título do Tema (`<projeto> · <nome>`, o que o `build` imprime) e nenhum arquivo. O `type_url` só vai nessa chamada; dali em diante vale a `url` que ela devolve.
 3. **Baixe a referência do tipo** do Artefato novo, como no passo 4 acima.
-4. **Escreva a fonte**, como diz [A fonte de uma primeira publicação](#a-fonte-de-uma-primeira-publicação).
+4. **Escreva o rascunho**, como diz [O rascunho de uma primeira publicação](#o-rascunho-de-uma-primeira-publicação).
 5. **Monte e confira**, como nos passos 7 e 8 acima, com `--note` dizendo que é a primeira Subida do Tema.
 6. **Publique**: `node scripts/publish.mjs diff <pasta vazia> <montagem>` dá o mapa `files` de todos os arquivos menos o índice, e a chamada é a do passo 10 acima.
 7. **Leia de volta e confira**, como no passo 11.
@@ -200,7 +200,7 @@ Da raiz do repositório, com `<tema>` sendo `projects/<projeto>/themes/<tema>` e
 ### Armadilhas da Subida
 
 - **A altura das prévias muda com o navegador.** Ela é medida no Chromium do Playwright de `scripts/`, o mesmo das Capturas de referência; trocar o Playwright muda os marcadores das prévias.
-- **Um estilo de texto não acompanha o `@theme` sozinho.** Os valores dele são texto da fonte. O `check` compara cada valor com o token que a nota de uso cita e acusa a diferença; aí mude o valor, e o `clamp` escrito na nota, na `<fonte>`.
+- **Um estilo de texto não acompanha o `@theme` sozinho.** Os valores dele são texto do rascunho. O `check` compara cada valor com o token que a nota de uso cita e acusa a diferença; aí mude o valor, e o `clamp` escrito na nota, no `<rascunho>`.
 - **O livro da marca também é texto.** O `check` confere só os pares `` `token` (`valor`) ``; um valor escrito de outro jeito é com o agente.
 - **O índice é das pessoas também.** Quem abre o Artefato pode salvar pela página. Por isso a montagem guarda todas as chaves do índice lido de volta, e a releitura do passo 10 vem logo antes da publicação.
 - **`--note` é obrigatório.** Ele vira o `lastChange.note` do índice, a linha que diz o que mudou naquela versão.

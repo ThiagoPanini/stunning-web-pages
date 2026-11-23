@@ -9,6 +9,7 @@ import { DesignGroup, DesignSection } from "./parts";
 import { ComponentSpecimens } from "./specimens";
 import { groupTokens, readThemeTokens } from "./theme-tokens";
 import {
+  AspectTokens,
   ColorTokens,
   EffectTokens,
   FamilyTokens,
@@ -131,11 +132,14 @@ export default function DesignSystem() {
           <DesignSection
             id="shapes-title"
             title="Formas"
-            count={count("radii", "effects", "focus")}
-            lead="Raios nomeados em px, a pílula e o círculo; os brilhos creme dos botões, os desfoques da pílula sobre mídia e do cabeçalho, e o anel creme do foco de teclado, mais perto nos campos do formulário."
+            count={count("radii", "aspects", "effects", "focus")}
+            lead="Raios nomeados em px, a pílula e o círculo; as proporções da mídia, nomeadas pela razão; os brilhos creme dos botões, os desfoques da pílula sobre mídia e do cabeçalho, e o anel creme do foco de teclado, mais perto nos campos do formulário."
           >
             <DesignGroup title="Raios">
               <RadiusTokens tokens={tokens.radii} />
+            </DesignGroup>
+            <DesignGroup title="Proporções">
+              <AspectTokens tokens={tokens.aspects} />
             </DesignGroup>
             <DesignGroup title="Sombra e desfoque">
               <EffectTokens tokens={tokens.effects} />
