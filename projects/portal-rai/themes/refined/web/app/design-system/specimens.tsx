@@ -146,7 +146,7 @@ const PORTAL_CARD = {
   description: "Acionamentos, falsos positivos e latência de cada guardrail.",
   action: "Ver",
   mark: "inserir gif · 4:3",
-  aspect: "aspect-[4/3]",
+  aspect: "aspect-4-3",
 };
 
 const CYCLE_STEP = {
@@ -452,7 +452,7 @@ export function ComponentSpecimens() {
           <Pill dot="blue">Defensiva · em produção</Pill>
         </State>
         <State label="sobre mídia" size="medium">
-          <MediaPlaceholder mark="inserir vídeo · 16:10" className="aspect-[16/10] w-full">
+          <MediaPlaceholder mark="inserir vídeo · 16:10" className="aspect-16-10 w-full">
             <Pill dot="red" onMedia>
               Ofensiva · antes da produção
             </Pill>
@@ -472,10 +472,10 @@ export function ComponentSpecimens() {
         }
       >
         <State label="16:10" size="medium">
-          <MediaPlaceholder mark="inserir vídeo · 16:10" className="aspect-[16/10] w-full" />
+          <MediaPlaceholder mark="inserir vídeo · 16:10" className="aspect-16-10 w-full" />
         </State>
         <State label="4:3" size="medium">
-          <MediaPlaceholder mark="inserir gif · 4:3" className="aspect-[4/3] w-full" />
+          <MediaPlaceholder mark="inserir gif · 4:3" className="aspect-4-3 w-full" />
         </State>
       </Specimen>
 

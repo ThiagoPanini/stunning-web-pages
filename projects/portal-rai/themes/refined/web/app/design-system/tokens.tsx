@@ -239,6 +239,23 @@ export function RadiusTokens({ tokens }: { tokens: Token[] }) {
   );
 }
 
+// A media placeholder's box in the token's proportion, at a fixed height that keeps the route on whole
+// pixels: its width follows the ratio.
+export function AspectTokens({ tokens }: { tokens: Token[] }) {
+  return (
+    <TokenGrid min="wide">
+      {tokens.map((token) => (
+        <TokenCell key={token.name} token={token}>
+          <Sample
+            className="h-24 max-w-full self-start rounded-16 bg-surface"
+            style={{ aspectRatio: variable(token) }}
+          />
+        </TokenCell>
+      ))}
+    </TokenGrid>
+  );
+}
+
 export function EffectTokens({ tokens }: { tokens: Token[] }) {
   return (
     <TokenGrid min="wide">

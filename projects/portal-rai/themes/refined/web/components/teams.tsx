@@ -42,7 +42,7 @@ export function Teams() {
       <div className="flex flex-col gap-14">
         {TEAMS.map((team) => (
           <article key={team.name} className="rise flex flex-col gap-5">
-            <MediaPlaceholder mark="inserir vídeo · 16:10" className="aspect-[16/10]">
+            <MediaPlaceholder mark="inserir vídeo · 16:10" className="aspect-16-10">
               <Pill dot={team.dot} onMedia>
                 {team.posture}
               </Pill>

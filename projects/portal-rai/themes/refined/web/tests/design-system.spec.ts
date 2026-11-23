@@ -98,6 +98,7 @@ const DRAWN: [RegExp, string, string][] = [
   [/^--leading-/, "line-height", "3"],
   [/^--(spacing|container-)/, "width", "3px"],
   [/^--grid-template-columns-/, "grid-template-columns", "1px 2px 3px"],
+  [/^--aspect-/, "aspect-ratio", "3 / 1"],
   [/^--radius-/, "border-top-left-radius", "3px"],
   [/^--shadow-/, "box-shadow", "0 0 0 3px rgb(1, 2, 3)"],
   [/^--blur-/, "backdrop-filter", "3px"],

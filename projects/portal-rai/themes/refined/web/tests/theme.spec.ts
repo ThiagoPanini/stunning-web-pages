@@ -82,6 +82,10 @@ function originValues(): Use[] {
         }
       }
       if (property === "grid-template-columns") add("grid", value, /^--grid-template-columns-/);
+      // The proportions of the media; 1 / 1 is Tailwind's own aspect-square.
+      if (property === "aspect-ratio" && normalize(value) !== "1 / 1") {
+        add("aspect ratio", value, /^--aspect-/);
+      }
       // The grow factor of the flex shorthand; a whole one is a step of Tailwind's own (grow-3).
       if (property === "flex") {
         const grow = value.split(/\s+/)[0];
@@ -126,16 +130,18 @@ test("every value the origin uses has a name in @theme", () => {
   expect([...unnamed], "origin values with no name in @theme").toEqual([]);
 });
 
-// The numbers of a CSS value that are a design's choice: a length, a time, an angle, a decimal. A whole
-// number with no unit is a step of Tailwind's own (flex-[1_1_0] grows by 1), and 0 and 100% are none
-// and all; none of them is a choice of the board.
+// The numbers of a CSS value that are a design's choice: a length, a time, an angle, a decimal, a ratio
+// (21/9). A whole number with no unit is a step of Tailwind's own (flex-[1_1_0] grows by 1), and 0 and
+// 100% are none and all; none of them is a choice of the board.
 function literalValues(value: string): string[] {
-  return [...value.matchAll(/(\d*\.?\d+)([a-z%]*)/g)]
+  const ratios = [...value.matchAll(/\d+\/\d+/g)].map(([ratio]) => ratio);
+  const numbers = [...value.matchAll(/(\d*\.?\d+)([a-z%]*)/g)]
     .filter(([, number, unit]) => {
       if (unit === "" || unit === "fr") return !Number.isInteger(Number(number));
       return !(Number(number) === 0 || (unit === "%" && number === "100"));
     })
     .map(([literal]) => literal);
+  return [...ratios, ...numbers];
 }
 
 // Where a component would write a value of its own: the arbitrary values of its classes (grow-[1.2],
