@@ -145,10 +145,13 @@ function listFiles(dir) {
   return walk('').sort();
 }
 
-// Line 1 of a preview.html: <!-- @dsCard group="…" height=N … -->.
-function markerGroup(previewHtml) {
-  const marker = previewHtml.split('\n', 1)[0];
-  return /^<!-- @dsCard\b/.test(marker) ? marker.match(/\bgroup="([^"]*)"/)?.[1] : undefined;
+// The card marker on line 1 of a preview.html, <!-- @dsCard group="…" height=N … -->: its group and
+// height, each undefined when the marker does not give it, or undefined when line 1 is not the marker.
+function dsCardMarker(previewHtml) {
+  const line = previewHtml.split('\n', 1)[0];
+  if (!/^<!-- @dsCard\b.*-->$/.test(line)) return undefined;
+  const height = line.match(/\bheight=(\d+)/)?.[1];
+  return { group: line.match(/\bgroup="([^"]*)"/)?.[1], height: height === undefined ? undefined : Number(height) };
 }
 
 // The draft of a Design System artifact: a directory holding its project/, where the agent prepares the
@@ -176,7 +179,7 @@ export function readDraft(draftDir) {
     components: names.map((name) => ({
       name,
       readme: read(`components/${name}/README.md`),
-      group: has(`components/${name}/preview.html`) ? markerGroup(read(`components/${name}/preview.html`)) : undefined,
+      group: has(`components/${name}/preview.html`) ? dsCardMarker(read(`components/${name}/preview.html`))?.group : undefined,
     })),
     assets: listFiles(join(project, 'assets')).map((path) => `assets/${path}`),
     // The files of the draft the build did not make (a section or a file someone added on the page, a
@@ -310,7 +313,7 @@ export function checkProject(theme, dir) {
     if (!existsSync(join(project, 'components', name, 'README.md'))) failures.push(`components/${name}: no README.md`);
     const preview = join(project, 'components', name, 'preview.html');
     if (!existsSync(preview)) failures.push(`components/${name}: no preview.html`);
-    else if (!/^<!-- @dsCard\b.*-->$/.test(readFileSync(preview, 'utf8').split('\n', 1)[0])) {
+    else if (!dsCardMarker(readFileSync(preview, 'utf8'))) {
       failures.push(`components/${name}/preview.html: line 1 is not the @dsCard marker`);
     }
   }
@@ -672,7 +675,7 @@ export async function build({ themeDir, draftDir, outDir, note, ref }) {
     }
     if (draft.cover) {
       write('components/Cover/preview.html', draft.cover);
-      const coverHeight = Number(draft.cover.split('\n', 1)[0].match(/\bheight=(\d+)/)?.[1] ?? 288);
+      const coverHeight = dsCardMarker(draft.cover)?.height ?? 288;
       const file = join(harnessDir, 'Cover.html');
       writeFileSync(file, draft.cover.replace('<head>', '<head><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="../project/components/bundle.css">'));
       const page = await browser.newPage({ viewport: { width: PIECE_WIDTH, height: coverHeight }, reducedMotion: 'reduce' });
