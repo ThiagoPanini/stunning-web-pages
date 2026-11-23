@@ -15,6 +15,6 @@ Cada Tema do Catálogo é um app próprio, em `projects/<projeto>/themes/<tema>/
 ## Consequences
 
 - Nada num Tema importa de outro Tema nem da raiz. Código repetido entre Temas é aceito.
-- Não há workspace na raiz. O único código fora dos Temas são as ferramentas de `scripts/` (a Puxada, a Subida e o conferidor de documentos), que carregam as próprias dependências.
+- Não há workspace na raiz. O único código fora dos Temas são as ferramentas de `scripts/` (a Puxada, a Subida, o conferidor de documentos e a conferência de um Tema), que carregam as próprias dependências.
 - O framework é um atributo que o Tema declara no README dele, sem nível de pasta próprio.
 - Cada Tema congela as próprias dependências sem afetar os vizinhos (ADR 0008).
