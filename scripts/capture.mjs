@@ -1,16 +1,16 @@
-// The Capturas de referência of the Claude Design Quadros (.dc.html), rendered outside the editor.
+// Reference captures of the Claude Design boards (.dc.html), rendered outside the editor.
 //
 // Usage: node scripts/capture.mjs <origin-dir> --runtime <path/to/dc-runtime.js>
 //
 // Reads <origin-dir>/captures.json, serves <origin-dir>/boards/ over HTTP on 127.0.0.1 (ephemeral port),
-// answering /support.js with the editor runtime given in --runtime, and writes for each Quadro and width:
-//   <origin-dir>/reference/<Quadro>-<width>.png   the full page, the Captura de referência itself
-//   <origin-dir>/reference/<Quadro>-<width>.json  page size, capture conditions and the box of each block
+// answering /support.js with the editor runtime given in --runtime, and writes for each board and width:
+//   <origin-dir>/reference/<board>-<width>.png    the full page, the reference capture itself
+//   <origin-dir>/reference/<board>-<width>.json   page size, capture conditions and the box of each block
 //
 // Capture conditions: headless Chromium from the pinned Playwright, deviceScaleFactor 1, reduced motion,
-// no touch emulation, and a viewport grown to the document height. The reveals of the Quadros use CSS
+// no touch emulation, and a viewport grown to the document height. The reveals of the boards use CSS
 // scroll-driven animations; in a short viewport everything below the fold would stay invisible.
-// See scripts/README.md for the whole Puxada.
+// See scripts/README.md for the whole pull.
 
 import { createReadStream } from 'node:fs';
 import { access, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
@@ -19,7 +19,7 @@ import { basename, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 
-// Start short: documentElement.scrollHeight never reports less than the viewport, so a Quadro smaller
+// Start short: documentElement.scrollHeight never reports less than the viewport, so a board smaller
 // than the first viewport (the logo, 560 px) would be captured with empty space below it.
 const INITIAL_VIEWPORT_HEIGHT = 100;
 const MAX_GROW_STEPS = 6;
@@ -42,17 +42,17 @@ async function readRecipe(originDir) {
   try {
     recipe = JSON.parse(await readFile(path, 'utf8'));
   } catch (error) {
-    fail(`não consegui ler ${path}: ${error.message}`);
+    fail(`could not read ${path}: ${error.message}`);
   }
   if (!Array.isArray(recipe.captures) || recipe.captures.length === 0) {
-    fail(`${path} precisa de uma lista "captures" não vazia`);
+    fail(`${path} needs a non-empty "captures" list`);
   }
   for (const entry of recipe.captures) {
     if (typeof entry.board !== 'string' || !entry.board.endsWith('.dc.html')) {
-      fail(`cada captura precisa de "board" com um arquivo .dc.html (veio ${JSON.stringify(entry.board)})`);
+      fail(`each capture needs a "board" naming a .dc.html file (got ${JSON.stringify(entry.board)})`);
     }
     if (!Array.isArray(entry.widths) || entry.widths.length === 0 || !entry.widths.every(Number.isInteger)) {
-      fail(`${entry.board}: "widths" precisa ser uma lista de inteiros`);
+      fail(`${entry.board}: "widths" must be a list of integers`);
     }
   }
   return recipe;
@@ -105,7 +105,7 @@ async function measureBoxes(page, selectors = {}) {
     for (const [name, selector] of entries) {
       const matches = document.querySelectorAll(selector);
       if (matches.length !== 1) {
-        result[name] = { error: `"${selector}" casou ${matches.length} elementos` };
+        result[name] = { error: `"${selector}" matched ${matches.length} elements` };
         continue;
       }
       const rect = matches[0].getBoundingClientRect();
@@ -115,8 +115,8 @@ async function measureBoxes(page, selectors = {}) {
   }, Object.entries(selectors));
   const boxes = {};
   for (const [name, rect] of Object.entries(found)) {
-    if (rect.error) throw new Error(`caixa "${name}": ${rect.error}`);
-    if (rect.width === 0 || rect.height === 0) throw new Error(`caixa "${name}": elemento sem tamanho`);
+    if (rect.error) throw new Error(`box "${name}": ${rect.error}`);
+    if (rect.width === 0 || rect.height === 0) throw new Error(`box "${name}": element has no size`);
     boxes[name] = pixelBox(rect);
   }
   return boxes;
@@ -130,11 +130,11 @@ async function captureBoard(browser, base, entry, width) {
   });
   const page = await context.newPage();
   const problems = [];
-  page.on('pageerror', (error) => problems.push(`erro de página: ${error.message}`));
+  page.on('pageerror', (error) => problems.push(`page error: ${error.message}`));
   page.on('console', (message) => {
-    if (message.type() === 'error') problems.push(`erro de console: ${message.text()}`);
+    if (message.type() === 'error') problems.push(`console error: ${message.text()}`);
   });
-  page.on('requestfailed', (request) => problems.push(`requisição falhou: ${request.url()} ${request.failure()?.errorText ?? ''}`));
+  page.on('requestfailed', (request) => problems.push(`request failed: ${request.url()} ${request.failure()?.errorText ?? ''}`));
   page.on('response', (response) => {
     if (response.status() >= 400) problems.push(`HTTP ${response.status()}: ${response.url()}`);
   });
@@ -160,7 +160,7 @@ async function captureBoard(browser, base, entry, width) {
     }
     height = next;
   }
-  if (!converged) throw new Error(`${entry.board} em ${width} px: a altura não estabilizou (última ${height} px)`);
+  if (!converged) throw new Error(`${entry.board} at ${width} px: the height did not settle (last ${height} px)`);
 
   const health = await page.evaluate(() => {
     const hidden = [...document.querySelectorAll('#dc-root *')].filter((element) => {
@@ -175,13 +175,13 @@ async function captureBoard(browser, base, entry, width) {
     };
   });
 
-  // Every check runs before anything is written, so a failed capture leaves the Capturas de referência as
-  // they were.
+  // Every check runs before anything is written, so a failed capture leaves the reference captures as they
+  // were.
   const checkProblems = () => {
-    if (problems.length > 0) throw new Error(`${entry.board} em ${width} px:\n  ${problems.join('\n  ')}`);
+    if (problems.length > 0) throw new Error(`${entry.board} at ${width} px:\n  ${problems.join('\n  ')}`);
   };
   checkProblems();
-  if (health.scrollY !== 0) throw new Error(`${entry.board} em ${width} px: a página rolou (${health.scrollY} px)`);
+  if (health.scrollY !== 0) throw new Error(`${entry.board} at ${width} px: the page scrolled (${health.scrollY} px)`);
   const blocks = await measureBoxes(page, entry.blocks);
   const regions = await measureBoxes(page, entry.regions);
   const shot = await page.screenshot({ fullPage: true, animations: 'disabled' });
@@ -211,15 +211,15 @@ async function main() {
     options: { runtime: { type: 'string' } },
   });
   if (positionals.length !== 1 || !values.runtime) {
-    fail('uso: node scripts/capture.mjs <pasta origin do Tema> --runtime <dc-runtime.js baixado>');
+    fail('usage: node scripts/capture.mjs <theme origin dir> --runtime <downloaded dc-runtime.js>');
   }
   const originDir = resolve(positionals[0]);
   const runtimePath = resolve(values.runtime);
-  await access(runtimePath).catch(() => fail(`runtime não encontrado: ${runtimePath}`));
+  await access(runtimePath).catch(() => fail(`runtime not found: ${runtimePath}`));
   const boardsDir = join(originDir, 'boards');
   const recipe = await readRecipe(originDir);
   for (const entry of recipe.captures) {
-    await access(join(boardsDir, entry.board)).catch(() => fail(`Quadro não encontrado: ${join(boardsDir, entry.board)}`));
+    await access(join(boardsDir, entry.board)).catch(() => fail(`board not found: ${join(boardsDir, entry.board)}`));
   }
   await mkdir(join(originDir, 'reference'), { recursive: true });
 
@@ -231,9 +231,9 @@ async function main() {
       for (const width of entry.widths) {
         try {
           const result = await captureBoard(browser, base, { ...entry, originDir }, width);
-          const overflow = result.scrollWidth > width ? `, transbordo horizontal de ${result.scrollWidth - width} px` : '';
-          console.log(`${result.image}: ${width} x ${result.height} px, ${result.hiddenElements} elementos invisíveis${overflow}`);
-          for (const sample of result.hiddenSample) console.log(`  invisível: ${sample}`);
+          const overflow = result.scrollWidth > width ? `, horizontal overflow of ${result.scrollWidth - width} px` : '';
+          console.log(`${result.image}: ${width} x ${result.height} px, ${result.hiddenElements} invisible elements${overflow}`);
+          for (const sample of result.hiddenSample) console.log(`  invisible: ${sample}`);
         } catch (error) {
           failed = true;
           console.error(`capture: ${error.message}`);
@@ -246,7 +246,7 @@ async function main() {
   }
   if (misses.length > 0) {
     failed = true;
-    console.error(`capture: o servidor não achou ${[...new Set(misses)].join(', ')} (falta Quadro em boards/?)`);
+    console.error(`capture: the server did not find ${[...new Set(misses)].join(', ')} (board missing from boards/?)`);
   }
   if (failed) process.exit(1);
 }
