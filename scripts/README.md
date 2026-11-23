@@ -146,7 +146,7 @@ A prévia de uma peça é o espécime que a rota `/design-system` mostra em `<ar
 ### O que o Tema precisa ter
 
 - O `README.md` do Tema começa com `# <nome do Tema>`.
-- O `@theme` do app tem só namespaces que `publish.mjs` sabe pôr numa família do tipo. Os de movimento e os apelidos `--default-*` ficam de fora, porque o tipo não tem lugar para eles: o livro da marca dá esses valores em prosa. Um namespace desconhecido para a montagem com o nome do token; acrescente-o à tabela `PLACEMENT` de `publish.mjs`.
+- O `@theme` do app tem só namespaces que `publish.mjs` sabe pôr numa família do tipo. Os de movimento, os apelidos `--default-*` e os fundos desenhados (`--background-image-*`, que citam outros tokens com `var()`, e o tipo não aceita `var()` nem `url()` num valor) ficam de fora, porque o tipo não tem lugar para eles: o livro da marca dá esses valores em prosa. Um namespace desconhecido para a montagem com o nome do token; acrescente-o à tabela `PLACEMENT` de `publish.mjs`.
 - `web/app/fonts.ts` declara cada face num `localFont({...})` com `src: "../fonts/<arquivo>"`, `weight`, `style` quando não for `normal`, e `declarations` com o `font-family` do design e, se houver, o `unicode-range`. As fontes ficam em `web/fonts/`, com a licença ao lado.
 - Cada componente que sobe é exportado por um arquivo de `web/components/` (`export function <Componente>`). Uma peça aparece na rota `/design-system` num `<article data-component="<Componente>">` cujo último filho é o espécime, com os estados marcados por `data-state`; um bloco tem um `data-block` só no arquivo dele.
 - O export estático está montado (`pnpm build` no `web/`) e tem um único arquivo CSS em `out/_next/static/chunks/`.

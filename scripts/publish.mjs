@@ -19,8 +19,9 @@ import { readTheme } from './theme.mjs';
 
 // Where each @theme token goes in tokens.json, by Tailwind namespace: a family of the type, the font
 // stacks of `type.families`, or left out (motion and Tailwind's default aliases, which the type has no
-// place for). The first pattern that matches wins. A token no pattern matches stops the build: add its
-// namespace here.
+// place for, and drawn backgrounds, image values that cite other tokens or files, where the type takes
+// no var() or url()). The first pattern that matches wins. A token no pattern matches stops the build:
+// add its namespace here.
 const PLACEMENT = [
   ['color', /^--color-/],
   ['fontWeight', /^--font-weight-/],
@@ -29,12 +30,12 @@ const PLACEMENT = [
   ['letterSpacing', /^--tracking-/],
   ['lineHeight', /^--leading-/],
   ['spacing', /^--spacing$/],
-  ['layout', /^--(spacing-|container-|grid-template-columns-|grow-)/],
+  ['layout', /^--(spacing-|container-|grid-template-columns-|grid-auto-columns-|grow-)/],
   ['radius', /^--radius-/],
   ['shadow', /^--shadow-/],
   ['blur', /^--blur-/],
   ['focus', /^--outline-(width|offset)-/],
-  ['out', /^--(default-|ease-|duration-|delay-|animate-)/],
+  ['out', /^--(default-|ease-|duration-|delay-|animate-|background-image-)/],
 ];
 
 // The order of the families in tokens.json: the type's own, then the further ones.
