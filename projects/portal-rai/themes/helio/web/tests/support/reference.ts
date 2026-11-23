@@ -1,0 +1,209 @@
+// Fidelity against the Capturas de referência of the Origem (ADR 0007).
+//
+// The app is captured under the same conditions as the Puxada (scripts/capture.mjs): the Chromium of the
+// same Playwright, deviceScaleFactor 1, reduced motion, no touch and a viewport as tall as the document.
+// Each block of the page carries data-block="<name>", the names of origin/captures.json; a band runs from
+// the top of one block to the bottom of another, edge to edge, and is compared with the same band cut
+// from the reference image.
+
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import { type BrowserContextOptions, expect, type Page, test } from "@playwright/test";
+import pixelmatch from "pixelmatch";
+import { PNG } from "pngjs";
+
+export const ORIGIN_DIR = join(import.meta.dirname, "..", "..", "..", "origin");
+
+export const WIDTHS = [1440, 390] as const;
+export type Width = (typeof WIDTHS)[number];
+
+export const BLOCKS = [
+  "header",
+  "hero",
+  "mission",
+  "teams",
+  "solutions",
+  "start",
+  "footer",
+] as const;
+export type BlockName = (typeof BLOCKS)[number];
+export type RegionName = "logo";
+
+export type Box = { x: number; y: number; width: number; height: number };
+
+type ReferenceRecord = {
+  width: number;
+  height: number;
+  blocks: Record<BlockName, Box>;
+  regions: Record<RegionName, Box>;
+};
+
+// The same constants as scripts/capture.mjs.
+const INITIAL_VIEWPORT_HEIGHT = 100;
+const MAX_GROW_STEPS = 6;
+const SETTLE_MS = 500;
+
+// pixelmatch's own default: the per-pixel color distance (OKLab HyAB, 0 to 1) below which two pixels are
+// equal. Anti-aliased pixels are detected and ignored.
+const PIXEL_THRESHOLD = 0.1;
+
+// Default share of a band's pixels that may differ. First calibration, on the header and hero band with
+// the logo masked: 0 differing pixels at 1440 and at 390 px. Compared byte for byte, the bands differ
+// only in the header at 1440 px, by one level of one channel (its translucent, blurred background), which
+// the threshold above absorbs. The limit stays near zero, so a moved line of text or a wrong color fails:
+// 0.01% is 85 pixels of the header and hero band at 1440 px. The calibration of the whole Home may
+// revise it.
+export const MAX_DIFF_PIXEL_RATIO = 0.0001;
+
+export async function readReference(width: Width): Promise<ReferenceRecord & { image: PNG }> {
+  const record = JSON.parse(
+    await readFile(join(ORIGIN_DIR, "reference", `Main-${width}.json`), "utf8"),
+  ) as ReferenceRecord;
+  const image = PNG.sync.read(await readFile(join(ORIGIN_DIR, "reference", `Main-${width}.png`)));
+  return { ...record, image };
+}
+
+// The browser context of a reference capture, at the given width.
+export function referenceContextOptions(width: number): BrowserContextOptions {
+  return {
+    viewport: { width, height: INITIAL_VIEWPORT_HEIGHT },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+    hasTouch: false,
+    isMobile: false,
+  };
+}
+
+// Loads a path of the app in a page opened with referenceContextOptions, then grows the viewport to the
+// document height until it stops changing.
+export async function loadAtReferenceConditions(page: Page, width: number, path: string) {
+  await page.goto(path, { waitUntil: "networkidle" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(SETTLE_MS);
+
+  const documentHeight = () => page.evaluate(() => document.documentElement.scrollHeight);
+  let height = await documentHeight();
+  for (let step = 0; step < MAX_GROW_STEPS; step++) {
+    await page.setViewportSize({ width, height });
+    await page.waitForLoadState("networkidle");
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(SETTLE_MS);
+    const next = await documentHeight();
+    if (next === height) return;
+    height = next;
+  }
+  throw new Error(`a altura da página não estabilizou em ${width} px (última ${height} px)`);
+}
+
+// Edges rounded to the nearest pixel, as the Puxada records the reference boxes.
+function pixelBox(rect: Box): Box {
+  const x = Math.round(rect.x);
+  const y = Math.round(rect.y);
+  return {
+    x,
+    y,
+    width: Math.round(rect.x + rect.width) - x,
+    height: Math.round(rect.y + rect.height) - y,
+  };
+}
+
+async function boxOf(page: Page, selector: string): Promise<Box> {
+  const locator = page.locator(selector);
+  await expect(locator, `${selector} precisa casar um único elemento`).toHaveCount(1);
+  const rect = await locator.evaluate((element) => {
+    const { x, y, width, height } = element.getBoundingClientRect();
+    return { x: x + window.scrollX, y: y + window.scrollY, width, height };
+  });
+  return pixelBox(rect);
+}
+
+export function blockBox(page: Page, block: BlockName): Promise<Box> {
+  return boxOf(page, `[data-block="${block}"]`);
+}
+
+export function regionBox(page: Page, region: RegionName): Promise<Box> {
+  return boxOf(page, `[data-region="${region}"]`);
+}
+
+function crop(image: PNG, y: number, height: number): PNG {
+  const band = new PNG({ width: image.width, height });
+  image.data.copy(band.data, 0, y * image.width * 4, (y + height) * image.width * 4);
+  return band;
+}
+
+type BandOptions = {
+  width: Width;
+  from: BlockName;
+  to?: BlockName;
+  // Regions skipped in both images, such as the place of a component that does not exist yet.
+  mask?: RegionName[];
+  // A band that needs a looser limit than the default says so here, with the reason next to it.
+  maxDiffPixelRatio?: number;
+};
+
+// Compares the band of the page from the top of `from` to the bottom of `to` with the same band of the
+// Captura de referência. The band must start where the reference's starts and have its height, and at
+// most maxDiffPixelRatio of its pixels may differ. Actual, expected and diff images are attached to the
+// test result, and the count of differing pixels goes to its annotations.
+export async function expectBandToMatchReference(page: Page, options: BandOptions): Promise<void> {
+  const { width, from, to = from, mask = [], maxDiffPixelRatio = MAX_DIFF_PIXEL_RATIO } = options;
+  const reference = await readReference(width);
+  const refTop = reference.blocks[from].y;
+  const refHeight = reference.blocks[to].y + reference.blocks[to].height - refTop;
+  const appFrom = await blockBox(page, from);
+  const appTo = to === from ? appFrom : await blockBox(page, to);
+  const appTop = appFrom.y;
+  const appHeight = appTo.y + appTo.height - appTop;
+  const name = `${from === to ? from : `${from}-${to}`}-${width}`;
+
+  const expected = crop(reference.image, refTop, refHeight);
+  const actual = PNG.sync.read(
+    await page.screenshot({
+      clip: { x: 0, y: appTop, width, height: appHeight },
+      animations: "disabled",
+    }),
+  );
+  await test.info().attach(`${name}-expected.png`, {
+    body: PNG.sync.write(expected),
+    contentType: "image/png",
+  });
+  await test.info().attach(`${name}-actual.png`, {
+    body: PNG.sync.write(actual),
+    contentType: "image/png",
+  });
+
+  expect(
+    { top: appTop, height: appHeight },
+    `posição e altura da faixa ${from}..${to} em ${width} px`,
+  ).toEqual({ top: refTop, height: refHeight });
+
+  const ignoreMask = new Uint8Array(width * refHeight);
+  for (const region of mask) {
+    const box = reference.regions[region];
+    for (
+      let y = Math.max(0, box.y - refTop);
+      y < Math.min(refHeight, box.y + box.height - refTop);
+      y++
+    ) {
+      ignoreMask.fill(1, y * width + box.x, y * width + box.x + box.width);
+    }
+  }
+  const diff = new PNG({ width, height: refHeight });
+  const differing = pixelmatch(actual.data, expected.data, diff.data, width, refHeight, {
+    threshold: PIXEL_THRESHOLD,
+    ignoreMask,
+  });
+  await test.info().attach(`${name}-diff.png`, {
+    body: PNG.sync.write(diff),
+    contentType: "image/png",
+  });
+  const compared = width * refHeight - ignoreMask.reduce((sum, value) => sum + value, 0);
+  test.info().annotations.push({
+    type: "diff",
+    description: `${name}: ${differing} de ${compared} pixels diferem`,
+  });
+  expect(
+    differing / compared,
+    `${differing} de ${compared} pixels diferem na faixa ${from}..${to} em ${width} px`,
+  ).toBeLessThanOrEqual(maxDiffPixelRatio);
+}
