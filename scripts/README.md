@@ -41,7 +41,7 @@ projects/<projeto>/themes/<tema>/origin/
         "blocks": { "header": "header.hdr", "hero": "main > section:nth-of-type(1)" },
         "regions": { "logo": ".orbx > div:first-child" }
       },
-      { "board": "LogoLab5.dc.html", "widths": [560] }
+      { "board": "LogoLab1.dc.html", "widths": [560] }
     ]
   }
   ```
