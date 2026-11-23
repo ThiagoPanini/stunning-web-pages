@@ -37,9 +37,9 @@
 
   /* Families, with the boards' fallbacks: Instrument Sans for the page, Geist Mono for the logo. */
   --font-sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-logo: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
+  --default-mono-font-family: var(--font-logo);
 
   /* Warm neutrals, from dark to light. */
   --color-night: #0d0d0c; /* page, text on the cream button, bezel cores, FAQ icon, logo background */
@@ -59,16 +59,20 @@
   --color-cream: #e8dcc8; /* accent: buttons, inline links, "Ver o ciclo", focus ring, scroll bar */
   --color-bright: #f3f1ec; /* main text, brand mark */
 
-  /* Red is attack and the Red Team, blue is guardrail and the Blue Team; the same as the logo's. */
+  /* Red is attack and the Red Team, blue is guardrail and the Blue Team, in the dots, icons and results of
+     the sections; the logo draws with the same two values, under names of its own below. */
   --color-red: #ec5b48;
   --color-blue: #5a90f8;
-  --color-agent: #c9d1d6; /* the logo's agent and its caption mark */
 
-  /* The Ondas logo board's own colors: its default background, which the Home replaces with night, its
-     text color, and the waves that pass. */
-  --color-logo-ground: #0a0d0f;
-  --color-logo-ink: #eef1f2;
-  --color-logo-pass: #87949c;
+  /* The Ondas logo's colors, under the names its component brings from the Neônio (every theme copies the
+     file as it is): the layers of its drawing, whose marks the caption shows in the same colors, its base
+     color, and its board's own background, which the Home replaces with night. */
+  --color-logo-red: #ec5b48; /* attack */
+  --color-logo-blue: #5a90f8; /* guardrails */
+  --color-logo-agent: #c9d1d6; /* agent */
+  --color-logo-gray: #87949c; /* valid answers */
+  --color-logo-bright: #eef1f2; /* the logo's base color */
+  --color-logo-night: #0a0d0f; /* the logo board's own background */
 
   /* Translucent colors, named after their alpha in hundredths. */
   --color-header: rgba(13, 13, 12, 0.82);
@@ -118,12 +122,15 @@
   --leading-102: 1.02; /* footer signature */
   --leading-110: 1.1; /* section titles */
   --leading-115: 1.15; /* team names, results, contact title */
-  --leading-120: 1.2; /* cycle phrase, solution names, the logo's rows */
+  --leading-120: 1.2; /* cycle phrase, solution names */
   --leading-125: 1.25; /* card names */
   --leading-130: 1.3; /* cycle step titles */
   --leading-145: 1.45; /* checklist */
   --leading-150: 1.5; /* page base, paragraphs */
   --leading-155: 1.55; /* FAQ answers */
+  /* The logo's rows: the same 1.2, under the name its component brings from the Neônio, whose scale is in
+     thousandths. */
+  --leading-1200: 1.2;
 
   /* Fluid spacing and the widths of the page. */
   --spacing-gutter: clamp(20px, 4vw, 48px); /* side padding of the header */

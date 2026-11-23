@@ -10,10 +10,10 @@ import type { BlockName } from "./reference";
 // spill is what the user would see past the page's edges; what a frame inside the page hides is not one.
 // The visible part is the element's box, widened by the content that runs out of it when nothing there
 // clips it (a line that does not wrap), then cut sideways by each ancestor inside the blocks that clips
-// its overflow, such as the logo's frame, which hides the marks of the animated drawing that grow past
-// it; the page's own clip, above the blocks, is the one this check sees past. A positioned element
-// escapes the clips between it and its containing block, so those are skipped; an ancestor not known to
-// contain it is skipped too, which can only report more.
+// its overflow, such as the logo's frame, which hides whatever of its drawing runs past it; the page's
+// own clip, above the blocks, is the one this check sees past. A positioned element escapes the clips
+// between it and its containing block, so those are skipped; an ancestor not known to contain it is
+// skipped too, which can only report more.
 export function spilledElements(
   page: Page,
   width: number,
