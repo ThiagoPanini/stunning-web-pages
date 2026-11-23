@@ -65,7 +65,7 @@ function originValues(): Use[] {
     }
     for (const [property, value] of declarations(board)) {
       if (value.includes("{{")) continue;
-      if (property === "font-family") add("family", value, /^--font-(sans|mono)$/);
+      if (property === "font-family") add("family", value, /^--font-(sans|logo)$/);
       if (property === "font-size") add("size", value, /^--text-/);
       if (property === "font-weight") add("weight", value, /^--font-weight-/);
       if (property === "letter-spacing") add("letter spacing", value, /^--tracking-/);
