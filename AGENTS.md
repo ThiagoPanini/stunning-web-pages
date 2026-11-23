@@ -30,13 +30,12 @@ stunning-web-pages/
 
 ## O laço com o Claude Design
 
-Um veículo por sentido: as Telas descem, o Sistema de design sobe.
+Um veículo por sentido: as Telas descem, o Sistema de design sobe. O passo a passo, com o Ponteiro e o runtime do editor, está em `scripts/README.md`.
 
-- **Puxada**, para baixo: copia os Quadros do Tema do Artefato para `origin/` exatamente como estão, grava a versão do Artefato no Ponteiro e gera as Capturas de referência. O passo a passo está em `scripts/README.md`. Depois de uma Puxada, o `git diff` de `origin/` mostra o que o Autor mudou no design: esse diff é o trabalho do app.
+- **Puxada**, para baixo: copia os Quadros do Tema do Artefato para `origin/` exatamente como estão e gera as Capturas de referência. Depois de uma Puxada, o `git diff` de `origin/` mostra o que o Autor mudou no design: esse diff é o trabalho do app.
 - **Subida**, para cima: publica o Sistema de design do Tema, montado a partir do app, como Artefato Design System privado na conta do Claude do Autor, e o Claude Design desenha as próximas Telas do Tema em cima dele. Leva os tokens do `@theme`, as fontes do app, o texto de marca e prévias estáticas dos componentes.
-- Os Quadros são o canvas do Autor: o agente os lê e os deixa como estão. Um ajuste nascido no código é um Desvio: anote-o no `HANDOFF.md` do Tema; ele chega ao Quadro só quando o Autor pedir.
-- O Ponteiro é o único arquivo de `origin/` que guarda endereços de Artefato, inclusive o da Subida. Ele se declara coisa do Autor. Nenhum outro arquivo cita endereço, e nenhum documento depende do Ponteiro.
-- O runtime do editor, que os Quadros carregam como `support.js`, pertence ao publicador do tipo de Artefato. A Puxada o baixa para uma pasta temporária a cada vez, e o `.gitignore` o mantém fora do git.
+- **Os Quadros são o canvas do Autor.** O agente muda um Quadro quando o Autor pede: troca só o que foi pedido e publica só aquele arquivo no Artefato, como diz `scripts/README.md`. Um ajuste nascido no código é um Desvio: anote-o no `HANDOFF.md` do Tema.
+- **Endereço de Artefato só no Ponteiro**, o arquivo de `origin/` que se declara coisa do Autor. Nenhum documento depende dele.
 
 ## Reproduzir o design
 
@@ -87,6 +86,6 @@ Toda mudança chega à `main` como o squash de um pull request. O agente que abr
 
 1. Trabalhe em `feature/<project_slug>`, um Projeto por branch, ou em `feature/catalog` para trabalho só na raiz. O `/implement-spec` usa essa branch como branch de integração.
 2. Commite e faça push por conta própria conforme o trabalho avança.
-3. No fim do Ciclo, abra o PR com `gh pr create` e mescle com `gh pr merge --squash --delete-branch`. O Ciclo seguinte do mesmo Projeto começa uma branch nova a partir da `main`.
+3. No fim do Ciclo, abra o PR com `gh pr create` e mescle com `gh pr merge --squash --delete-branch`. Depois do merge, atualize a `main` do checkout principal com `git pull --ff-only`, para a próxima sessão não ler o repositório atrasado. O Ciclo seguinte do mesmo Projeto começa uma branch nova a partir da `main`.
 
 Não há CI. O portão é local: a conferência que cada ticket nomeia, rodada e verde, e, num Ciclo que toca um Tema, a lista de Tema pronto acima.
