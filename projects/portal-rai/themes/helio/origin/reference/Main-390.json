@@ -1,0 +1,64 @@
+{
+  "board": "Main.dc.html",
+  "image": "Main-390.png",
+  "width": 390,
+  "height": 5753,
+  "conditions": {
+    "browser": "chromium 159.0.8154.6",
+    "deviceScaleFactor": 1,
+    "reducedMotion": "reduce",
+    "touch": false
+  },
+  "blocks": {
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 117
+    },
+    "hero": {
+      "x": 20,
+      "y": 117,
+      "width": 350,
+      "height": 977
+    },
+    "mission": {
+      "x": 20,
+      "y": 1094,
+      "width": 350,
+      "height": 836
+    },
+    "teams": {
+      "x": 20,
+      "y": 1930,
+      "width": 350,
+      "height": 1604
+    },
+    "solutions": {
+      "x": 20,
+      "y": 3534,
+      "width": 350,
+      "height": 1191
+    },
+    "start": {
+      "x": 20,
+      "y": 4725,
+      "width": 350,
+      "height": 840
+    },
+    "footer": {
+      "x": 0,
+      "y": 5565,
+      "width": 390,
+      "height": 188
+    }
+  },
+  "regions": {
+    "logo": {
+      "x": 20,
+      "y": 616,
+      "width": 350,
+      "height": 350
+    }
+  }
+}
