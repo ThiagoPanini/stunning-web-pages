@@ -11,7 +11,12 @@ type ParagraphProps = {
 };
 
 // The body paragraph of the sections (rf-p): muted, 16px, with lines that avoid a lonely last word.
-export function Paragraph({ children, small = false, tone = "muted", className = "" }: ParagraphProps) {
+export function Paragraph({
+  children,
+  small = false,
+  tone = "muted",
+  className = "",
+}: ParagraphProps) {
   const size = small ? "text-14" : "text-16";
   const color = tone === "pale" ? "text-pale" : "text-muted";
   return (

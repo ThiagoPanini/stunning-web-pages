@@ -17,9 +17,13 @@ type ChipSetProps = {
 };
 
 function ChipSet({ copy = false }: ChipSetProps) {
+  // The first copy keeps the board's role="list": list-style none takes the list role away in Safari.
   return (
-    // biome-ignore lint/a11y/noRedundantRoles: list-style none takes the list role away in Safari; the board gives it back
-    <ul role={copy ? undefined : "list"} aria-hidden={copy || undefined} className="flex gap-2 pr-2">
+    <ul
+      role={copy ? undefined : "list"}
+      aria-hidden={copy || undefined}
+      className="flex gap-2 pr-2"
+    >
       {CHIPS.map((chip) => (
         <li
           key={chip}
@@ -42,6 +46,7 @@ type ChipStripProps = {
 // chips.
 export function ChipStrip({ className = "" }: ChipStripProps) {
   return (
+    // biome-ignore lint/a11y/useSemanticElements: the board names the strip as a group of chips; a fieldset would make it part of a form
     <div
       role="group"
       aria-label="O que os guardrails avaliam"

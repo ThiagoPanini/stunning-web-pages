@@ -18,8 +18,8 @@ export function Hero() {
           <span className="block">Protegemos sempre.</span>
         </h1>
         <p className="enter-3 mt-7 max-w-140 text-balance text-17-20 text-muted leading-150 tracking-tight-20">
-          O time que pesquisa, desenvolve e implementa os guardrails dos agentes conversacionais de IA
-          da companhia.
+          O time que pesquisa, desenvolve e implementa os guardrails dos agentes conversacionais de
+          IA da companhia.
         </p>
         <div className="enter-4 mt-10 flex flex-wrap justify-center gap-3">
           <ButtonLink>Testar um guardrail</ButtonLink>
