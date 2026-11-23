@@ -2,6 +2,7 @@
 // motion, the sample brands as the design writes them, and no horizontal spill.
 
 import type { Page } from "@playwright/test";
+import { spilledElements } from "./support/overflow";
 import { expectBandToMatchReference, WIDTHS } from "./support/reference";
 import { expect, test } from "./support/test";
 
@@ -9,6 +10,11 @@ for (const width of WIDTHS) {
   test(`brands match the reference at ${width} px`, async ({ referencePage }) => {
     const page = await referencePage(width, { standInForEmptyBlocks: true });
     await expectBandToMatchReference(page, { width, from: "brands" });
+  });
+
+  test(`solutions match the reference at ${width} px`, async ({ referencePage }) => {
+    const page = await referencePage(width, { standInForEmptyBlocks: true });
+    await expectBandToMatchReference(page, { width, from: "solutions" });
   });
 }
 
@@ -54,3 +60,28 @@ test("with reduced motion, the brands stay still", async ({ newWindow }) => {
   const [before, after] = await offsetsOverTime(page);
   expect([before, after]).toEqual([0, 0]);
 });
+
+test("the sample brands read as the design writes them, once", async ({ newWindow }) => {
+  const page = await newWindow(1440);
+  await page.goto("/");
+  // The track's second copy of the list is hidden from assistive technology, so the band reads once.
+  const brands = page.getByRole("region", { name: "Marcas" }).getByRole("listitem");
+  await expect(brands).toHaveText([
+    "[MARCA 1]",
+    "[MARCA 2]",
+    "[MARCA 3]",
+    "[MARCA 4]",
+    "[MARCA 5]",
+    "[MARCA 6]",
+    "[MARCA 7]",
+    "[MARCA 8]",
+  ]);
+});
+
+// The two widths under test and the breakpoints where the solutions' grids change.
+for (const width of [...WIDTHS, 1100, 640]) {
+  test(`brands and solutions do not spill sideways at ${width} px`, async ({ referencePage }) => {
+    const page = await referencePage(width);
+    expect(await spilledElements(page, width, ["brands", "solutions"])).toEqual([]);
+  });
+}
