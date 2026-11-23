@@ -131,7 +131,8 @@ for (const width of WIDTHS) {
       expect.soft(outside, "requisições para fora do servidor local").toEqual([]);
       expect.soft(fonts, "as duas fontes vêm do servidor local").toHaveLength(2);
       // The page clips its sides (overflow-x: clip), which would hide a spill; so each element is
-      // checked, after the scroll left every reveal in its final place.
+      // checked, after the scroll left every reveal in its final place. A spill is what the user would
+      // see past the page's edges: what a frame inside the page hides is not one.
       expect
         .soft(await spilledElements(page, width), "elementos fora da largura da página")
         .toEqual([]);
@@ -194,14 +195,37 @@ async function scrollThrough(page: Page) {
   });
 }
 
-// Elements of the page whose box leaves [0, width], the page's own edges.
+// Elements of the page whose visible part leaves [0, width], the page's own edges. The visible part is
+// the box cut sideways by each ancestor inside the blocks that clips its overflow, such as the logo's
+// frame, which hides the marks of the animated drawing that grow past it; the page's own clip, above the
+// blocks, is the one this check sees past. A positioned element escapes the clips between it and its
+// containing block, so those are skipped; an ancestor not known to contain it is skipped too, which can
+// only report more.
 function spilledElements(page: Page, width: number) {
   return page.locator(PAGE_ELEMENTS).evaluateAll(
     (elements, pageWidth) =>
       elements
         .filter((element) => {
-          const { left, right, width: boxWidth } = element.getBoundingClientRect();
-          return boxWidth > 0 && (left < -0.5 || right > pageWidth + 0.5);
+          let { left, right } = element.getBoundingClientRect();
+          let position = getComputedStyle(element).position;
+          let ancestor = element;
+          while (!ancestor.hasAttribute("data-block") && ancestor.parentElement) {
+            ancestor = ancestor.parentElement;
+            const style = getComputedStyle(ancestor);
+            const contains =
+              position === "fixed"
+                ? style.transform !== "none"
+                : position === "absolute"
+                  ? style.position !== "static" || style.transform !== "none"
+                  : true;
+            if (!contains) continue;
+            position = style.position;
+            if (style.overflowX === "visible") continue;
+            const clip = ancestor.getBoundingClientRect();
+            left = Math.max(left, clip.left);
+            right = Math.min(right, clip.right);
+          }
+          return right > left && (left < -0.5 || right > pageWidth + 0.5);
         })
         .map((element) => element.outerHTML.slice(0, 120)),
     width,
