@@ -101,7 +101,7 @@ Os rótulos de seção seguem o formato "01 · Missão", com o número de dois d
 
 ## Layout
 
-- **Largura.** O conteúdo mede no máximo `--container-page`, centrado, com `--spacing-gutter` de respiro de cada lado. Cabeçalho, `main` e rodapé usam `content-box`: a largura máxima é a do conteúdo, e o respiro fica por fora dela.
+- **Largura.** O conteúdo mede no máximo `--container-page`, centrado, com `--spacing-gutter` de respiro de cada lado. O contêiner do cabeçalho, o `main` e o rodapé usam `content-box`: a largura máxima é a do conteúdo, e o respiro fica por fora dela.
 - **Espaçamento.** É a escala do Tailwind, sobre a base `--spacing`: todo comprimento fixo do design é um passo dela (`gap-2.5`, `p-0.75`, `py-24`). Dois espaçamentos fluidos têm nome: `--spacing-gutter`, o respiro lateral da página, e `--spacing-card`, o padding dos cartões dos times.
 - **Ritmo das seções.** Cada seção numerada abre com um filete `--color-rule` no topo e tem o mesmo padding vertical (`py-24`; o Comece fecha com `pb-26`). Dentro dela vêm o rótulo mono, o título e o parágrafo que abre a seção.
 - **Colunas que quebram sozinhas.** A página responde pela largura intrínseca dos blocos, com `flex-wrap` e grades `auto-fit`, sem quebra por largura de janela. A abertura tem duas colunas que empilham quando não cabem. As colunas da Missão têm no mínimo 260 px, os cartões dos Times no mínimo 440 px, e as linhas das soluções e as colunas do Comece quebram pela base de cada parte.
