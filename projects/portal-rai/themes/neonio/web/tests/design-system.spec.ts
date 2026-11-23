@@ -147,3 +147,36 @@ test("the route keeps no copy of the @theme values", () => {
     .filter(([, value]) => source.includes(value.toLowerCase()));
   expect(copied, "@theme values written in the route").toEqual([]);
 });
+
+// The blocks the route shows anyway, by the name of the function: the brands band is a block of the
+// Home, and also the marquee, a component with states of its own (rolling, paused under the pointer).
+const BLOCKS_WITH_STATES = ["Brands"];
+
+// The components of the Home: every function a file of components/ exports, except the blocks of the
+// page (the files that mark data-block), which the Home itself shows; and the blocks with states.
+function homeComponents(): string[] {
+  const dir = join(import.meta.dirname, "..", "components");
+  return readdirSync(dir)
+    .filter((file) => file.endsWith(".tsx"))
+    .flatMap((file) => {
+      const source = readFileSync(join(dir, file), "utf8");
+      const exported = [...source.matchAll(/^export function (\w+)/gm)].map((match) => match[1]);
+      if (!source.includes("data-block=")) return exported;
+      return exported.filter((name) => BLOCKS_WITH_STATES.includes(name));
+    });
+}
+
+test("each component of the Home shows on its own on the route", async ({ newWindow }) => {
+  const components = homeComponents();
+  expect(components, "components of the Home").toEqual(
+    expect.arrayContaining(["Brands", "ButtonLink", "CycleTab", "CycleTabs", "OndasLogo"]),
+  );
+  const page = await openStill(newWindow);
+  const shown = await page
+    .locator("[data-component]")
+    .evaluateAll((elements) => elements.map((element) => element.getAttribute("data-component")));
+  expect(
+    components.filter((name) => !shown.includes(name)),
+    "components with no specimen on the route",
+  ).toEqual([]);
+});
