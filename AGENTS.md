@@ -62,7 +62,7 @@ Um Tema está pronto, e o agente mescla o Ciclo sozinho, quando tudo isto vale:
 
 ### Issue tracker
 
-Issues e specs vivem no GitHub Issues em `ThiagoPanini/stunning-web-pages` (pelo `gh`), e os tickets são fatiados para o `/implement-spec`. Veja `docs/agents/issue-tracker.md`.
+Issues e specs vivem no GitHub Issues em `ThiagoPanini/stunning-web-pages` (pelo `gh`), e os tickets são fatiados para o `/implement-spec`. Veja `docs/agents/issue-tracker.md` e, para executá-los, `docs/agents/implement-spec.md`.
 
 ### Etiquetas de triagem
 
