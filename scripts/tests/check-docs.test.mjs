@@ -58,6 +58,8 @@ test('a literal value of DESIGN.md that the code does not have fails', () => {
 });
 
 test('an artifact address in a document fails', () => {
-  const theme = consistentTheme({ 'HANDOFF.md': '# Handoff\n\nThe design is at https://claude.ai/artifact/abc123.\n' });
+  // Joined at run time, so this file does not cite an address itself.
+  const address = ['https://claude.ai', 'artifact', 'abc123'].join('/');
+  const theme = consistentTheme({ 'HANDOFF.md': `# Handoff\n\nThe design is at ${address}.\n` });
   assert.deepEqual(checkDocs(theme).failures, ['HANDOFF.md: cites an artifact address']);
 });
