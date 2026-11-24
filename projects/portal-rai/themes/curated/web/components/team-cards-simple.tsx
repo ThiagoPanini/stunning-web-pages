@@ -5,7 +5,7 @@ import { TeamIcon } from "./team-icon";
 // with the team's number and its icon in a disc at the top and its text at the bottom.
 export function TeamCardsSimple() {
   return (
-    <div className="grid grid-cols-teams gap-4">
+    <div data-version="01-simple" className="grid grid-cols-teams gap-4">
       {TEAMS.map(({ team, name, line, long }, i) => (
         <article
           key={team}

@@ -1,3 +1,5 @@
+"use client";
+
 import { CYCLE_LABEL, passColor, STEPS, StepIcon } from "./cycle-steps";
 import { type Cycle, flag } from "./use-cycle";
 
@@ -28,6 +30,7 @@ export function CycleOrbit({ cycle }: { cycle: Cycle }) {
       role="group"
       aria-label={CYCLE_LABEL}
       data-cycle
+      data-version="01-orbita"
       data-held={flag(cycle.held)}
       className="reveal-2 flex flex-wrap items-center justify-between gap-x-orbit-gap gap-y-10"
     >

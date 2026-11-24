@@ -1,3 +1,5 @@
+"use client";
+
 import { SLIDE, TEAMS } from "./team-data";
 import { TeamIcon } from "./team-icon";
 import type { NeonEffect } from "./tweaks";
@@ -17,7 +19,7 @@ const NEON: Record<NeonEffect, "fill" | "line" | "spot"> = {
 // variables, set on the card itself without drawing the page again.
 export function TeamCardsSurprise({ neon }: { neon: NeonEffect }) {
   return (
-    <div data-neon={NEON[neon]} className="grid grid-cols-teams gap-0.5">
+    <div data-version="02-surprise" data-neon={NEON[neon]} className="grid grid-cols-teams gap-0.5">
       {TEAMS.map(({ team, name, line, short }) => (
         <article
           key={team}

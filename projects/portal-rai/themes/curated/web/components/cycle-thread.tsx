@@ -1,3 +1,5 @@
+"use client";
+
 import { Fragment } from "react";
 import { CycleLoop } from "./cycle-loop";
 import { CYCLE_LABEL, linkLabel, passColor, STEPS, StepIcon } from "./cycle-steps";
@@ -15,6 +17,7 @@ export function CycleThread({ cycle }: { cycle: Cycle }) {
       role="group"
       aria-label={CYCLE_LABEL}
       data-cycle
+      data-version="02-fio"
       data-held={flag(cycle.held)}
       className="reveal-2 relative pb-13 narrow:pb-0"
     >

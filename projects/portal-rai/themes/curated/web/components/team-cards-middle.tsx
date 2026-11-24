@@ -6,7 +6,7 @@ import { TeamIcon } from "./team-icon";
 // in the middle of each card.
 export function TeamCardsMiddle() {
   return (
-    <div className="grid grid-cols-teams gap-0.5">
+    <div data-version="03-middle" className="grid grid-cols-teams gap-0.5">
       {TEAMS.map(({ team, name, line, short }) => (
         <article
           key={team}

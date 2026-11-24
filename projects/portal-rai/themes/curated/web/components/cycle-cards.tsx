@@ -1,3 +1,5 @@
+"use client";
+
 import { CycleLoop } from "./cycle-loop";
 import { CYCLE_LABEL, linkLabel, passColor, STEPS, StepIcon } from "./cycle-steps";
 import { type Cycle, flag, trackPointer } from "./use-cycle";
@@ -18,6 +20,7 @@ export function CycleCards({ cycle }: { cycle: Cycle }) {
       role="group"
       aria-label={CYCLE_LABEL}
       data-cycle
+      data-version="03-cartoes"
       data-held={flag(cycle.held)}
       className="reveal-2 relative py-6.5 cards-two:p-0"
     >

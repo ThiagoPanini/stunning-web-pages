@@ -5,7 +5,10 @@ import { GifSpace } from "./gif-space";
 // that does not move.
 export function CycleGif() {
   return (
-    <div className="reveal-2 flex flex-wrap items-center gap-x-gif-gap gap-y-8">
+    <div
+      data-version="04-gif"
+      className="reveal-2 flex flex-wrap items-center gap-x-gif-gap gap-y-8"
+    >
       <GifSpace
         label="Espaço reservado para o GIF do ciclo integrado, proporção 16:9"
         lines={["Inserir GIF · Ciclo integrado", "16:9 · 1280 × 720 · em loop"]}
