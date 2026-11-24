@@ -73,6 +73,11 @@ Um arquivo de design do Claude Design (`.dc.html`): uma Tela ou um componente no
 _Em código_: `board`
 _Avoid_: artboard, frame, tela (um Quadro pode ser só um componente)
 
+**Tweak**:
+Uma escolha que o Quadro deixa em aberto, com nome, opções e um padrão, como a versão de uma seção. Fora do editor vale o padrão. Quando o Autor pede, o app desenha todas as opções, e o endereço da página escolhe uma.
+_Em código_: `tweak`
+_Avoid_: variante, prop, opção (é cada valor do Tweak)
+
 **Puxada**:
 Trazer os Quadros de um Tema do Artefato para a Origem, gravando a versão do Artefato e gerando as Capturas de referência.
 _Em código_: `pull`
