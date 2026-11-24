@@ -27,3 +27,16 @@ test('the previews leave out what tokens.css declares: the token variables and t
   assert.doesNotMatch(css, /--color-ink:|@font-face/);
   assert.match(css, /--animate-band:band40slinearinfinite/);
 });
+
+test('a reduce rule that reads a variable keeps it in the previews', async () => {
+  const css = flat(
+    await previewCss(
+      `.x{transition:opacity .5s}\n@media (prefers-reduced-motion:reduce){.x{transition-duration:var(--duration-instant)}}\n`,
+      new Set(),
+    ),
+  );
+  // The reduce rule comes after the transition and wins; lightningcss may merge the two into one rule.
+  const transition = css.indexOf('transition:opacity');
+  assert.ok(transition >= 0 && css.lastIndexOf('transition-duration:var(--duration-instant)') > transition, css);
+  assert.doesNotMatch(css, /prefers-reduced-motion/);
+});

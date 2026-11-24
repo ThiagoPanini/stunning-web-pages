@@ -461,6 +461,16 @@ function motionGuard(rule) {
   return reduceAlone ? 'reduce' : 'motion';
 }
 
+// A rule tree as the visitor hands it back to lightningcss, without the keys whose value is null: the
+// library serializes a missing field as null and then cannot read it back (a var() inside a rule of a
+// media query fails with "expected an object-like struct named Specifier").
+const dropNulls = (value) =>
+  Array.isArray(value)
+    ? value.map(dropNulls)
+    : value && typeof value === 'object'
+      ? Object.fromEntries(Object.entries(value).filter(([, item]) => item !== null).map(([key, item]) => [key, dropNulls(item)]))
+      : value;
+
 // The app's compiled CSS as the previews take it: without what tokens.css declares (the token variables
 // and the @font-face rules) and in the state of reduced motion, as the app shows it then: what holds for
 // reduced motion applies, and what waits for no preference (the animations) goes.
@@ -475,7 +485,7 @@ export async function previewCss(css, declared) {
     visitor: {
       Rule: {
         'font-face': () => [],
-        media: (rule) => ({ reduce: rule.value.rules, motion: [] })[motionGuard(rule)],
+        media: (rule) => ({ reduce: dropNulls(rule.value.rules), motion: [] })[motionGuard(rule)],
         // next/font's own classes, which name the families after the constants of fonts.ts.
         style: (rule) => (/_className|_variable/.test(JSON.stringify(rule.value.selectors)) ? [] : undefined),
       },
