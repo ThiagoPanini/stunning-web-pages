@@ -22,5 +22,13 @@
       "title": "Lab 1 · Ondas",
       "sha256": "4ece8b634b8ba3be530e4ad08141332260e1d457d815f72a7856d67253449c3b"
     }
-  ]
+  ],
+  "designSystem": {
+    "tool": "Claude Design",
+    "type": "Design System",
+    "title": "portal-rai · Curated",
+    "url": "https://claude.ai/artifact/L5tRcBm2gigkfpwDa34bpe",
+    "version": "1795490272-9a9e",
+    "publishedAt": "2026-11-24"
+  }
 }
