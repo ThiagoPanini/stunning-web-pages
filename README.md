@@ -11,6 +11,7 @@ Cada Projeto reúne um ou mais Temas. Um Tema é um design criado numa ferrament
 | [`portal-rai`](projects/portal-rai/README.md): o portal de um time de Responsible AI | [Hélio](projects/portal-rai/themes/helio/README.md) | <img src="projects/portal-rai/themes/helio/screenshots/home-1440.png" alt="Captura da Home do Hélio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
 | | [Neônio](projects/portal-rai/themes/neonio/README.md) | <img src="projects/portal-rai/themes/neonio/screenshots/home-1440.png" alt="Captura da Home do Neônio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
 | | [Refined](projects/portal-rai/themes/refined/README.md) | <img src="projects/portal-rai/themes/refined/screenshots/home-1440.png" alt="Captura da Home do Refined" width="240"> | Home | Next.js 16, Tailwind CSS 4, Base UI, export estático | 23/11/2026 |
+| | [Curated](projects/portal-rai/themes/curated/README.md) | <img src="projects/portal-rai/themes/curated/screenshots/home-1440.png" alt="Captura da Home do Curated" width="240"> | Home, com todas as versões dos tweaks | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
 
 ## Como usar um Tema
 
@@ -24,4 +25,5 @@ O código é MIT, pela [`LICENSE`](LICENSE). As fontes que um Tema traz dentro d
 
 - as Geist e Geist Mono do Hélio, em [`OFL.txt`](projects/portal-rai/themes/helio/web/fonts/OFL.txt);
 - as Inter Tight, Inter, JetBrains Mono e Geist Mono do Neônio, cada uma no seu arquivo: [`OFL-inter-tight.txt`](projects/portal-rai/themes/neonio/web/fonts/OFL-inter-tight.txt), [`OFL-inter.txt`](projects/portal-rai/themes/neonio/web/fonts/OFL-inter.txt), [`OFL-jetbrains-mono.txt`](projects/portal-rai/themes/neonio/web/fonts/OFL-jetbrains-mono.txt) e [`OFL-geist-mono.txt`](projects/portal-rai/themes/neonio/web/fonts/OFL-geist-mono.txt);
-- as Instrument Sans e Geist Mono do Refined, em [`OFL.txt`](projects/portal-rai/themes/refined/web/fonts/OFL.txt).
+- as Instrument Sans e Geist Mono do Refined, em [`OFL.txt`](projects/portal-rai/themes/refined/web/fonts/OFL.txt);
+- as Geist e Geist Mono do Curated, em [`OFL.txt`](projects/portal-rai/themes/curated/web/fonts/OFL.txt).

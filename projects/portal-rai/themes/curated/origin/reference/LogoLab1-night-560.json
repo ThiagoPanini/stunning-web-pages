@@ -1,0 +1,16 @@
+{
+  "board": "LogoLab1.dc.html",
+  "image": "LogoLab1-night-560.png",
+  "width": 560,
+  "height": 560,
+  "conditions": {
+    "browser": "chromium 159.0.8154.6",
+    "deviceScaleFactor": 1,
+    "reducedMotion": "reduce",
+    "touch": false
+  },
+  "props": {
+    "fundo": "#101010"
+  },
+  "blocks": {}
+}

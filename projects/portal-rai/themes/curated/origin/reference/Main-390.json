@@ -1,0 +1,64 @@
+{
+  "board": "Main.dc.html",
+  "image": "Main-390.png",
+  "width": 390,
+  "height": 3836,
+  "conditions": {
+    "browser": "chromium 159.0.8154.6",
+    "deviceScaleFactor": 1,
+    "reducedMotion": "reduce",
+    "touch": false
+  },
+  "blocks": {
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 117
+    },
+    "hero": {
+      "x": 20,
+      "y": 117,
+      "width": 350,
+      "height": 1004
+    },
+    "partners": {
+      "x": 20,
+      "y": 1121,
+      "width": 350,
+      "height": 309
+    },
+    "model": {
+      "x": 20,
+      "y": 1430,
+      "width": 350,
+      "height": 1064
+    },
+    "teams": {
+      "x": 20,
+      "y": 2494,
+      "width": 350,
+      "height": 1153
+    },
+    "footer": {
+      "x": 0,
+      "y": 3647,
+      "width": 390,
+      "height": 189
+    }
+  },
+  "regions": {
+    "logo": {
+      "x": 20,
+      "y": 643,
+      "width": 350,
+      "height": 350
+    },
+    "brand": {
+      "x": 15,
+      "y": 13,
+      "width": 38,
+      "height": 38
+    }
+  }
+}

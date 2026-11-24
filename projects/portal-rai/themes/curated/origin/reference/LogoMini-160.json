@@ -1,0 +1,13 @@
+{
+  "board": "LogoMini.dc.html",
+  "image": "LogoMini-160.png",
+  "width": 160,
+  "height": 160,
+  "conditions": {
+    "browser": "chromium 159.0.8154.6",
+    "deviceScaleFactor": 1,
+    "reducedMotion": "reduce",
+    "touch": false
+  },
+  "blocks": {}
+}

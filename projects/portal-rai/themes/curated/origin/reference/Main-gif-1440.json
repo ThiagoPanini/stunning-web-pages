@@ -1,0 +1,53 @@
+{
+  "board": "Main.dc.html",
+  "image": "Main-gif-1440.png",
+  "width": 1440,
+  "height": 2751,
+  "conditions": {
+    "browser": "chromium 159.0.8154.6",
+    "deviceScaleFactor": 1,
+    "reducedMotion": "reduce",
+    "touch": false
+  },
+  "props": {
+    "versaoCiclo": "04-gif"
+  },
+  "blocks": {
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 65
+    },
+    "hero": {
+      "x": 48,
+      "y": 65,
+      "width": 1344,
+      "height": 776
+    },
+    "partners": {
+      "x": 48,
+      "y": 841,
+      "width": 1344,
+      "height": 165
+    },
+    "model": {
+      "x": 48,
+      "y": 1006,
+      "width": 1344,
+      "height": 744
+    },
+    "teams": {
+      "x": 48,
+      "y": 1750,
+      "width": 1344,
+      "height": 920
+    },
+    "footer": {
+      "x": 0,
+      "y": 2670,
+      "width": 1440,
+      "height": 81
+    }
+  }
+}

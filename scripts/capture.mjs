@@ -10,6 +10,10 @@
 // Capture conditions: headless Chromium from the pinned Playwright, deviceScaleFactor 1, reduced motion,
 // no touch emulation, and a viewport grown to the document height. The reveals of the boards use CSS
 // scroll-driven animations; in a short viewport everything below the fold would stay invisible.
+//
+// An entry may also set tweaks (`props`, served as the defaults of the board's data-props), hover one
+// element (`hover`) and name its files (`name`, by default the board's name), so the same board is
+// captured once per version of its tweaks and per hover state.
 // See scripts/README.md for the whole pull.
 
 import { createReadStream } from 'node:fs';
@@ -18,12 +22,15 @@ import { createServer } from 'node:http';
 import { basename, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
+import { withPropDefaults } from './board-props.mjs';
 
 // Start short: documentElement.scrollHeight never reports less than the viewport, so a board smaller
 // than the first viewport (the logo, 560 px) would be captured with empty space below it.
 const INITIAL_VIEWPORT_HEIGHT = 100;
 const MAX_GROW_STEPS = 6;
 const SETTLE_MS = 500;
+// After the pointer moves onto the hovered element: the longest hover transition of the boards is .9s.
+const HOVER_SETTLE_MS = 1500;
 
 const CONTENT_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -47,6 +54,7 @@ async function readRecipe(originDir) {
   if (!Array.isArray(recipe.captures) || recipe.captures.length === 0) {
     fail(`${path} needs a non-empty "captures" list`);
   }
+  const names = new Set();
   for (const entry of recipe.captures) {
     if (typeof entry.board !== 'string' || !entry.board.endsWith('.dc.html')) {
       fail(`each capture needs a "board" naming a .dc.html file (got ${JSON.stringify(entry.board)})`);
@@ -54,8 +62,25 @@ async function readRecipe(originDir) {
     if (!Array.isArray(entry.widths) || entry.widths.length === 0 || !entry.widths.every(Number.isInteger)) {
       fail(`${entry.board}: "widths" must be a list of integers`);
     }
+    if (entry.name !== undefined && (typeof entry.name !== 'string' || !/^[\w.-]+$/.test(entry.name))) {
+      fail(`${entry.board}: "name" must be a plain file name (got ${JSON.stringify(entry.name)})`);
+    }
+    if (entry.props !== undefined && (typeof entry.props !== 'object' || entry.props === null || Array.isArray(entry.props))) {
+      fail(`${entry.board}: "props" must map tweak names to values`);
+    }
+    if (entry.hover !== undefined && typeof entry.hover !== 'string') {
+      fail(`${entry.board}: "hover" must be a CSS selector`);
+    }
+    const name = imageName(entry);
+    if (names.has(name)) fail(`two captures are named "${name}": give one of them its own "name"`);
+    names.add(name);
   }
   return recipe;
+}
+
+// The base name of an entry's files: its own name, or the board's.
+function imageName(entry) {
+  return entry.name ?? basename(entry.board, '.dc.html');
 }
 
 // Serves only the files directly inside boardsDir, plus the runtime as /support.js.
@@ -129,6 +154,15 @@ async function captureBoard(browser, base, entry, width) {
     reducedMotion: 'reduce',
   });
   const page = await context.newPage();
+  if (entry.props) {
+    // Both the navigation and the runtime's own fetch of the board get the copy with the tweaks set.
+    const board = await readFile(join(entry.originDir, 'boards', entry.board), 'utf8');
+    const served = withPropDefaults(board, entry.props);
+    await page.route(
+      (url) => url.pathname === `/${entry.board}`,
+      (route) => route.fulfill({ status: 200, contentType: CONTENT_TYPES['.html'], body: served }),
+    );
+  }
   const problems = [];
   page.on('pageerror', (error) => problems.push(`page error: ${error.message}`));
   page.on('console', (message) => {
@@ -184,11 +218,20 @@ async function captureBoard(browser, base, entry, width) {
   if (health.scrollY !== 0) throw new Error(`${entry.board} at ${width} px: the page scrolled (${health.scrollY} px)`);
   const blocks = await measureBoxes(page, entry.blocks);
   const regions = await measureBoxes(page, entry.regions);
+  if (entry.hover) {
+    const target = page.locator(entry.hover);
+    const count = await target.count();
+    if (count !== 1) throw new Error(`hover "${entry.hover}" matched ${count} elements`);
+    await target.hover();
+    await page.waitForTimeout(HOVER_SETTLE_MS);
+    const scrolled = await page.evaluate(() => window.scrollY);
+    if (scrolled !== 0) throw new Error(`${entry.board} at ${width} px: the page scrolled on hover (${scrolled} px)`);
+  }
   const shot = await page.screenshot({ fullPage: true, animations: 'disabled' });
   checkProblems();
   await context.close();
 
-  const image = `${basename(entry.board, '.dc.html')}-${width}`;
+  const image = `${imageName(entry)}-${width}`;
   const reference = join(entry.originDir, 'reference');
   await writeFile(join(reference, `${image}.png`), shot);
 
@@ -198,6 +241,8 @@ async function captureBoard(browser, base, entry, width) {
     width,
     height,
     conditions: { browser: `chromium ${browser.version()}`, deviceScaleFactor: 1, reducedMotion: 'reduce', touch: false },
+    ...(entry.props ? { props: entry.props } : {}),
+    ...(entry.hover ? { hover: entry.hover } : {}),
     blocks,
     ...(entry.regions ? { regions } : {}),
   };

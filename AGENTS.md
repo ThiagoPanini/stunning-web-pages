@@ -44,6 +44,7 @@ O app reproduz o design como ele está. Corrigir o design cabe ao Autor, no Clau
 - **Nomear sem normalizar.** Cada valor do design ganha um token próprio, com o nome como foi achado; valores parecidos ficam separados. O que parecer inconsistência vira uma Observação no `DESIGN.md`.
 - **Manter as Lacunas.** Um espaço reservado de mídia continua espaço reservado, e um link para uma Tela que não existe continua inerte. O `HANDOFF.md` as lista.
 - **Texto de interface como foi escrito**, com os espaços reservados como `[NOME DA COMPANHIA]`.
+- **Os Tweaks no padrão.** O app reproduz o padrão de cada Tweak. Quando o Autor pede todas as versões, o app desenha cada uma, o endereço da página escolhe a versão com os nomes do Quadro, e um painel do Catálogo troca a versão; a Puxada captura o Quadro uma vez por versão (`props` em `captures.json`), e o teste compara cada uma.
 - **Só os Quadros que formam o Tema.** `origin/` guarda os Quadros das Telas do Tema e dos componentes que elas desenham, mesmo os que o Artefato arquiva entre os laboratórios. Todo o resto fica no Artefato, sem virar Tela do app.
 - **A fidelidade é medida** contra as Capturas de referência. As capturas do app são tiradas nas mesmas condições da Puxada: o mesmo navegador, 1440 e 390 px de largura, movimento reduzido e viewport da altura do documento.
 

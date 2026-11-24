@@ -24,3 +24,4 @@ Cada Tema é um design do portal com Sistema de design e app próprios. Comece p
 | [Hélio](themes/helio/README.md) | <img src="themes/helio/screenshots/home-1440.png" alt="Captura da Home do Hélio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
 | [Neônio](themes/neonio/README.md) | <img src="themes/neonio/screenshots/home-1440.png" alt="Captura da Home do Neônio" width="240"> | Home | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
 | [Refined](themes/refined/README.md) | <img src="themes/refined/screenshots/home-1440.png" alt="Captura da Home do Refined" width="240"> | Home | Next.js 16, Tailwind CSS 4, Base UI, export estático | 23/11/2026 |
+| [Curated](themes/curated/README.md) | <img src="themes/curated/screenshots/home-1440.png" alt="Captura da Home do Curated" width="240"> | Home, com todas as versões dos tweaks | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
