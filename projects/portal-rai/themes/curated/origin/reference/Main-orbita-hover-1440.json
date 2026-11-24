@@ -9,7 +9,7 @@
     "reducedMotion": "reduce",
     "touch": false
   },
-  "hover": ".wk1-row:nth-child(3)",
+  "hover": ".wk1-st:nth-of-type(3)",
   "blocks": {
     "header": {
       "x": 0,

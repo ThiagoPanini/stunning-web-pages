@@ -69,7 +69,7 @@
     {
       "board": "Main.dc.html",
       "name": "Main-orbita-hover",
-      "hover": ".wk1-row:nth-child(3)",
+      "hover": ".wk1-st:nth-of-type(3)",
       "widths": [1440],
       "blocks": {
         "header": "header.hdr",
@@ -228,6 +228,14 @@
     },
     {
       "board": "LogoLab1.dc.html",
+      "widths": [560]
+    },
+    {
+      "board": "LogoLab1.dc.html",
+      "name": "LogoLab1-night",
+      "props": {
+        "fundo": "#101010"
+      },
       "widths": [560]
     }
   ]
