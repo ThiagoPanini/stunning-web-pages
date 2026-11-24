@@ -1,0 +1,234 @@
+{
+  "captures": [
+    {
+      "board": "Main.dc.html",
+      "widths": [1440, 1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      },
+      "regions": {
+        "logo": ".orbx > div:first-child",
+        "brand": ".hdr a > span:first-child"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-fio-simple",
+      "props": {
+        "versaoCiclo": "02-fio",
+        "versaoCards": "01-simple"
+      },
+      "widths": [1440, 1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-cartoes-surprise",
+      "props": {
+        "versaoCiclo": "03-cartoes",
+        "versaoCards": "02-surprise"
+      },
+      "widths": [1440, 1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-gif",
+      "props": {
+        "versaoCiclo": "04-gif"
+      },
+      "widths": [1440, 1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-orbita-hover",
+      "hover": ".wk1-row:nth-child(3)",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-fio-hover",
+      "props": {
+        "versaoCiclo": "02-fio"
+      },
+      "hover": ".wk2-row > article:nth-of-type(2)",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-cartoes-hover",
+      "props": {
+        "versaoCiclo": "03-cartoes"
+      },
+      "hover": ".wk3-row > article:nth-of-type(2)",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-preenchimento-red",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "preenchimento"
+      },
+      "hover": ".tm2-red",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-preenchimento-blue",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "preenchimento"
+      },
+      "hover": ".tm2-blue",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-contorno-red",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "contorno"
+      },
+      "hover": ".tm2-red",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-contorno-blue",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "contorno"
+      },
+      "hover": ".tm2-blue",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-holofote-red",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "holofote"
+      },
+      "hover": ".tm2-red",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-holofote-blue",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "holofote"
+      },
+      "hover": ".tm2-blue",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "LogoMini.dc.html",
+      "widths": [160]
+    },
+    {
+      "board": "LogoLab1.dc.html",
+      "widths": [560]
+    }
+  ]
+}

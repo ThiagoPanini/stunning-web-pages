@@ -1,0 +1,54 @@
+{
+  "board": "Main.dc.html",
+  "image": "Main-cartoes-surprise-390.png",
+  "width": 390,
+  "height": 3792,
+  "conditions": {
+    "browser": "chromium 159.0.8154.6",
+    "deviceScaleFactor": 1,
+    "reducedMotion": "reduce",
+    "touch": false
+  },
+  "props": {
+    "versaoCiclo": "03-cartoes",
+    "versaoCards": "02-surprise"
+  },
+  "blocks": {
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 117
+    },
+    "hero": {
+      "x": 20,
+      "y": 117,
+      "width": 350,
+      "height": 1004
+    },
+    "partners": {
+      "x": 20,
+      "y": 1121,
+      "width": 350,
+      "height": 309
+    },
+    "model": {
+      "x": 20,
+      "y": 1430,
+      "width": 350,
+      "height": 1244
+    },
+    "teams": {
+      "x": 20,
+      "y": 2674,
+      "width": 350,
+      "height": 930
+    },
+    "footer": {
+      "x": 0,
+      "y": 3604,
+      "width": 390,
+      "height": 188
+    }
+  }
+}

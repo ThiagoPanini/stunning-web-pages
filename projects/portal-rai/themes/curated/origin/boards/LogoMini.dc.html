@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Responsible AI · Logo · Ondas mini</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div role="img" aria-label="Logo Ondas em tamanho reduzido: o agente gira no centro, dentro do anel de guardrails. Ataques chegam de fora como pontos vermelhos e param no anel; as respostas válidas, pontos cinza, atravessam, e as inválidas, pontos vermelhos, são barradas por dentro." style="position: relative; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background: {{fundo}}">
+<svg ref="{{svgRef}}" aria-hidden="true" viewBox="-18.2 -18.2 36.4 36.4" fill="none" style="position: absolute; left: 0; top: 0; display: block; width: 100%; height: 100%">
+<path data-k="a3" stroke="#C9D1D6" stroke-width="0.82" opacity="0.36"></path>
+<path data-k="a2" stroke="#C9D1D6" stroke-width="0.82" opacity="0.66"></path>
+<path data-k="a1" stroke="#C9D1D6" stroke-width="0.82"></path>
+<circle cx="0" cy="0" r="12.6" stroke="#5A90F8" stroke-width="1.7" stroke-linecap="round" stroke-dasharray="0.01 3.289" opacity="0.78"></circle>
+<path data-k="sw" stroke="#5A90F8" stroke-width="1.7" stroke-linecap="round"></path>
+<path data-k="g3" stroke="#87949C" stroke-width="1.1" stroke-linecap="round" opacity="0.35"></path>
+<path data-k="g2" stroke="#87949C" stroke-width="1.6" stroke-linecap="round" opacity="0.6"></path>
+<path data-k="g1" stroke="#87949C" stroke-width="2.3" stroke-linecap="round"></path>
+<path data-k="r3" stroke="#EC5B48" stroke-width="1.2" stroke-linecap="round" opacity="0.35"></path>
+<path data-k="r2" stroke="#EC5B48" stroke-width="1.8" stroke-linecap="round" opacity="0.6"></path>
+<path data-k="x1" stroke="#EC5B48" stroke-width="2" stroke-linecap="round"></path>
+<path data-k="r1" stroke="#EC5B48" stroke-width="2.6" stroke-linecap="round"></path>
+<path data-k="bk" stroke="#5A90F8" stroke-width="2.7" stroke-linecap="round"></path>
+<path data-k="rn" stroke="#5A90F8" stroke-width="2.1" stroke-linecap="round"></path>
+</svg>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"fundo":{"editor":"color","default":"#101010"},"animado":{"editor":"boolean","default":true,"section":"Movimento"},"quadro":{"editor":"int","default":0,"min":0,"max":99999,"section":"Movimento"},"$preview":{"width":160,"height":160}}'>
+class Component extends DCLogic {
+  // Versao pequena do logo Ondas (LogoLab1), para a marca do cabecalho. A cena e a mesma, na mesma unidade
+  // (1 = a altura de um caractere do logo): agente de raio 8,4, anel de guardrails de raio 12,6, ataques que
+  // chegam de 21,5. O que muda e o traco: em vez de caracteres, que somem em 36 px, o agente vira linha e tudo o
+  // que viaja vira ponto. Ataques e respostas nao sao frentes de onda: sao pontos grossos, com um rastro de pontos
+  // menores, que chegam ao anel ou saem do agente. O quadro mostra 18,2 unidades para cada lado (o logo mostra 16):
+  // como um ponto pede menos caminho do que uma onda, o agente e o anel ocupam mais do espaco da marca.
+
+  // Relogio igual ao do logo: o quadro sai do tempo (85 ms por quadro), nunca de um contador nem de sorteio.
+  // quadro > 0 escolhe o quadro de partida; 0 usa o mesmo quadro parado padrao do logo.
+  clock() {
+    var p = this.props || {}, key = String(p.quadro) + '|' + String(p.animado);
+    var t = typeof performance !== 'undefined' ? performance.now() : 0;
+    if (key !== this._key) { this._key = key; this._t0 = t; }
+    if (this._mq === undefined) { try { this._mq = window.matchMedia('(prefers-reduced-motion: reduce)'); } catch (e) { this._mq = null; } }
+    var q = typeof p.quadro === 'number' ? p.quadro : parseFloat(p.quadro);
+    var base = isFinite(q) && q > 0 ? q : 12845;
+    var run = !(p.animado === false || p.animado === 'false') && !(this._mq && this._mq.matches);
+    return { f: base + (run ? (t - this._t0) / 85 : 0), run: run };
+  }
+
+  componentDidMount() {
+    var self = this;
+    var tick = function () {
+      self._raf = requestAnimationFrame(tick);
+      var fi = Math.floor(self.clock().f);
+      if (fi !== self._fi || self._el !== self._drawn) self.draw(fi);
+    };
+    this._raf = requestAnimationFrame(tick);
+    this.draw(Math.floor(this.clock().f));
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this._raf);
+  }
+
+  // O quadro vai direto para os tracos do SVG, sem redesenhar o componente a cada 85 ms: e o que deixa o mini leve.
+  // Com movimento reduzido ou animado = false, o relogio nao anda e fica o quadro parado.
+  draw(f) {
+    var el = this._el;
+    if (!el) return;
+    if (el !== this._drawn) {
+      this._paths = {};
+      var ps = el.querySelectorAll('path[data-k]');
+      for (var i = 0; i < ps.length; i++) this._paths[ps[i].getAttribute('data-k')] = ps[i];
+      this._last = {};
+      this._drawn = el;
+    }
+    var d = this.frame(f), k;
+    for (k in d) if (this._paths[k] && this._last[k] !== d[k]) { this._paths[k].setAttribute('d', d[k]); this._last[k] = d[k]; }
+    this._fi = f;
+  }
+
+  // Agenda das ondas, copiada do logo sem mudar numero nenhum: as mesmas faixas, os mesmos periodos e a mesma
+  // regra de folga entre ondas. a = ataque, v = resposta valida, x = resposta invalida.
+  events(f) {
+    var TAU = Math.PI * 2;
+    var RS = 8.4, RP = 12.6, RO = 21.5, RC = RP + 1.15, R0 = RS + 0.9, RB = RP - 1.15, REND = 21.5;
+    var WA = 0.3, WV = 0.26;
+    var adist = function (p, q) { return Math.abs(((p - q + Math.PI * 3) % TAU) - Math.PI); };
+    var Z = { a: { o: [0, 1], n: [0.66, 0.96], w: WA }, v: { i: [0, 0.4], o: [0.27, 1], n: [0.17, 0.51], w: WV }, x: { i: [0, 1], n: [0.56, 1], w: WV } };
+    var L = this._lanes || (this._lanes = [
+      { t: 'v', per: 89, ph: 12, life: 0.94 }, { t: 'v', per: 103, ph: 71, life: 0.94 },
+      { t: 'x', per: 113, ph: 64, life: 0.4 },
+      { t: 'a', per: 61, ph: 7, life: 0.92 }, { t: 'a', per: 71, ph: 29, life: 0.92 }, { t: 'a', per: 83, ph: 50, life: 0.92 }
+    ]);
+    if (!this._memo || this._memoN > 800) { this._memo = {}; this._memoN = 0; }
+    var memo = this._memo, self = this;
+    var toca = function (S1, A0, S2, B0) {
+      var z1 = Z[S1.t], z2 = Z[S2.t], l1 = S1.per * S1.life, l2 = S2.per * S2.life, ks = ['o', 'i', 'n'];
+      for (var z = 0; z < 3; z++) {
+        var u1 = z1[ks[z]], u2 = z2[ks[z]];
+        if (u1 && u2 && A0 + u1[0] * l1 < B0 + u2[1] * l2 && B0 + u2[0] * l2 < A0 + u1[1] * l1) return true;
+      }
+      return false;
+    };
+    var ang = function ang(j, k) {
+      var key = j + '|' + k;
+      if (key in memo) return memo[key];
+      var S = L[j], F0 = k * S.per - S.ph, F1 = F0 + S.per * S.life, proib = [], i, u;
+      for (i = 0; i < j; i++) {
+        var S2 = L[i], k1 = Math.floor((F0 + S2.ph) / S2.per), k2 = Math.floor((F1 + S2.ph) / S2.per);
+        for (u = k1; u <= k2; u++) {
+          var G0 = u * S2.per - S2.ph;
+          if (!toca(S, F0, S2, G0)) continue;
+          var t2 = ang(i, u);
+          if (t2 !== null) proib.push([t2, Z[S.t].w + Z[S2.t].w + 0.1]);
+        }
+      }
+      var best = null, folga = -1;
+      for (var m = 0; m < 48; m++) {
+        var th = ((((j * 0.618 + k * 0.381 + 0.25 + m * 0.2764) % 1) + 1) % 1) * TAU, cl = 9;
+        for (u = 0; u < proib.length && cl > folga; u++) cl = Math.min(cl, adist(th, proib[u][0]) / proib[u][1]);
+        if (cl > folga) { folga = cl; best = th; }
+        if (folga >= 1.15) break;
+      }
+      var out = folga >= 1 ? best : null;
+      memo[key] = out; self._memoN++;
+      return out;
+    };
+
+    var ev = [], j, e;
+    for (j = 0; j < L.length; j++) {
+      var S = L[j], kk = Math.floor((f + S.ph) / S.per), q = ((f + S.ph) % S.per) / S.per;
+      if (q > S.life) continue;
+      var th0 = ang(j, kk);
+      if (th0 === null) continue;
+      e = { t: S.t, p: q / S.life, th: th0 };
+      if (S.t === 'a') {
+        e.hit = e.p >= 0.66;
+        e.r = e.hit ? RC : RO - (RO - RC) * (e.p / 0.66);
+        e.w = WA;
+        e.blk = e.hit ? (e.p < 0.8 ? Math.min(WA * 0.6, 0.05 + (e.p - 0.66) * 1.6) : Math.max(0, WA * 0.6 * (1 - (e.p - 0.8) / 0.06))) : 0;
+        e.run = e.p >= 0.8 ? WA * 0.6 + (e.p - 0.8) * 2.6 : 0;
+      } else if (S.t === 'v') {
+        e.r = R0 + (REND - R0) * e.p;
+        e.w = WV;
+      } else {
+        e.hit = e.p >= 0.56;
+        e.r = e.hit ? RB : R0 + (RB - R0) * (e.p / 0.56);
+        e.w = WV;
+        e.blk = e.hit ? (e.p < 0.8 ? Math.min(WV * 0.6, 0.05 + (e.p - 0.56) * 1.4) : Math.max(0, WV * 0.6 * (1 - (e.p - 0.8) / 0.08))) : 0;
+        e.run = e.p >= 0.8 ? WV * 0.6 + (e.p - 0.8) * 1.6 : 0;
+      }
+      ev.push(e);
+    }
+    return ev;
+  }
+
+  // Agente: as mesmas faixas que giram no logo (mesma formula, mesma luz), em linhas de uma unidade de altura,
+  // uma por fileira de caracteres. Tres niveis de brilho no lugar da rampa de nove caracteres.
+  agent(f) {
+    var RS = 8.4, rot = f * 0.045, ct = Math.cos(-0.5), sn = Math.sin(-0.5), d = ['', '', ''];
+    for (var r = 0; r < 32; r++) {
+      var dy = r + 0.5 - 16;
+      if (Math.abs(dy) > RS) continue;
+      var run = -1, x0 = 0, x1 = 0;
+      for (var c = 0; c <= 64; c++) {
+        var tier = -1;
+        if (c < 64) {
+          var dx = (c + 0.5 - 32) / 2;
+          if (dx * dx + dy * dy <= RS * RS) {
+            var nx = dx / RS, ny = dy / RS, nz = Math.sqrt(Math.max(0, 1 - nx * nx - ny * ny));
+            var X = nx * ct - ny * sn, Y = nx * sn + ny * ct;
+            var lon = Math.atan2(X, nz) + rot, lat = Math.asin(Math.max(-1, Math.min(1, Y)));
+            var v = Math.sin(lon * 3 + lat * 2.4);
+            if (v > -0.15) {
+              var light = nx * -0.45 + ny * -0.55 + nz * 0.7;
+              var lum = Math.max(0, Math.min(0.999, 0.18 + 0.82 * light + 0.12 * v));
+              tier = lum < 0.34 ? 2 : (lum < 0.67 ? 1 : 0);
+            }
+          }
+        }
+        if (tier !== run) {
+          if (run >= 0) d[run] += 'M' + x0 + ' ' + dy + 'H' + x1;
+          run = tier;
+          if (tier >= 0) x0 = (c - 32) / 2;
+        }
+        if (tier >= 0) x1 = (c + 1 - 32) / 2;
+      }
+    }
+    return d;
+  }
+
+  // Os tracos de um quadro: tres niveis do agente, a varredura do anel e os pontos (r e x = barrado, g = passa).
+  // Cada ponto e um traco de comprimento quase zero com ponta redonda; a espessura do traco e o diametro do ponto.
+  frame(f) {
+    var TAU = Math.PI * 2, RS = 8.4, RP = 12.6, RC = RP + 1.15, RB = RP - 1.15, RO = 21.5, R0 = RS + 0.9;
+    var RCD = RP + 2.3, RBD = RP - 1.9;   // onde o ponto para: encostado no anel, por fora e por dentro
+    var STEP = 3.299 / RP;                // passo entre os pontos do anel, o mesmo do tracejado do circulo
+    var adist = function (p, q) { return Math.abs(((p - q + Math.PI * 3) % TAU) - Math.PI); };
+    var arc = function (r, th, half) {
+      var a0 = th - half, a1 = th + half;
+      return 'M' + (r * Math.cos(a0)).toFixed(2) + ' ' + (r * Math.sin(a0)).toFixed(2) + 'A' + r.toFixed(2) + ' ' + r.toFixed(2) + ' 0 0 1 ' + (r * Math.cos(a1)).toFixed(2) + ' ' + (r * Math.sin(a1)).toFixed(2);
+    };
+    var dot = function (r, th) { return 'M' + (r * Math.cos(th)).toFixed(2) + ' ' + (r * Math.sin(th)).toFixed(2) + 'h.01'; };
+    var free = function (r) { return r > RS + 0.55; };   // nenhum ponto se desenha por cima do agente
+    // os pontos do proprio anel a menos de `half` do angulo do impacto: sao eles que engrossam no bloqueio
+    var swell = function (th, half) { var s = ''; for (var n = 0; n < 24; n++) if (adist(n * STEP, th) < half) s += dot(RP, n * STEP); return s; };
+    var ev = this.events(f), ag = this.agent(f);
+    var r1 = '', r2 = '', r3 = '', x1 = '', g1 = '', g2 = '', g3 = '', bk = '', rn = '', i, e, r, k;
+    for (i = 0; i < ev.length; i++) {
+      e = ev[i];
+      if (e.t === 'a') {
+        // chega de fora: o ponto grosso na frente e dois menores atras; ao encostar no anel, encolhe ate sumir
+        if (!e.hit) { r = RCD + (e.r - RC) * (RO - RCD) / (RO - RC); r1 += dot(r, e.th); r2 += dot(r + 2.7, e.th); r3 += dot(r + 4.6, e.th); }
+        else if (e.p < 0.82) { k = (e.p - 0.66) / 0.16; if (k < 0.35) r1 += dot(RCD, e.th); else if (k < 0.7) r2 += dot(RCD, e.th); else r3 += dot(RCD, e.th); }
+      } else if (e.t === 'v') {
+        // sai do agente e atravessa o anel: forte ate 17, mais fraco dali ate sumir
+        if (e.r <= 17) g1 += dot(e.r, e.th); else if (e.r <= 20.5) g2 += dot(e.r, e.th);
+        if (e.r <= 19) { if (free(e.r - 2.5)) g2 += dot(e.r - 2.5, e.th); if (free(e.r - 4.3)) g3 += dot(e.r - 4.3, e.th); }
+      } else {
+        // sai do agente e e barrado por dentro do anel
+        if (!e.hit) x1 += dot(R0 + (e.r - R0) * (RBD - R0) / (RB - R0), e.th);
+        else if (e.p < 0.78) { k = (e.p - 0.56) / 0.22; if (k < 0.35) x1 += dot(RBD, e.th); else if (k < 0.7) r2 += dot(RBD, e.th); else r3 += dot(RBD, e.th); }
+      }
+      // o bloqueio engrossa os pontos do anel mais proximos do impacto e, depois, dois pontos correm pelo anel,
+      // um para cada lado
+      if (e.blk > 0) bk += swell(e.th, e.blk + 0.05);
+      if (e.run > 0) rn += dot(RP, e.th + e.run) + dot(RP, e.th - e.run);
+    }
+    return {
+      a1: ag[0], a2: ag[1], a3: ag[2],
+      sw: arc(RP, f * 0.035 + 0.45, 0.45),   // a varredura que gira no anel de guardrails
+      r1: r1, r2: r2, r3: r3, x1: x1, g1: g1, g2: g2, g3: g3, bk: bk, rn: rn
+    };
+  }
+
+  renderVals() {
+    var self = this, p = this.props || {};
+    if (!this._ref) this._ref = function (el) { self._el = el; if (el) self.draw(Math.floor(self.clock().f)); };
+    return { svgRef: this._ref, fundo: p.fundo || '#101010' };
+  }
+}
+</script>
+</body>
+</html>

@@ -47,6 +47,14 @@ projects/<projeto>/themes/<tema>/origin/
   }
   ```
 
+- **Tweaks e hover.** Uma entrada pode ainda ter `props`, `hover` e `name`. `props` dá um valor a cada tweak do Quadro raiz: o servidor entrega uma cópia do Quadro com esses valores no `default` do `data-props`, que é o que o runtime usa fora do editor, e falha se o Quadro não declara o tweak ou se o valor não está nas opções dele. `hover` é um seletor que casa um único elemento: depois de a altura estabilizar, o ponteiro pousa no centro dele e a captura espera as transições. `name` dá o nome dos arquivos no lugar do nome do Quadro, e duas entradas com o mesmo nome fazem o script falhar. Assim o mesmo Quadro é capturado uma vez por versão dos tweaks e por estado de hover:
+
+  ```json
+  { "board": "Main.dc.html", "name": "Main-dark-hover", "props": { "mode": "dark" }, "hover": ".card", "widths": [1440] }
+  ```
+
+  O JSON da captura repete `props` e `hover`, para o teste do app abrir a mesma versão e pousar no mesmo lugar.
+
 ### As caixas dos blocos
 
 Para cada Quadro e largura, o script grava `reference/<Quadro>-<largura>.json` ao lado da imagem. É desse arquivo que cada ticket de seção tira a faixa que compara:
@@ -90,7 +98,7 @@ Para cada Quadro e largura, o script grava `reference/<Quadro>-<largura>.json` a
    node scripts/capture.mjs projects/<projeto>/themes/<tema>/origin --runtime <pasta temporária>/artifact-type/dc-runtime.js
    ```
 
-   Cada linha da saída traz largura, altura e o número de elementos invisíveis, que deve ser zero. Leva poucos segundos por captura.
+   Cada linha da saída traz largura, altura e o número de elementos invisíveis, com os três primeiros. Ele deve ser zero, a menos que o Quadro esconda de propósito o que só aparece num hover ou num estado, como um texto que cresce quando o ponteiro pousa no card: confira os elementos listados. Leva poucos segundos por captura.
 7. **Confira o que mudou** com `git status` e `git diff -- projects/<projeto>/themes/<tema>/origin`. Sem mudança no design, nada muda na Origem: a captura é determinística, e rodar o script de novo regrava os mesmos bytes. Com mudança, o diff dos Quadros mostra o que atualizar no app.
 8. **Commite a Origem.** O runtime nunca entra no git: o script o lê de onde ele está, e o `.gitignore` da raiz ignora `support.js` e `dc-runtime.js` caso uma cópia caia dentro do repositório.
 

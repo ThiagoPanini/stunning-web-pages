@@ -1,0 +1,54 @@
+{
+  "board": "Main.dc.html",
+  "image": "Main-fio-simple-1024.png",
+  "width": 1024,
+  "height": 2851,
+  "conditions": {
+    "browser": "chromium 159.0.8154.6",
+    "deviceScaleFactor": 1,
+    "reducedMotion": "reduce",
+    "touch": false
+  },
+  "props": {
+    "versaoCiclo": "02-fio",
+    "versaoCards": "01-simple"
+  },
+  "blocks": {
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 1024,
+      "height": 65
+    },
+    "hero": {
+      "x": 41,
+      "y": 65,
+      "width": 942,
+      "height": 1211
+    },
+    "partners": {
+      "x": 41,
+      "y": 1276,
+      "width": 942,
+      "height": 213
+    },
+    "model": {
+      "x": 41,
+      "y": 1489,
+      "width": 942,
+      "height": 463
+    },
+    "teams": {
+      "x": 41,
+      "y": 1952,
+      "width": 942,
+      "height": 774
+    },
+    "footer": {
+      "x": 0,
+      "y": 2726,
+      "width": 1024,
+      "height": 125
+    }
+  }
+}
