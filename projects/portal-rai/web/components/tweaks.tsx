@@ -115,7 +115,7 @@ export function TweaksPanel() {
                         key={option}
                         className={`flex h-8 cursor-pointer items-center rounded-pill border px-3 font-mono text-12 transition-[color,background-color,border-color] has-focus-visible:outline-2 has-focus-visible:outline-blue has-focus-visible:outline-offset-2 ${
                           checked
-                            ? "border-subtle bg-white-10 text-bright"
+                            ? "border-rule-lit bg-white-10 text-bright"
                             : "border-rule-strong text-muted hover:text-bright"
                         }`}
                       >
@@ -147,7 +147,7 @@ export function TweaksPanel() {
         aria-expanded={open}
         aria-controls="tweaks"
         onClick={() => setOpen(!open)}
-        className="inline-flex h-10 items-center gap-2 rounded-pill border border-rule-strong bg-surface px-4 font-medium text-14 transition-[border-color] hover:border-subtle"
+        className="inline-flex h-10 items-center gap-2 rounded-pill border border-rule-strong bg-surface px-4 font-medium text-14 transition-[border-color] hover:border-rule-lit"
       >
         <span aria-hidden="true" className="size-2 rounded-circle bg-blue" />
         {open ? "Fechar tweaks" : "Tweaks"}

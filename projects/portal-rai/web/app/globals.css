@@ -69,6 +69,7 @@
   --color-flow: #666666; /* the dots that run along the loop and the cards' rail */
   --color-rail-arrow: #6e6e6e; /* the arrows on the cards' rail */
   --color-unlit: #696969; /* declared by the board, used by no element */
+  --color-rule-lit: #7a7a7a; /* the tweaks panel: the catalog's, not the board's */
   --color-quiet: #858585; /* the small copy of the cards */
   --color-subtle: #8c8c8c; /* mono labels, footer, partners, the border of the loop's station in focus */
   --color-muted: #b8b8b8; /* paragraphs, nav, links, caption "agente", the third deliverable */

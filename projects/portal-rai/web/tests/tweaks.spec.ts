@@ -73,6 +73,23 @@ test("the panel changes the version in place and writes it to the address", asyn
   await expect(page.locator("[data-neon]")).toHaveAttribute("data-neon", "spot");
 });
 
+// The panel is the catalog's and keeps its own look: the chosen option, and the button under the
+// pointer, take a border lighter than the others', #7a7a7a.
+test("the panel marks the chosen option and the hovered button with a lighter border", async ({
+  page,
+}) => {
+  await load(page, "/");
+  const toggle = page.getByRole("button", { name: "Tweaks" });
+  await expect(toggle).toHaveCSS("border-top-color", "rgb(51, 51, 51)");
+  await toggle.hover();
+  await expect(toggle).toHaveCSS("border-top-color", "rgb(122, 122, 122)");
+  await toggle.click();
+  const option = (name: string) =>
+    page.locator("label", { has: page.getByRole("radio", { name, exact: true }) });
+  await expect(option("06-laco")).toHaveCSS("border-top-color", "rgb(122, 122, 122)");
+  await expect(option("03-cartoes")).toHaveCSS("border-top-color", "rgb(51, 51, 51)");
+});
+
 test("the panel says the neon only shows on the surprise cards", async ({ page }) => {
   await load(page, "/");
   await page.getByRole("button", { name: "Tweaks" }).click();
