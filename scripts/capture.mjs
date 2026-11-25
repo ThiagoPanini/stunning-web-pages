@@ -1,6 +1,7 @@
 // Reference captures of the Claude Design boards (.dc.html), rendered outside the editor.
 //
 // Usage: node scripts/capture.mjs <origin-dir> --runtime <path/to/dc-runtime.js>
+// where <origin-dir> is the origin of a project: projects/<project>/origin.
 //
 // Reads <origin-dir>/captures.json, serves <origin-dir>/boards/ over HTTP on 127.0.0.1 (ephemeral port),
 // answering /support.js with the editor runtime given in --runtime, and writes for each board and width:
@@ -256,7 +257,7 @@ async function main() {
     options: { runtime: { type: 'string' } },
   });
   if (positionals.length !== 1 || !values.runtime) {
-    fail('usage: node scripts/capture.mjs <theme origin dir> --runtime <downloaded dc-runtime.js>');
+    fail('usage: node scripts/capture.mjs projects/<project>/origin --runtime <downloaded dc-runtime.js>');
   }
   const originDir = resolve(positionals[0]);
   const runtimePath = resolve(values.runtime);

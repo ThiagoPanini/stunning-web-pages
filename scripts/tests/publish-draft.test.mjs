@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import { buildIndex, readDraft } from '../publish.mjs';
 import { tempDir, writeTree } from './fixtures.mjs';
 
-const THEME = { title: 'demo-portal · Aurora', namespace: 'Aurora' };
+const PROJECT = { title: 'demo-portal', namespace: 'DemoPortal' };
 const LAST_CHANGE = { by: 'Ana', at: '2026-11-23T10:00:00Z', via: 'GitHub · owner/repo@abc1234', note: 'New colors.' };
 
 test('the draft lists its components in the order tokens.json records, then the new ones by name', () => {
@@ -68,18 +68,18 @@ test('a new publication keeps every key of the index read back and changes title
     docs: { readme: 'project/README.md', sections: [] },
     lastChange: { by: 'Bia', at: '2026-11-01T00:00:00Z', note: 'First.' },
   };
-  const built = buildIndex({ index, theme: THEME, groups: ['Licenses'], lastChange: LAST_CHANGE, now: 'unused' });
-  assert.deepEqual(JSON.stringify(built), JSON.stringify({ ...index, title: THEME.title, namespace: 'Aurora', lastChange: LAST_CHANGE }));
+  const built = buildIndex({ index, project: PROJECT, groups: ['Licenses'], lastChange: LAST_CHANGE, now: 'unused' });
+  assert.deepEqual(JSON.stringify(built), JSON.stringify({ ...index, title: 'demo-portal', namespace: 'DemoPortal', lastChange: LAST_CHANGE }));
 });
 
 test('a first publication gets a new index, created now, with one entry per asset group', () => {
-  const built = buildIndex({ theme: THEME, groups: ['Licenses'], lastChange: LAST_CHANGE, now: '2026-11-23T10:00:00Z' });
+  const built = buildIndex({ project: PROJECT, groups: ['Licenses'], lastChange: LAST_CHANGE, now: '2026-11-23T10:00:00Z' });
   assert.deepEqual(JSON.stringify(built), JSON.stringify({
     v: 3,
     layout: 'files',
     createdOnFiles: { v: 1, at: '2026-11-23T10:00:00Z' },
-    title: 'demo-portal · Aurora',
-    namespace: 'Aurora',
+    title: 'demo-portal',
+    namespace: 'DemoPortal',
     libraries: [],
     sections: {},
     groups: ['Licenses'],
@@ -92,14 +92,14 @@ test('a first publication gets a new index, created now, with one entry per asse
 
 test('an asset group new in the build joins the index read back', () => {
   const index = { v: 3, layout: 'files', createdOnFiles: { v: 1, at: 'x' }, groups: [], assetGroups: {} };
-  const built = buildIndex({ index, theme: THEME, groups: ['Logos'], lastChange: LAST_CHANGE, now: 'unused' });
+  const built = buildIndex({ index, project: PROJECT, groups: ['Logos'], lastChange: LAST_CHANGE, now: 'unused' });
   assert.deepEqual(built.groups, ['Logos']);
   assert.deepEqual(built.assetGroups, { Logos: { name: 'Logos', tile: 's', order: [], files: {} } });
 });
 
 test('an index without the marker of a system kept in files is refused', () => {
   assert.throws(
-    () => buildIndex({ index: { title: 'x' }, theme: THEME, groups: [], lastChange: LAST_CHANGE, now: 'x' }),
+    () => buildIndex({ index: { title: 'x' }, project: PROJECT, groups: [], lastChange: LAST_CHANGE, now: 'x' }),
     /marker/,
   );
 });
