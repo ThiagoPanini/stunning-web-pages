@@ -65,7 +65,7 @@ Para cada Quadro e largura, o script grava `reference/<Quadro>-<largura>.json` a
   "image": "Main-1440.png",
   "width": 1440,
   "height": 3622,
-  "conditions": { "browser": "chromium 159.0.8154.6", "deviceScaleFactor": 1, "reducedMotion": "reduce", "touch": false },
+  "conditions": { "browser": "chromium 159.0.8154.6", "partialRaster": false, "deviceScaleFactor": 1, "reducedMotion": "reduce", "touch": false },
   "blocks": {
     "header": { "x": 0, "y": 0, "width": 1440, "height": 65 },
     "hero": { "x": 48, "y": 65, "width": 1344, "height": 776 },
@@ -115,7 +115,8 @@ Quando o Autor pede uma mudança num Quadro, como o valor de um Tweak, o agente 
 ### Como o script captura
 
 - Serve `origin/boards/` por HTTP em `127.0.0.1`, numa porta livre escolhida pelo sistema, e responde `/support.js` com o runtime dado em `--runtime`. Cada Quadro pede `./support.js`, e o runtime busca o próprio Quadro e os importados por `fetch`, por isso não funciona sem servidor.
-- Abre o Chromium headless do Playwright fixado, com `deviceScaleFactor` 1, movimento reduzido e sem emular toque. Cada captura tem um contexto novo do navegador, sem cache.
+- Abre o Chromium headless do Playwright fixado, sem raster parcial, com `deviceScaleFactor` 1, movimento reduzido e sem emular toque. Cada captura tem um contexto novo do navegador, sem cache.
+- Redesenha inteiro cada ladrilho da página que muda (`--disable-partial-raster`), para uma captura de hover repetir os bytes. Por padrão, o Chromium redesenha só a parte do ladrilho que mudou e guarda o resto dos quadros anteriores. Num hover, as transições desenham quadros intermediários, e quais quadros saem depende do tempo: o mesmo estado final saía com alguns pixels diferentes de uma rodada para outra, sempre em volta de um elemento que a transição mudou. A transição em si já terminou quando a captura é tirada (nas medidas, todas acabaram até 0,7 s depois do hover, e a espera é de 1,5 s); o que variava era o rastro dela. Medido em 25/11/2026, com 6 capturas de cada hover em 3 lançamentos do navegador: sem a opção, `Main-cartoes-hover-1440` saiu com dois conteúdos (um pixel, um nível de canal) e `Main-laco-hover-1440` também (uma caixa de 30×46 px na estação que sai do destaque); com ela, cada captura saiu com um conteúdo só, o mesmo de uma captura feita sem transições. As capturas sem hover saem com os mesmos bytes com e sem a opção.
 - Segura as fontes do Google Fonts num conjunto só de arquivos (`google-fonts.mjs`). O Google Fonts responde o mesmo pedido de CSS ora com os arquivos estáticos, em `fonts.gstatic.com/s/<família>/<versão>/`, ora com um kit em `fonts.gstatic.com/l/font?kit=…`: a mesma família na mesma versão, mas outros arquivos, e o texto desenhado com o kit sai uma fração de pixel deslocado na página inteira. Medido em 25/11/2026: numa rodada, 4 de 48 respostas vieram com o kit, e cada captura cuja página o recebeu saiu diferente da referência; com os arquivos estáticos forçados, as mesmas capturas deram os mesmos bytes. Por isso o script intercepta cada CSS do Google Fonts e o pede de novo, até 10 vezes, até vir com os arquivos estáticos, e recusa qualquer outro arquivo de fonte do Google.
 - Espera a rede parar, o `#dc-root` montar e as fontes carregarem, e então cresce a viewport até a altura do documento, até ela parar de mudar. As revelações dos Quadros são animações guiadas por scroll; numa viewport curta, tudo abaixo da dobra sairia invisível. A viewport começa baixa, porque a altura do documento nunca é medida menor que a viewport.
 - Tira a captura de página inteira com animações desligadas.
@@ -123,7 +124,7 @@ Quando o Autor pede uma mudança num Quadro, como o valor de um Tweak, o agente 
 
 ### Armadilhas
 
-- **O teste do app precisa das mesmas condições**: o mesmo Playwright de `scripts/package.json` (portanto o mesmo Chromium), as mesmas larguras, `deviceScaleFactor` 1, movimento reduzido, sem toque e a viewport da altura do documento. `conditions` em cada JSON registra isso.
+- **O teste do app precisa das mesmas condições**: o mesmo Playwright de `scripts/package.json` (portanto o mesmo Chromium), sem raster parcial, as mesmas larguras, `deviceScaleFactor` 1, movimento reduzido, sem toque e a viewport da altura do documento. `conditions` em cada JSON registra isso.
 - **A versão do navegador muda a altura.** Num experimento, a mesma Home em 390 px mediu 5753 px no Chromium 159 e 5717 px no Chromium 153, com a diferença toda numa seção. Atualizar o Playwright daqui pede uma Puxada nova e muda as referências.
 - **Versão nova sem Quadro novo é lançamento do editor.** O publicador do tipo atualiza os arquivos de `artifact-type/`, e o Artefato muda de versão sem mudança em `project/`. Se o runtime vier mudado, as Capturas de referência podem mudar sem o design ter mudado: o `git diff` de `reference/` com os Quadros intactos mostra isso.
 - **A captura precisa de rede.** Os Quadros carregam as fontes do Google Fonts, e sem elas a altura e o desenho mudam. Uma requisição de fonte que falha faz o script falhar.
