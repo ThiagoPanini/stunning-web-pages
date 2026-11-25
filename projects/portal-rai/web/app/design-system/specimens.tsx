@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { ButtonLink } from "@/components/button-link";
-import { CycleGif } from "@/components/cycle-gif";
-import { CycleLoop } from "@/components/cycle-loop";
+import { CycleRail } from "@/components/cycle-rail";
 import { StepIcon } from "@/components/cycle-steps";
 import { FooterLink } from "@/components/footer-link";
 import { GifSpace } from "@/components/gif-space";
@@ -332,7 +331,7 @@ export function ComponentSpecimens() {
           <>
             O ícone de cada etapa do ciclo, um traço na cor atual: lupa, colchetes de código, balão
             com check e linha de pulso. Quando a etapa entra em foco, ele faz o seu gesto.{" "}
-            <Prop>size</Prop> é 20, 22 ou 32 px.
+            <Prop>size</Prop> é 22 ou 32 px.
           </>
         }
       >
@@ -348,61 +347,38 @@ export function ComponentSpecimens() {
       <Specimen
         name="CycleLoop"
         file="cycle-loop.tsx"
-        about="O laço pontilhado que fecha o ciclo em volta das etapas, nas versões 02 e 03: uma trilha quieta e os pontos que correm por ela."
+        about="Versão 06 do ciclo, o laço: um traço só, em forma de infinito, com o trabalho antes da produção à esquerda e o que acontece em produção à direita. Uma estação por etapa, as entregas em etiquetas com o ponto da cor delas e a seta do sentido, e as etapas em lista dos dois lados. Segurada, a etapa acende o lóbulo dela e as duas entregas."
+      >
+        <State label="repouso" size="full">
+          <CycleSpecimen version="CycleLoop" />
+        </State>
+        <State label="segurada" size="full">
+          <CycleSpecimen version="CycleLoop" held={2} />
+        </State>
+      </Specimen>
+
+      <Specimen
+        name="CycleRail"
+        file="cycle-rail.tsx"
+        about="O trilho pontilhado em volta dos cartões, que fecha o ciclo por baixo: uma trilha quieta e os pontos que correm por ela."
       >
         <State label="padrão" size="medium">
           <div className="relative h-24 w-full">
-            <CycleLoop className="inset-0 size-full" radius={16} />
+            <CycleRail className="inset-0 size-full" radius={16} />
           </div>
-        </State>
-      </Specimen>
-
-      <Specimen
-        name="CycleOrbit"
-        file="cycle-orbit.tsx"
-        about="Versão 01 do ciclo, a órbita: o anel de pontos corre no sentido do ciclo, com uma estação por etapa; ao lado, as etapas, com a da vez aberta. Segurada, a etapa acende as duas ligações dela."
-      >
-        <State label="repouso" size="full">
-          <CycleSpecimen version="CycleOrbit" />
-        </State>
-        <State label="segurada" size="full">
-          <CycleSpecimen version="CycleOrbit" held={2} />
-        </State>
-      </Specimen>
-
-      <Specimen
-        name="CycleThread"
-        file="cycle-thread.tsx"
-        about="Versão 02 do ciclo, o fio: quatro contas em um fio; a etapa da vez abre, e o fio volta por baixo até a primeira."
-      >
-        <State label="repouso" size="full">
-          <CycleSpecimen version="CycleThread" />
-        </State>
-        <State label="segurada" size="full">
-          <CycleSpecimen version="CycleThread" held={2} />
         </State>
       </Specimen>
 
       <Specimen
         name="CycleCards"
         file="cycle-cards.tsx"
-        about="Versão 03 do ciclo, os cartões: uma moldura de pontos passa pelas quatro emendas; segurada, a etapa acende a borda e o texto cresce."
+        about="Versão 03 do ciclo, os cartões: o trilho pontilhado passa pelas quatro emendas; segurada, a etapa acende a borda e o texto cresce."
       >
         <State label="repouso" size="full">
           <CycleSpecimen version="CycleCards" />
         </State>
         <State label="segurada" size="full">
           <CycleSpecimen version="CycleCards" held={2} />
-        </State>
-      </Specimen>
-
-      <Specimen
-        name="CycleGif"
-        file="cycle-gif.tsx"
-        about="Versão 04 do ciclo: o espaço do GIF feito fora daqui, com as quatro etapas ao lado."
-      >
-        <State label="padrão" size="full">
-          <CycleGif />
         </State>
       </Specimen>
 

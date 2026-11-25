@@ -2,11 +2,10 @@
 
 import { useRef } from "react";
 import { CycleCards } from "@/components/cycle-cards";
-import { CycleOrbit } from "@/components/cycle-orbit";
-import { CycleThread } from "@/components/cycle-thread";
+import { CycleLoop } from "@/components/cycle-loop";
 import { type Cycle, useCycle } from "@/components/use-cycle";
 
-const VERSIONS = { CycleOrbit, CycleThread, CycleCards };
+const VERSIONS = { CycleLoop, CycleCards };
 
 // A cycle drawn held on one step, with no pointer on it: the state the version shows while a step is
 // under the pointer, focused or pinned.
@@ -15,6 +14,7 @@ function heldCycle(on: number): Cycle {
   return {
     on,
     held: true,
+    running: false,
     isOn: (i) => i === on,
     isPinned: () => false,
     isLit: (i) => i === on || (i + 1) % 4 === on,

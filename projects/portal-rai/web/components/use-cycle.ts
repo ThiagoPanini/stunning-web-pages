@@ -2,23 +2,27 @@
 
 import { type MouseEvent, type RefObject, useEffect, useState } from "react";
 
-// The cycle's state, the same in its four versions. step is the step of the turn while the cycle runs by
-// itself; fire is the link with a pulse travelling along it (the one that leaves the step of the same
+// The cycle's state, the same in its two versions. step is the step of the turn while the cycle runs by
+// itself; fire is the deliverable travelling to the next step (the one that leaves the step of the same
 // index); hold is the step under the pointer or focused; pin is the step pinned with a click. -1 is none.
 type CycleState = { step: number; fire: number; hold: number; pin: number };
 
-// How long a step stays lit before its pulse leaves, and how long the pulse takes to the next step.
+// How long a step stays lit before its deliverable leaves, and how long it takes to the next step.
 const LIT_MS = 3000;
-const TRAVEL_MS = 950;
+const TRAVEL_MS = 1100;
 
 export type Cycle = {
   // The step in focus: the held one, or else the pinned one, or else the step of the turn.
   on: number;
-  // Whether a step is held or pinned: the cycle stands still and shows that step's links.
+  // Whether a step is held or pinned: the cycle stands still and shows that step's deliverables.
   held: boolean;
+  // Whether the cycle runs by itself: on screen, with motion, the tab in view and no step held or
+  // pinned. It turns on as the 3s of a step start to count, so what CSS draws over those 3s starts with
+  // them.
+  running: boolean;
   isOn: (i: number) => boolean;
   isPinned: (i: number) => boolean;
-  // Link i leaves step i and reaches the next one. It is lit while its pulse travels, or, with a step
+  // Deliverable i leaves step i and reaches the next one. It is lit while it travels, or, with a step
   // held, when it reaches that step (what it receives) or leaves it (what it hands on).
   isLit: (i: number) => boolean;
   isFiring: (i: number) => boolean;
@@ -27,9 +31,9 @@ export type Cycle = {
   pin: (i: number) => void;
 };
 
-// The cycle runs by itself while its section is on screen: each step stays lit for 3s, its pulse takes
-// .95s to the next one, and so on, from Monitorar back to Pesquisar. It stops with reduced motion, off
-// screen, with the tab hidden and while a step is held or pinned.
+// The cycle runs by itself while its section is on screen: each step stays lit for 3s, its deliverable
+// takes 1.1s to the next one, and so on, from Monitorar back to Pesquisar. It stops with reduced motion,
+// off screen, with the tab hidden and while a step is held or pinned.
 export function useCycle(section: RefObject<HTMLElement | null>): Cycle {
   const [state, setState] = useState<CycleState>({ step: 0, fire: -1, hold: -1, pin: -1 });
   const [still, setStill] = useState(true);
@@ -81,6 +85,7 @@ export function useCycle(section: RefObject<HTMLElement | null>): Cycle {
   return {
     on,
     held,
+    running: !stopped,
     isOn: (i) => i === on,
     isPinned: (i) => state.pin === i,
     isLit: (i) => state.fire === i || (held && (i === on || (i + 1) % 4 === on)),

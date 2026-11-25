@@ -4,8 +4,8 @@ import { useState, useSyncExternalStore } from "react";
 
 // The board's tweaks, with its names, options and defaults: the app draws every version, and the author
 // picks one later. The page shows the defaults; the query string picks another version
-// (/?versaoCiclo=02-fio&versaoCards=02-surprise&efeitoNeon=contorno), so a link opens the version it
-// names, and the panel below changes the query string in place.
+// (/?versaoCiclo=03-cartoes&versaoCards=02-surprise&efeitoNeon=contorno), so a link opens the version
+// it names, and the panel below changes the query string in place.
 //
 // The panel is the catalog's, not the design's: a consumer who rebuilds the design keeps the chosen
 // version and leaves the panel and the other versions out (HANDOFF.md).
@@ -13,8 +13,8 @@ import { useState, useSyncExternalStore } from "react";
 export const TWEAKS = {
   versaoCiclo: {
     section: "Modelo · ciclo",
-    options: ["01-orbita", "02-fio", "03-cartoes", "04-gif"],
-    default: "01-orbita",
+    options: ["03-cartoes", "06-laco"],
+    default: "06-laco",
   },
   versaoCards: {
     section: "Times · cards",
@@ -115,7 +115,7 @@ export function TweaksPanel() {
                         key={option}
                         className={`flex h-8 cursor-pointer items-center rounded-pill border px-3 font-mono text-12 transition-[color,background-color,border-color] has-focus-visible:outline-2 has-focus-visible:outline-blue has-focus-visible:outline-offset-2 ${
                           checked
-                            ? "border-rule-lit bg-white-10 text-bright"
+                            ? "border-subtle bg-white-10 text-bright"
                             : "border-rule-strong text-muted hover:text-bright"
                         }`}
                       >
@@ -147,7 +147,7 @@ export function TweaksPanel() {
         aria-expanded={open}
         aria-controls="tweaks"
         onClick={() => setOpen(!open)}
-        className="inline-flex h-10 items-center gap-2 rounded-pill border border-rule-strong bg-surface px-4 font-medium text-14 transition-[border-color] hover:border-rule-lit"
+        className="inline-flex h-10 items-center gap-2 rounded-pill border border-rule-strong bg-surface px-4 font-medium text-14 transition-[border-color] hover:border-subtle"
       >
         <span aria-hidden="true" className="size-2 rounded-circle bg-blue" />
         {open ? "Fechar tweaks" : "Tweaks"}

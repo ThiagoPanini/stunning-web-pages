@@ -1,17 +1,22 @@
 "use client";
 
-import { CycleLoop } from "./cycle-loop";
+import { CycleRail } from "./cycle-rail";
 import { CYCLE_LABEL, linkLabel, passColor, STEPS, StepIcon } from "./cycle-steps";
 import { type Cycle, flag, trackPointer } from "./use-cycle";
 
-// Class names written whole, so Tailwind finds them: the place of each link's tag and rail.
+// Class names written whole, so Tailwind finds them: the place of each deliverable's tag and runner.
 const TAG_PLACES = ["cards-tag-1", "cards-tag-2", "cards-tag-3", "cards-tag-4"];
-const RAIL_PLACES = ["cards-rail-1", "cards-rail-2", "cards-rail-3", "cards-rail-4 rail-turn"];
+const RUNNER_PLACES = [
+  "cards-runner-1",
+  "cards-runner-2",
+  "cards-runner-3",
+  "cards-runner-4 runner-turn",
+];
 
 // Version 03 of the cycle, the cards: the team cards' Version 02 without their gradient, side by side;
-// a frame of dots runs through the four seams, tagged with what passes, and closes the loop below. The
+// a dotted rail runs through the four seams, tagged with what passes, and closes the cycle below. The
 // card under the pointer lights around it; the card in focus lights its edge, and while a step is held
-// its copy grows. At 1099px and below the cards go two by two, without the frame, and each one says what
+// its copy grows. At 1099px and below the cards go two by two, without the rail, and each one says what
 // it delivers; at 600px and below they stack, and the large copy is gone, as a phone has no hover.
 export function CycleCards({ cycle }: { cycle: Cycle }) {
   return (
@@ -22,10 +27,11 @@ export function CycleCards({ cycle }: { cycle: Cycle }) {
       data-cycle
       data-version="03-cartoes"
       data-held={flag(cycle.held)}
-      className="reveal-2 relative py-6.5 cards-two:p-0"
+      data-run={flag(cycle.running)}
+      className="reveal-2 relative py-6.5 cycle-two:p-0"
     >
-      <CycleLoop className="cards-loop cards-two:hidden" radius={20} />
-      <div className="relative z-1 grid grid-cols-4 gap-0.5 cards-two:grid-cols-2 cards-one:grid-cols-1">
+      <CycleRail className="cards-rail-frame cycle-two:hidden" radius={20} />
+      <div className="relative z-1 grid grid-cols-4 gap-0.5 cycle-two:grid-cols-2 cycle-one:grid-cols-1">
         {STEPS.map((step, i) => (
           // biome-ignore lint/a11y/useKeyWithClickEvents: the card's button takes the keyboard
           <article
@@ -43,7 +49,7 @@ export function CycleCards({ cycle }: { cycle: Cycle }) {
             onClick={() => cycle.pin(i)}
             className="group/card cycle-card relative min-w-0 cursor-pointer"
           >
-            <div className="step-focus relative isolate box-border flex h-full min-h-59 flex-col justify-between gap-10 overflow-hidden rounded-8 bg-surface p-7 cards-two:min-h-0 cards-two:gap-7">
+            <div className="step-focus relative isolate box-border flex h-full min-h-59 flex-col justify-between gap-10 overflow-hidden rounded-8 bg-surface p-7 cycle-two:min-h-0 cycle-two:gap-7">
               <span aria-hidden="true" className="cycle-card-spot" />
               <span aria-hidden="true" className="cycle-card-edge" />
               <div className="flex items-center gap-4">
@@ -81,7 +87,7 @@ export function CycleCards({ cycle }: { cycle: Cycle }) {
               </div>
               <p
                 style={passColor(i)}
-                className="hidden items-baseline gap-2 font-mono font-normal text-12 text-subtle leading-130 cards-two:flex"
+                className="hidden items-baseline gap-2 font-mono font-normal text-12 text-subtle leading-130 cycle-two:flex"
               >
                 <span>entrega</span>
                 <span aria-hidden="true" className="text-(color:--pc)">
@@ -100,7 +106,7 @@ export function CycleCards({ cycle }: { cycle: Cycle }) {
           aria-label={linkLabel(i)}
           data-lit={flag(cycle.isLit(i))}
           style={passColor(i)}
-          className={`step-tag cards-tag ${TAG_PLACES[i]} cards-two:hidden`}
+          className={`step-tag cards-tag ${TAG_PLACES[i]} cycle-two:hidden`}
         >
           <span aria-hidden="true" className="text-(color:--pc)">
             {step.mark}
@@ -114,7 +120,7 @@ export function CycleCards({ cycle }: { cycle: Cycle }) {
           aria-hidden="true"
           data-fire={flag(cycle.isFiring(i))}
           style={passColor(i)}
-          className={`rail cards-rail ${RAIL_PLACES[i]} cards-two:hidden`}
+          className={`runner cards-runner ${RUNNER_PLACES[i]} cycle-two:hidden`}
         >
           <span className="pulse" />
         </span>

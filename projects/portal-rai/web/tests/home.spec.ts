@@ -3,10 +3,12 @@
 // each comparison checks that its own, in screenshots/, is the Home as it is now;
 // `pnpm test --update-snapshots` rewrites it. The other versions of the tweaks are in fidelity.spec.ts.
 
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import { PNG } from "pngjs";
 import { spilledElements } from "./support/overflow";
-import { BLOCKS, expectImageToMatch, readReference, WIDTHS } from "./support/reference";
+import { BLOCKS, expectImageToMatch, ORIGIN_DIR, readReference, WIDTHS } from "./support/reference";
 import { expectSavedScreenshot } from "./support/screenshots";
 import { expect, load, type Motion, test } from "./support/test";
 
@@ -19,6 +21,14 @@ const MOTIONS: [Motion, string][] = [
   ["no-preference", "with motion"],
   ["reduce", "with reduced motion"],
 ];
+
+test("the Home's tab says what the board's title says", async ({ page }) => {
+  const board = readFileSync(join(ORIGIN_DIR, "boards", "Main.dc.html"), "utf8");
+  const title = /<title>([^<]*)<\/title>/.exec(board)?.[1];
+  expect(title, "the board's <title>").toBe("Responsible AI · Home");
+  await page.goto("/");
+  await expect(page).toHaveTitle(title ?? "");
+});
 
 test("the Home lays out its blocks in the board's order", async ({ page }) => {
   await page.goto("/");

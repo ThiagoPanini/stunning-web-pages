@@ -99,7 +99,7 @@ export default function DesignSystem() {
           number="03"
           label="Layout"
           title="Espaçamentos e grades."
-          lead="A escala de espaçamento do Tailwind fica, com a base de 4 px; os espaçamentos fluidos, a largura da página e os tamanhos em que o ciclo e os cards são desenhados têm nome próprio. A grade dos Times põe quantas colunas couberem; a da lista da órbita tem número, nome e etiqueta; o GIF do ciclo e a pílula aberta do fio crescem em proporções que não são números inteiros, e os espaços dos GIFs têm 16:9."
+          lead="A escala de espaçamento do Tailwind fica, com a base de 4 px; os espaçamentos fluidos, a largura da página e os tamanhos em que os cards são desenhados têm nome próprio. A grade dos Times põe quantas colunas couberem; os espaços dos GIFs têm 16:9, e o desenho do laço, 760 por 360."
         >
           <DesignGroup title="Espaçamentos e larguras">
             <SpacingTokens tokens={tokens.spacing} />
@@ -107,9 +107,11 @@ export default function DesignSystem() {
           <DesignGroup title="Grades">
             <GridTokens tokens={tokens.grids} />
           </DesignGroup>
-          <DesignGroup title="Crescimento">
-            <GrowTokens tokens={tokens.grow} />
-          </DesignGroup>
+          {tokens.grow.length > 0 && (
+            <DesignGroup title="Crescimento">
+              <GrowTokens tokens={tokens.grow} />
+            </DesignGroup>
+          )}
           <DesignGroup title="Proporções">
             <AspectTokens tokens={tokens.aspects} />
           </DesignGroup>
@@ -145,7 +147,7 @@ export default function DesignSystem() {
           number="06"
           label="Componentes"
           title="Componentes."
-          lead="Cada componente de components/ fora dos blocos da página, isolado, com as quatro versões do ciclo e as três dos cards dos times. Os links e o botão aparecem em repouso, em hover e em foco, desenhados sem ponteiro nem teclado; ao vivo eles respondem igual."
+          lead="Cada componente de components/ fora dos blocos da página, isolado, com as duas versões do ciclo e as três dos cards dos times. Os links e o botão aparecem em repouso, em hover e em foco, desenhados sem ponteiro nem teclado; ao vivo eles respondem igual."
         >
           <ComponentSpecimens />
         </DesignSection>
