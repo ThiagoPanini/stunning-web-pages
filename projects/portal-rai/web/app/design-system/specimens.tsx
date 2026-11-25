@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { BrandMark } from "@/components/brand-mark";
 import { ButtonLink } from "@/components/button-link";
 import { CycleRail } from "@/components/cycle-rail";
-import { StepIcon } from "@/components/cycle-steps";
+import { STEPS, StepDeliverable, StepIcon } from "@/components/cycle-steps";
 import { FooterLink } from "@/components/footer-link";
 import { GifSpace } from "@/components/gif-space";
 import { InertLink } from "@/components/inert-link";
@@ -18,7 +18,7 @@ import { TeamCardsSimple } from "@/components/team-cards-simple";
 import { TeamCardsSurprise } from "@/components/team-cards-surprise";
 import { TeamIcon } from "@/components/team-icon";
 import { TextLink } from "@/components/text-link";
-import { CycleSpecimen } from "./cycle-specimen";
+import { CycleSpecimen, StepButtonsSpecimen, StepTagsSpecimen } from "./cycle-specimen";
 
 // Each component of the Home on its own, with the same files the Home is built with and, where the Home
 // has it, the same text. A link or a button is shown at rest, then hovered and focused: inside
@@ -335,13 +335,50 @@ export function ComponentSpecimens() {
           </>
         }
       >
-        {["Pesquisar", "Desenvolver", "Implementar", "Monitorar"].map((name, step) => (
+        {STEPS.map(({ name }, step) => (
           <State key={name} label={name.toLowerCase()}>
             <span className="text-bright">
               <StepIcon step={step} size={32} />
             </span>
           </State>
         ))}
+      </Specimen>
+
+      <Specimen
+        name="StepButton"
+        file="cycle-steps.tsx"
+        about="O nome de cada etapa, que é o botão dela: o controle da etapa para o teclado e o leitor de tela. Com foco, ele segura a etapa; apertado, a fixa. O anel de foco não fica no botão, fica em volta da etapa inteira."
+      >
+        <State label="repouso" size="medium">
+          <StepButtonsSpecimen />
+        </State>
+      </Specimen>
+
+      <Specimen
+        name="StepTag"
+        file="cycle-steps.tsx"
+        about="A etiqueta da entrega que sai de cada etapa: o ponto na cor da entrega e o nome dela. Ela acende enquanto a entrega viaja ou quando a etapa é segurada, e solta um anel quando a entrega sai. No laço, leva também a seta do sentido."
+      >
+        <State label="repouso" size="large">
+          <StepTagsSpecimen />
+        </State>
+        <State label="acesa" size="large">
+          <StepTagsSpecimen lit />
+        </State>
+      </Specimen>
+
+      <Specimen
+        name="StepDeliverable"
+        file="cycle-steps.tsx"
+        about="O que cada etapa entrega, por extenso: “entrega”, o ponto e o nome. As duas versões o mostram em 1099 px ou menos, onde as etiquetas somem."
+      >
+        <State label="padrão" size="medium">
+          <div className="flex flex-col gap-2">
+            {STEPS.map((step, i) => (
+              <StepDeliverable key={step.name} step={i} className="flex" />
+            ))}
+          </div>
+        </State>
       </Specimen>
 
       <Specimen

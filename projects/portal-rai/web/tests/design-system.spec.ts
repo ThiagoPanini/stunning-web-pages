@@ -190,9 +190,10 @@ test("each component's hover and focus show on the route as they really are", as
   for (const name of await specimens.evaluateAll((elements) =>
     elements.map((element) => element.getAttribute("data-component") ?? ""),
   )) {
-    // The buttons of the cycle's steps hold the cycle on hover and focus: that state is the version's
-    // own, shown as "segurada", not the button's.
-    if (name.startsWith("Cycle")) continue;
+    // The buttons of the cycle's steps, in each version and on their own (StepButton), hold the cycle on
+    // hover and focus: that state is the version's own, shown as "segurada", and the focus ring is drawn
+    // around the whole step, not on the button.
+    if (name.startsWith("Cycle") || name === "StepButton") continue;
     const specimen = page.locator(`[data-component="${name}"]`);
     const rest = specimen.locator('[data-state="repouso"]').locator("a, button").first();
     if ((await rest.count()) === 0) continue;
