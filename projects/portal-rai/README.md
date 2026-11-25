@@ -11,7 +11,7 @@ O design é uma Home em cinzas neutros, com o logo Ondas também na marca do cab
 | | |
 |---|---|
 | Telas cobertas | Home, em todas as versões dos Tweaks. O app tem também a rota do Sistema de design, `/design-system`. |
-| Implementado em | 23/11/2026 |
+| Implementado em | 25/11/2026 |
 | Design de origem | Claude Design, puxado em 25/11/2026 |
 | Framework | Next.js 16.4.6, com export estático |
 | Capturas | Home em [1440 px](screenshots/home-1440.png) e [390 px](screenshots/home-390.png), com os valores padrão dos Tweaks; Sistema de design em [1440 px](screenshots/design-system-1440.png) e [390 px](screenshots/design-system-390.png) |
