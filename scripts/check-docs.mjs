@@ -1,7 +1,9 @@
 // The document check of a project: its README, DESIGN.md and HANDOFF.md, and the README of the catalog,
 // which indexes every project. It fails when
 //   - a relative link or image does not resolve, or points to a heading the target does not have;
-//   - DESIGN.md or HANDOFF.md cites a --token that the app's @theme does not declare;
+//   - DESIGN.md or HANDOFF.md cites a --token that the app's @theme does not declare, outside a section
+//     "Tokens que saíram", where a document names on purpose the tokens that left the @theme, and where
+//     each one must be gone;
 //   - DESIGN.md writes a literal value (hex, rgb(), clamp(), cubic-bezier(), a length or a duration)
 //     that the app's code (globals.css and components/) does not have;
 //   - a document cites an artifact address, which only the origin's pointer may hold.
@@ -63,6 +65,23 @@ function citedTokens(text) {
   );
 }
 
+// A document split in two: the sections headed "Tokens que saíram", each up to the next heading of its
+// level or a higher one, and the rest.
+const GONE_HEADING = 'Tokens que saíram';
+
+function splitGone(markdown) {
+  const gone = [];
+  const rest = [];
+  let level = 0;
+  for (const line of markdown.split('\n')) {
+    const heading = /^(#{1,6}) (.*)$/.exec(line);
+    if (heading && level && heading[1].length <= level) level = 0;
+    if (heading && heading[2].trim() === GONE_HEADING) level = heading[1].length;
+    (level ? gone : rest).push(line);
+  }
+  return { gone: gone.join('\n'), rest: rest.join('\n') };
+}
+
 const normalize = (value) => value.toLowerCase().replace(/\s+/g, '');
 const LITERAL_VALUE =
   /#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|clamp\([^)]*\)|cubic-bezier\([^)]*\)|\b\d+(?:[.,]\d+)?\s?(?:px|em|rem|ms|s|vw|%)(?!\w)/g;
@@ -84,10 +103,13 @@ export function checkDocs(projectDir) {
   const themeTokens = new Set(project.tokens.keys());
   let tokensCited = 0;
   for (const name of ['DESIGN.md', 'HANDOFF.md']) {
-    const cited = citedTokens(read(join(project.dir, name)));
+    const { gone, rest } = splitGone(read(join(project.dir, name)));
+    const cited = citedTokens(rest);
     tokensCited += cited.size;
     const missing = [...cited].filter((token) => !themeTokens.has(token)).sort();
     if (missing.length) failures.push(`${name}: tokens missing from @theme: ${missing.join(', ')}`);
+    const kept = [...citedTokens(gone)].filter((token) => themeTokens.has(token)).sort();
+    if (kept.length) failures.push(`${name}: tokens listed as gone but still in @theme: ${kept.join(', ')}`);
   }
   const design = read(join(project.dir, 'DESIGN.md'));
   const designCited = new Set(design.match(/(?<![\w-])--[a-z][a-z0-9-]*[a-z0-9]/g) ?? []);

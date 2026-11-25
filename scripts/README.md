@@ -228,6 +228,7 @@ Ele falha, listando cada caso, quando:
 
 - um link ou imagem relativa não resolve, ou aponta para um título que o arquivo de destino não tem (a âncora é a do GitHub: minúsculas, sem pontuação, espaços viram hífens);
 - o `DESIGN.md` ou o `HANDOFF.md` cita um `--token` que o `@theme` do app não declara (um prefixo escrito como `--color-white-…` fala de uma família e não conta);
+- numa seção com o título "Tokens que saíram", até o próximo título do mesmo nível ou acima, onde o documento lista de propósito os tokens que saíram do `@theme`, um token citado continua no `@theme`;
 - o `DESIGN.md` escreve um valor literal (hex, `rgb()`, `clamp()`, `cubic-bezier()`, um comprimento ou uma duração) que o código do app não tem, em `web/app/globals.css` ou em `web/components/`;
 - um documento cita endereço de Artefato, que só o Ponteiro guarda.
 
