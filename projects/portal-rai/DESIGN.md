@@ -33,7 +33,7 @@ O design deixa três escolhas em aberto, como tweaks, e o app desenha todas. A H
 
 | Tweak | Versão | O que desenha |
 |---|---|---|
-| `versaoCiclo` | `03-cartoes` | quatro cartões lado a lado, com um trilho pontilhado que passa pelas emendas e fecha por baixo |
+| `versaoCiclo` | `03-cartoes` | quatro cartões em fila, com um trilho pontilhado por baixo que fecha o ciclo e duas setas do sentido sobre ele; as entregas em etiquetas com o ponto da cor delas, sobre as emendas, e a da volta sobre o trilho; o cartão em destaque clareia, acende a borda e mostra o texto grande, e, com o ciclo andando sozinho, uma luz na cor da entrega corre a borda de cima dele |
 | | `06-laco`, padrão | um traço só, em forma de infinito: o lóbulo da esquerda é o trabalho antes da produção, e o da direita, o que acontece em produção; uma estação por etapa sobre o traço, as entregas em etiquetas em volta do cruzamento e a lista das etapas dos dois lados |
 | `versaoCards` | `01-simple` | moldura fina, número, ícone num disco e o texto longo na base |
 | | `02-surprise` | cartões quase encostados; no hover o texto grande entra e o neon acende |
@@ -65,7 +65,7 @@ Neutros, do escuro ao claro:
 | `--color-muted` | parágrafos, navegação, links, "agente" na legenda, a terceira entrega do ciclo |
 | `--color-bright` | texto principal, o botão claro, a quarta entrega do ciclo |
 
-Acentos, cada um com sentido: `--color-red` é o ataque, o Red Team e a primeira entrega do ciclo; `--color-blue` é o guardrail, o Blue Team, a segunda entrega, a parede do Blue Team e o anel de foco. No ciclo, cada entrega tem a sua cor, que pinta o ponto dela, o arco aceso do laço, o cometa e, misturada a `--color-rule-strong`, a borda da etiqueta acesa: vermelho, azul, `--color-muted` e `--color-bright`, da primeira à quarta.
+Acentos, cada um com sentido: `--color-red` é o ataque, o Red Team e a primeira entrega do ciclo; `--color-blue` é o guardrail, o Blue Team, a segunda entrega, a parede do Blue Team e o anel de foco. No ciclo, cada entrega tem a sua cor, que pinta o ponto dela, o arco aceso do laço, o cometa, a luz que corre a borda do cartão, o pulso que volta pelo trilho e, misturada a `--color-rule-strong`, a borda da etiqueta acesa: vermelho, azul, `--color-muted` e `--color-bright`, da primeira à quarta.
 
 O neon dos cartões `02-surprise` tem, para cada time, quatro paradas e um núcleo. As paradas pintam o preenchimento e, com o núcleo, a borda que gira; a quarta é a luz do time, a cor do ícone em hover e do holofote; o núcleo é a cor do brilho. Red Team: `--color-neon-red-1` a `--color-neon-red-4` e `--color-neon-red-core`. Blue Team: `--color-neon-blue-1` a `--color-neon-blue-4` e `--color-neon-blue-core`.
 
@@ -106,7 +106,7 @@ A página tem a largura máxima `--container-page`, centralizada, com o respiro 
 - **Abertura.** Duas colunas que quebram quando estreitas: o texto e o logo crescem cada um a partir da sua base, e o logo para na largura máxima dele.
 - **Parceiros e Modelo de trabalho** ficam sobre o chão pontilhado, da largura da janela, que entra e sai em degradê.
 - **O laço** ocupa um palco de 400 px de altura. O desenho fica no centro, na proporção `--aspect-loop`, com até 718 px de largura: a largura é a da seção menos 440 px, que ficam para as duas colunas da lista. As etiquetas e os itens da lista, de 250 px, se posicionam a partir do centro, em frações da largura do desenho, e as estações ficam sobre o traço, em porcentagens dele.
-- **Os cartões do ciclo** vão em quatro colunas, coladas por 2 px, dentro do trilho pontilhado.
+- **Os cartões do ciclo** vão em quatro colunas, coladas por 2 px, com 320 px de altura mínima. O trilho pontilhado fica 20 px para dentro do alto e da base do ciclo e passa 14 px para fora dos lados, e embaixo sobra o espaço dele: 64 px abaixo dos cartões, contra 16 px acima. As três primeiras etiquetas ficam sobre a borda de cima dos cartões, nas emendas; a quarta e as duas setas, sobre o trilho de baixo, a quarta no meio e as setas a um quarto de cada ponta.
 - **Os cartões dos times** seguem `--grid-template-columns-teams`: duas colunas quando cabem, uma quando não. Os `02-surprise` têm a altura mínima `--spacing-team-card`, e o texto grande para em `--spacing-large-15`; o do ciclo, em `--spacing-large-13`.
 - **Os espaços de GIF** têm a proporção `--aspect-gif`.
 
@@ -116,7 +116,7 @@ As quebras do design, cada uma uma variante de `globals.css` com o nome do que e
 |---|---|---|
 | `narrow` | 760 px ou menos | o cabeçalho rola com a página e a navegação ganha uma linha |
 | `loop-tight` | de 1100 a 1279 px | o desenho do laço encolhe, e as etiquetas dele ficam menores |
-| `cycle-two` | 1099 px ou menos | os cartões do ciclo vão de dois em dois, sem o trilho; o desenho do laço sobe, até 600 px de largura e sem as etiquetas, e a lista vem embaixo, de duas em duas; cada etapa diz o que entrega |
+| `cycle-two` | 1099 px ou menos | os cartões do ciclo vão de dois em dois, sem o trilho, as etiquetas e as setas, e sem a altura mínima; o desenho do laço sobe, até 600 px de largura e sem as etiquetas, e a lista vem embaixo, de duas em duas; cada etapa diz o que entrega |
 | `cycle-one` | 600 px ou menos | os cartões do ciclo e a lista do laço vão um por linha; os cartões perdem o texto grande, e o laço, as metades, com as estações menores |
 
 Os cartões dos times só reagem um ao outro a partir de 981 px, com ponteiro fino e movimento normal.
@@ -139,7 +139,7 @@ Tudo o que se move espera `prefers-reduced-motion: no-preference`, e o que segue
 - **Parceiros**: os dois conjuntos correm um conjunto inteiro por volta, em `--duration-64000`.
 - **O ciclo** anda sozinho enquanto a seção está na tela: cada etapa fica acesa por 3 s, e a entrega dela leva `--duration-1100` até a seguinte. A etapa sob o ponteiro ou com foco segura o ciclo e acende as duas entregas dela, a que chega e a que sai; um clique fixa a etapa, e outro a solta. O laço e o trilho correm pontos sem parar. Ao entrar em destaque, o ícone da etapa faz um gesto (`--ease-pop`, `--ease-draw`).
 - **No laço**, enquanto a entrega viaja, um cometa na cor dela corre o arco entre as duas estações, com `--ease-travel`, e a etiqueta dela solta um anel na mesma cor. O arco aceso pinta os pontos na cor da entrega (`--duration-350`). A estação em destaque cresce e solta um anel (`--ease-settle`, `--ease-enter`), e o lóbulo e o nome da metade dela acendem (`--duration-900`, `--duration-600`).
-- **Nos cartões**, o pulso corre pelo trilho em `--duration-950`, com `--ease-travel`, e o da volta dá a volta por baixo.
+- **Nos cartões**, o cartão em destaque clareia para `--color-card-on` em `--duration-600`, e o texto grande toma o lugar do pequeno. Com o ciclo andando sozinho, a borda do cartão da vez fica uniforme, em `--color-bright-13`, e uma luz na cor da entrega corre a borda de cima dele nos 3 s da etapa (`--duration-3000`, em ritmo constante): a linha se preenche da esquerda para a direita, com a cabeça e um brilho à frente, e some na etiqueta da entrega, que solta um anel. A luz reaparece no cartão seguinte; o cartão que sai apaga a linha em `--duration-600` e só então a devolve ao começo, em `--duration-0`. Depois do último cartão, um pulso na cor da quarta entrega desce pelo lado direito, volta pelo trilho de baixo e sobe pelo esquerdo, em `--duration-1100`.
 - **Cartões**: o que abre, cresce ou acende usa `--ease-settle`. Os cartões seguem o ponteiro por variáveis de CSS no próprio cartão, sem redesenhar a página. No neon, o preenchimento abre em círculo de onde o ponteiro entrou, o brilho pulsa, a borda do contorno gira, e o holofote segue o ponteiro com `--ease-out`.
 - **Reação entre os times**: com o Red Team sob o ponteiro, três tiros cruzam até o Blue Team, que ergue a parede e se defende; com o Blue Team sob o ponteiro, a parede fica de pé e o Red Team recua.
 - **Os dois Ondas** desenham um quadro a cada 85 ms, a partir do tempo.
