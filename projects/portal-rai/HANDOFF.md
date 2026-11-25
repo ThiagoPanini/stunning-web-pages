@@ -6,17 +6,17 @@ Tudo o que você precisa está nesta pasta. Nenhum documento depende de link ext
 
 ## Antes de começar: escolha as versões
 
-Os três tweaks do design estão em aberto: o Autor ainda compara as duas versões do ciclo, as três dos cartões dos times e as três formas do neon, e o app desenha todas (a tabela está em [Os Tweaks](README.md#os-tweaks), no README). Antes de reimplementar, quem consulta escolhe uma versão de cada: `versaoCiclo` para o ciclo da seção 01, `versaoCards` para os cartões da seção 02 e, se os cartões forem `02-surprise`, `efeitoNeon` para o hover deles. Sem escolha, valem os padrões do design: `06-laco`, `03-middle` e `preenchimento`.
+Os três Tweaks do design estão em aberto: o Autor ainda compara as duas versões do ciclo, as três dos cartões dos times e as três formas do neon, e o app desenha todas (a tabela está em [Os Tweaks](README.md#os-tweaks), no README). Antes de reimplementar, quem consulta escolhe uma versão de cada: `versaoCiclo` para o ciclo da seção 01, `versaoCards` para os cartões da seção 02 e, se os cartões forem `02-surprise`, `efeitoNeon` para o hover deles. Sem escolha, valem os padrões do design: `06-laco`, `03-middle` e `preenchimento`.
 
 Leve ao seu projeto só as versões escolhidas, sem o painel:
 
 - **A seção monta a versão direto.** Em `model.tsx`, no lugar da escolha por `useTweaks`, fica só a versão do ciclo escolhida: `<CycleLoop cycle={cycle} />` ou `<CycleCards cycle={cycle} />`. O `useCycle` fica, porque as duas versões dependem dele. Em `teams.tsx`, o mesmo com os cartões dos times; nos `02-surprise`, `neon` recebe o efeito escolhido.
 - **O painel e o endereço ficam de fora.** `components/tweaks.tsx`, com o painel, `useTweaks` e a leitura do endereço, e o `<TweaksPanel />` de `page.tsx` são do Catálogo, para comparar as versões.
-- **O que só a outra versão usa fica de fora também.** O laço é `cycle-loop.tsx`, as utilidades `loop*`, a variante `loop-tight` e os keyframes `wk-arrive`, `wk6-comet` e `wk6-comet-s`. Os cartões do ciclo são `cycle-cards.tsx` e `cycle-rail.tsx`, as utilidades `cycle-card-*`, `cards-*`, `rail-*`, `runner*` e `pulse` e os keyframes `wk-fill`, `wk3-head` e `wk3-back`. As duas versões dividem `cycle-steps.tsx`, `use-cycle.ts`, as utilidades `step-*`, as variantes `cycle-two` e `cycle-one` e os keyframes `wk-march`, `wk-ping` e os dos gestos dos ícones. Nos cartões dos times, cada versão tem o seu arquivo; as utilidades `team-*`, com o neon e os keyframes `tm-*`, são só dos `02-surprise`, e cada efeito é um valor de `data-neon` (`fill`, `line` e `spot`) nos seletores delas. Um token que só a versão deixada de fora usa também sai do `@theme`: o papel de cada um está no `DESIGN.md`.
+- **O que só a outra versão usa fica de fora também.** O laço é `cycle-loop.tsx`, as utilidades `loop*`, a variante `loop-tight` e os keyframes `wk-arrive`, `wk6-comet` e `wk6-comet-s`. Os cartões do ciclo são `cycle-cards.tsx` e `cycle-rail.tsx`, as utilidades `cycle-card-*`, `cards-*`, `rail-*`, `runner*` e `pulse` e os keyframes `wk-fill`, `wk3-head` e `wk3-back`. As duas versões dividem `cycle-steps.tsx` (os dados das etapas, o ícone, o botão, a etiqueta e o que cada etapa entrega), `use-cycle.ts`, as utilidades `step-*`, as variantes `cycle-two` e `cycle-one` e os keyframes `wk-march`, `wk-ping` e os dos gestos dos ícones. Nos cartões dos times, cada versão tem o seu arquivo; as utilidades `team-*`, com o neon e os keyframes `tm-*`, são só dos `02-surprise`, e cada efeito é um valor de `data-neon` (`fill`, `line` e `spot`) nos seletores delas. Um token que só a versão deixada de fora usa também sai do `@theme`: o papel de cada um está no `DESIGN.md`.
 
 ## O objetivo
 
-A Home do `portal-rai` no seu projeto, igual às Capturas [`screenshots/home-1440.png`](screenshots/home-1440.png) e [`screenshots/home-390.png`](screenshots/home-390.png), que mostram os padrões dos tweaks. As outras versões estão desenhadas na rota `/design-system` e nas Capturas dela, e o app mostra qualquer uma pelo endereço (`/?versaoCiclo=03-cartoes`). Cada versão é idêntica, pixel a pixel, ao design original renderizado num navegador.
+A Home do `portal-rai` no seu projeto, igual às Capturas [`screenshots/home-1440.png`](screenshots/home-1440.png) e [`screenshots/home-390.png`](screenshots/home-390.png), que mostram os padrões dos Tweaks. As outras versões estão desenhadas na rota `/design-system` e nas Capturas dela, e o app mostra qualquer uma pelo endereço (`/?versaoCiclo=03-cartoes`). Cada versão é idêntica, pixel a pixel, ao design original renderizado num navegador.
 
 As Capturas saíram do Chromium do Playwright 1.65.1 (Chromium 159), em Linux, com `deviceScaleFactor` 1, movimento reduzido e sem toque, depois de as fontes carregarem, com a janela da altura do documento e a página inteira na imagem. Nessas condições a sua Home pode bater pixel a pixel com elas. Outro navegador ou outro sistema desenha o texto de outro jeito: aí a comparação é de olho, e uma diferença no texto não quer dizer que a página esteja errada.
 
@@ -34,8 +34,8 @@ Reimplementar fiel é o ponto de partida. O que corrigir no design é decisão d
 ## O que ler, em ordem
 
 1. Este arquivo, até o fim.
-2. [`DESIGN.md`](DESIGN.md): o Sistema de design papel por papel, as versões dos tweaks e as Observações.
-3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor, cada peça isolada e cada versão dos tweaks, com o neon em hover. As Capturas são altas: a do Sistema de design em 1440 px tem mais de 22 mil px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar. Os valores vêm de `globals.css`, não da imagem.
+2. [`DESIGN.md`](DESIGN.md): o Sistema de design papel por papel, as versões dos Tweaks e as Observações.
+3. As Capturas da Home, nas duas larguras, e as da rota do Sistema de design: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) mostra cada token com o valor, cada peça isolada e cada versão dos Tweaks, com o neon em hover. As Capturas são altas: a do Sistema de design em 1440 px tem mais de 22 mil px. Aberta inteira, uma imagem dessas chega a um agente reduzida a ponto de não se ler: recorte uma faixa para olhar. Os valores vêm de `globals.css`, não da imagem.
 4. [`web/app/globals.css`](web/app/globals.css): o `@theme` com todos os valores, as variantes próprias (`hover` e as quatro quebras), os keyframes, as utilidades de movimento e as dos desenhos do ciclo e do neon.
 5. [`web/app/fonts.ts`](web/app/fonts.ts) e a pasta [`web/fonts/`](web/fonts/): as duas fontes, o subconjunto e a licença.
 6. [`web/app/layout.tsx`](web/app/layout.tsx) e [`web/app/page.tsx`](web/app/page.tsx): a Home montada a partir dos blocos.
@@ -83,7 +83,7 @@ Onde o app difere do design original, e por quê. Cada um nasceu no código. No 
 
 **Tweaks**
 
-1. **As versões pelo endereço e pelo painel.** No design, o valor de um tweak vive no próprio arquivo, e o editor troca a versão. No app, todas as versões estão no código: o endereço escolhe uma (`/?versaoCiclo=03-cartoes&versaoCards=02-surprise&efeitoNeon=contorno`), com os nomes e as opções do design, e o painel de tweaks troca a versão na hora e grava a escolha no endereço, sem os padrões. Um valor fora da lista cai no padrão declarado; o código do design cai em outra versão (Observações 5 e 6 do `DESIGN.md`).
+1. **As versões pelo endereço e pelo painel.** No design, o valor de um Tweak vive no próprio arquivo, e o editor troca a versão. No app, todas as versões estão no código: o endereço escolhe uma (`/?versaoCiclo=03-cartoes&versaoCards=02-surprise&efeitoNeon=contorno`), com os nomes e as opções do design, e o painel de Tweaks troca a versão na hora e grava a escolha no endereço, sem os padrões. Um valor fora da lista cai no padrão declarado; o código do design cai em outra versão (Observações 5 e 6 do `DESIGN.md`).
 2. **O padrão no HTML.** O export é estático: o HTML traz os padrões, e outra versão aparece quando a página roda. Num link para outra versão, os padrões piscam antes.
 
 **Links e navegação**
@@ -144,17 +144,17 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`, mais as utilidades 
 - **Reset.** O app conta com o preflight do Tailwind: margens zeradas; títulos que herdam tamanho e peso; links que herdam a cor, sem sublinhado; `svg` em bloco; e `border-box` em tudo, menos nos elementos `content-box` do Desvio 8. Reproduza essa combinação no seu reset.
 - **Fontes.** Dois `@font-face`, com as famílias "Geist" e "Geist Mono", os arquivos de `web/fonts/`, o eixo de peso de 100 a 900, `font-display: swap` e o `unicode-range` latin que está em `fonts.ts`.
 - **Logos.** `ondas-logo.tsx` e `ondas-mini.tsx` vão inteiros, trocando as classes pelas propriedades. No logo, o contêiner precisa de `container-type: inline-size`, porque `--text-logo` é medido em `cqw`.
-- **O laço.** A raiz (`loop`) é um contêiner de consulta e declara numa variável própria a largura do desenho, em `cqw`: as etiquetas e os itens a leem para se posicionar a partir do centro. Leve a raiz com `container-type: inline-size`, ou troque `100cqw` pela largura da seção.
+- **O laço.** A raiz (`loop`) é um contêiner de consulta e põe numa variável própria a largura do desenho, que vem de `--spacing-loop-map` e é medida em `cqw`: as etiquetas e os itens a leem para se posicionar a partir do centro. Leve a raiz com `container-type: inline-size`, ou troque `100cqw`, no token, pela largura da seção.
 
 ## Num projeto que já usa Tailwind 4
 
 - A linha `--*: initial` zera o tema padrão do Tailwind no projeto inteiro. Num projeto com `@theme` próprio, deixe-a de fora e acrescente os tokens do `portal-rai` ao lado dos seus.
 - Alguns nomes coincidem com os do tema padrão do Tailwind, com outro valor, e mudam o projeto todo: `--font-sans`, `--font-mono`, `--default-transition-duration` e `--default-transition-timing-function`.
 - A variante `hover` redefinida em `globals.css` vale para o projeto inteiro. Leve-a só se quiser o hover em qualquer ponteiro em todo lugar.
-- Um nome de classe montado em tempo de execução não é achado pelo Tailwind: por isso os lugares das etiquetas, dos itens e das setas do ciclo e os gestos dos ícones estão escritos inteiros, em listas.
+- Um nome de classe montado em tempo de execução não é achado pelo Tailwind: por isso os lugares das etiquetas, dos itens e das setas do ciclo e os gestos dos ícones estão escritos inteiros, nos dados de cada etapa.
 
 ## Fora do Next.js
 
-- `"use client"` marca os componentes que rodam no navegador: os dois Ondas, `InertLink`, o painel e a leitura dos tweaks, as seções `Model` e `Teams` e as versões do ciclo e dos cartões que respondem ao ponteiro. Fora do Next, a diretiva não tem efeito.
+- `"use client"` marca os componentes que rodam no navegador: os dois Ondas, `InertLink`, o painel e a leitura dos Tweaks, as seções `Model` e `Teams` e as versões do ciclo e dos cartões que respondem ao ponteiro. Fora do Next, a diretiva não tem efeito.
 - `LayoutProps<"/">`, em `layout.tsx`, é um tipo das rotas tipadas do Next.
 - `fonts.ts` usa o carregador de fonte local do Next. Fora dele, os dois `@font-face` da nota acima fazem o mesmo.

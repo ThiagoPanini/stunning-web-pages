@@ -45,7 +45,7 @@ O app reproduz o design como ele está. Corrigir o design cabe ao Autor, no Clau
 - **Texto de interface como foi escrito**, com os espaços reservados como `[NOME DA COMPANHIA]`.
 - **Tweak é instrumento de exploração.** A fonte do que está em jogo é o `data-props` do Quadro: as opções e o padrão de cada Tweak. Enquanto uma seção está em exploração, o app desenha toda opção que o Quadro declara e abre no padrão: o endereço da página escolhe a versão, com os nomes do Quadro, e um painel do Catálogo troca a versão. A Puxada captura o Quadro uma vez por versão (`props` em `captures.json`), e o teste compara cada uma. Decidida a seção, o Autor pede a poda, e num Ciclo as outras opções saem do Quadro e do app. Um Projeto sem Tweak não tem painel.
 - **Só os Quadros que formam o design.** `origin/` guarda os Quadros das Telas do Projeto e dos componentes que elas desenham, mesmo os que o Artefato arquiva entre os laboratórios. Todo o resto fica no Artefato, sem virar Tela do app.
-- **A fidelidade é medida** contra as Capturas de referência. As capturas do app são tiradas nas mesmas condições da Puxada: o mesmo navegador, 1440 e 390 px de largura, movimento reduzido e viewport da altura do documento.
+- **A fidelidade é medida** contra as Capturas de referência. A Puxada captura cada Quadro nas larguras que o `captures.json` da Origem declara: 1440, 1024 e 390 px nas Telas, e o hover em 1440 px. As capturas do app são tiradas nas mesmas condições: o mesmo navegador, a largura de cada Captura de referência, movimento reduzido e viewport da altura do documento. As Capturas do app guardadas em `screenshots/` são as de 1440 e 390 px.
 
 ## Projeto pronto
 

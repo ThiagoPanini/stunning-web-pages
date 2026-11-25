@@ -489,7 +489,7 @@ export function ComponentSpecimens() {
         about={
           <>
             Versão 02 dos cards dos times, a surprise: em hover o texto grande toma o lugar do
-            pequeno e o neon vem na forma que <Prop>neon</Prop> escolhe (o tweak efeitoNeon):
+            pequeno e o neon vem na forma que <Prop>neon</Prop> escolhe (o Tweak efeitoNeon):
             preenchimento, contorno ou holofote. Os dois cards aparecem em hover juntos aqui; na
             Home, um de cada vez.
           </>

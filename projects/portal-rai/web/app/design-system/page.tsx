@@ -58,7 +58,7 @@ export default function DesignSystem() {
             lado de cada nome é o que está escrito lá, e cada amostra usa a própria variável. Os
             componentes são os mesmos arquivos de{" "}
             <code className="font-mono text-15">components/</code> que montam a Home, cada um nos
-            seus estados, com todas as versões dos tweaks do Quadro.
+            seus estados, com todas as versões dos Tweaks do Quadro.
           </p>
         </section>
 
