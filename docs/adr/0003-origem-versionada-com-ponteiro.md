@@ -5,7 +5,7 @@ date: 2026-11-22
 
 # Origem versionada no git, com o Ponteiro para o Artefato
 
-A Origem de cada Tema fica no git: os Quadros crus, as Capturas de referência e um único Ponteiro, o arquivo que guarda ferramenta, título, endereço e versão do Artefato, data da Puxada e lista de Quadros. O Ponteiro é uma exceção consciente à regra de que nada na pasta do Tema dependa de um link que o Consumidor não abre: o Artefato é privado, e o endereço só serve ao Autor e ao agente dele. Por isso o Ponteiro se declara coisa do Autor, e nenhum documento do Tema depende dele. Decidido na [spec #1](https://github.com/ThiagoPanini/stunning-web-pages/issues/1).
+A Origem de cada Projeto fica no git: os Quadros crus, as Capturas de referência e um único Ponteiro, o arquivo que guarda ferramenta, título, endereço e versão do Artefato, data da Puxada e lista de Quadros. O Ponteiro é uma exceção consciente à regra de que nada na pasta do Projeto dependa de um link que o Consumidor não abre: o Artefato é privado, e o endereço só serve ao Autor e ao agente dele. Por isso o Ponteiro se declara coisa do Autor, e nenhum documento do Projeto depende dele. Decidido na [spec #1](https://github.com/ThiagoPanini/stunning-web-pages/issues/1).
 
 ## Considered Options
 
