@@ -16,5 +16,8 @@ export default defineConfig({
     browserName: "chromium",
     deviceScaleFactor: 1,
     trace: "retain-on-failure",
+    // The same raster as the reference captures (scripts/capture.mjs): with partial raster, the frames
+    // a hover transition draws leave traces in the final pixels, and which frames are drawn depends on timing.
+    launchOptions: { args: ["--disable-partial-raster"] },
   },
 });
