@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   title: "Responsible AI · Sistema de design",
 };
 
-// The Curated's design system, alive: every token of @theme with its name and value, read from
+// The design system, alive: every token of @theme with its name and value, read from
 // app/globals.css when the route is built, and each component of the Home on its own, in its states. The
 // page clips its sides, as the Home does: the team cards slide in from beyond them.
 export default function DesignSystem() {
@@ -49,7 +49,7 @@ export default function DesignSystem() {
       </header>
       <main className="mx-auto box-content max-w-page px-gutter">
         <section className="flex flex-col gap-7 pt-16 pb-20">
-          <SectionLabel>Tema Curated · Sistema de design</SectionLabel>
+          <SectionLabel>Responsible AI · Sistema de design</SectionLabel>
           <h1 className="font-light text-36-80 leading-104 tracking-tight-35">
             Sistema de design.
           </h1>
@@ -67,7 +67,7 @@ export default function DesignSystem() {
           number="01"
           label="Cores"
           title="Cores."
-          lead="Os nomes do Tema Hélio, com cinzas neutros por valor, do escuro ao claro; o vermelho do ataque e do Red Team, o azul do guardrail e do Blue Team; o neon dos cards da Versão 02, quatro paradas e o núcleo de cada time; as cores do logo Ondas e as cores translúcidas, nomeadas pelo alfa em centésimos."
+          lead="Cinzas neutros, do escuro ao claro; o vermelho do ataque e do Red Team, o azul do guardrail e do Blue Team; o neon dos cards da Versão 02, quatro paradas e o núcleo de cada time; as cores do logo Ondas e as cores translúcidas, nomeadas pelo alfa em centésimos."
         >
           <ColorTokens tokens={tokens.colors} />
         </DesignSection>
@@ -76,7 +76,7 @@ export default function DesignSystem() {
           number="02"
           label="Tipografia"
           title="Tipografia."
-          lead="Geist para o texto e Geist Mono para rótulos, etiquetas do ciclo e o logo. Os tamanhos fixos são nomeados em px; os fluidos, do mínimo ao máximo; o do logo acompanha a largura dele. Espaçamento entre letras em milésimos de em, alturas de linha em centésimos ou em px; os tokens do logo têm os nomes do componente dele, o mesmo arquivo nos Temas do Projeto."
+          lead="Geist para o texto e Geist Mono para rótulos, etiquetas do ciclo e o logo. Os tamanhos fixos são nomeados em px; os fluidos, do mínimo ao máximo; o do logo acompanha a largura dele. Espaçamento entre letras em milésimos de em, alturas de linha em centésimos ou em px; os tokens do logo têm os nomes do componente dele."
         >
           <DesignGroup title="Famílias">
             <FamilyTokens tokens={tokens.families} />
