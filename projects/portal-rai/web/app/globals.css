@@ -13,16 +13,17 @@
  * 1.6, tracking-tight-35 is -0.035em, radius-10 is 10px, duration-350 is .35s). The Ondas logo's own
  * values keep the names of its component.
  *
- * The board has tweaks, and the app draws every version of them (components/tweaks.tsx): the four
+ * The board has tweaks, and the app draws every version of them (components/tweaks.tsx): the two
  * versions of the cycle in section 01, the three versions of the team cards in section 02, and the three
  * neon hovers of the cards' Version 02. Their states are data attributes (data-on, data-lit, data-fire,
- * data-held, data-neon, data-team), read by the classes of the components and by the utilities below.
+ * data-held, data-run, data-neon, data-team), read by the classes of the components and by the utilities
+ * below.
  *
  * Left out on purpose: the two hover rules of the board no element uses (.chip and .atk) and the .rvf
  * reveal no element uses. The drawings keep their own geometry: the brand marks, the logos, the cycle's
- * loops and rails (where they sit around the steps), and the distances, scales and opacities of the
- * keyframes and of the neon's light, in the utilities and keyframes below; their colors, durations and
- * curves are tokens.
+ * loop and rail (where they and their parts sit around the steps), and the distances, scales and
+ * opacities of the keyframes and of the neon's light, in the utilities and keyframes below; their colors,
+ * durations and curves are tokens.
  */
 
 @import "tailwindcss";
@@ -33,16 +34,15 @@
 @custom-variant hover (&:is(:hover, [data-show-state="hover"] *));
 
 /* The board's breakpoints, each named after the layout it changes. */
-/* At 760px and below the header stops sticking, the nav gets a row and the cycle's thread stands up. */
+/* At 760px and below the header stops sticking and the nav gets a row. */
 @custom-variant narrow (@media (max-width: 760px));
-/* Between 761 and 1279px the thread's closed steps show only their icon. */
-@custom-variant thread-icons (@media (min-width: 761px) and (max-width: 1279px));
-/* At 1099px and below the cycle's cards go to two columns, without their frame. */
-@custom-variant cards-two (@media (max-width: 1099px));
-/* At 920px and below the orbit stands above its list. */
-@custom-variant orbit-stacked (@media (max-width: 920px));
-/* At 600px and below the cycle's cards go to one column. */
-@custom-variant cards-one (@media (max-width: 600px));
+/* Between 1100 and 1279px the loop's drawing shrinks, and its tags with it. */
+@custom-variant loop-tight (@media (min-width: 1100px) and (max-width: 1279px));
+/* At 1099px and below the cycle goes to two columns: the cards, without their rail, and the loop's
+   list, under its drawing. */
+@custom-variant cycle-two (@media (max-width: 1099px));
+/* At 600px and below the cycle goes to one column. */
+@custom-variant cycle-one (@media (max-width: 600px));
 
 @theme static {
   --*: initial;
@@ -59,19 +59,18 @@
   /* Neutrals, from dark to light. */
   --color-black: #000000; /* text on the light fill of the neon */
   --color-night: #101010; /* page, text on the light button, logo background */
-  --color-grid: #131313; /* the dotted ground of the partners and the cycle, the cycle's chips and tags */
-  --color-surface: #161616; /* cards, the cycle's stations and pills */
-  --color-pill-on: #1b1b1b; /* the open pill of the thread */
-  --color-station-on: #1f1f1f; /* the station of the orbit in focus */
-  --color-rule: #252525; /* section rules, step discs, the frame of the simple cards */
+  --color-grid: #131313; /* the dotted ground of the partners and the cycle, the cycle's tags, the loop's gap */
+  --color-surface: #161616; /* cards, the loop's stations */
+  --color-card-on: #1a1a1a; /* the cycle card in focus */
+  --color-station-on: #1f1f1f; /* the loop's station in focus */
+  --color-rule: #252525; /* section rules, the frame of the simple cards */
   --color-grid-dot: #2c2c2c; /* the dots of the dotted ground */
-  --color-rule-strong: #333333; /* borders of stations, pills and tags, the cycle's loops */
-  --color-rule-dotted: #4a4a4a; /* the dotted line between the thread's steps on a phone */
-  --color-flow: #666666; /* the dots that run along the cycle's loops */
+  --color-rule-strong: #333333; /* borders of stations and tags, the loop's stroke, the cards' rail */
+  --color-flow: #666666; /* the dots that run along the loop and the cards' rail */
+  --color-rail-arrow: #6e6e6e; /* the arrows on the cards' rail */
   --color-unlit: #696969; /* declared by the board, used by no element */
-  --color-rule-lit: #7a7a7a; /* border of the open pill and of a lit tag */
   --color-quiet: #858585; /* the small copy of the cards */
-  --color-subtle: #8c8c8c; /* mono labels, footer, partners, the border of the orbit's station in focus */
+  --color-subtle: #8c8c8c; /* mono labels, footer, partners, the border of the loop's station in focus */
   --color-muted: #b8b8b8; /* paragraphs, nav, links, caption "agente", the third deliverable */
   --color-bright: #f2f2f2; /* main text, light button, the fourth deliverable */
 
@@ -104,6 +103,7 @@
   /* Translucent colors, named after their alpha in hundredths. */
   --color-header: rgba(16, 16, 16, 0.82);
   --color-white-0: rgba(255, 255, 255, 0); /* where the cards' lights fade out */
+  --color-white-3: rgba(255, 255, 255, 0.03); /* the lit lobe of the loop */
   --color-white-4: rgba(255, 255, 255, 0.04); /* nav pill */
   --color-white-6: rgba(255, 255, 255, 0.06); /* nav link hover */
   --color-white-7: rgba(255, 255, 255, 0.07); /* header bottom rule */
@@ -114,6 +114,12 @@
   --color-white-spot: rgba(255, 255, 255, 0.075); /* the light under the pointer on a cycle card */
   --color-bright-0: rgba(242, 242, 242, 0); /* where the arrival ring of a station ends */
   --color-bright-10: rgba(242, 242, 242, 0.1); /* where the lit edge of a cycle card fades */
+  --color-bright-13: rgba(
+    242,
+    242,
+    242,
+    0.13
+  ); /* the edge of the cycle card in focus, running by itself */
   --color-bright-50: rgba(242, 242, 242, 0.5); /* where the arrival ring of a station starts */
   --color-bright-85: rgba(
     242,
@@ -127,17 +133,16 @@
   --color-blue-12: rgba(90, 144, 248, 0.12); /* declared by the board, used by no element */
 
   /* Font sizes: fixed ones in px, fluid ones from their minimum to their maximum. */
-  --text-11: 11px; /* the orbit's "entrega", the label of a GIF's space */
+  --text-11: 11px; /* the loop's captions and, a little narrower, its tags; the label of a GIF's space */
   --text-12: 12px; /* mono labels, logo caption, the cycle's tags */
   --text-13: 13px; /* footer, the Red Team's shots */
-  --text-14: 14px; /* nav, buttons, links, partners' title, the thread's copy, team lines */
-  --text-15: 15px; /* brand, the orbit's and the cycle cards' copy, the simple cards' copy */
+  --text-14: 14px; /* nav, buttons, links, partners' title, team lines */
+  --text-15: 15px; /* brand, the copy of the loop's steps and of the cycle cards, the simple cards' copy */
   --text-16: 16px; /* page base, card names, the team cards' copy */
-  --text-17: 17px; /* lead paragraphs, the thread's and the GIF list's step names */
+  --text-17: 17px; /* lead paragraphs */
   --text-19: 19px; /* partners */
-  --text-22: 22px; /* the orbit's step names */
+  --text-20: 20px; /* the loop's step names */
   --text-28: 28px; /* the simple cards' numbers */
-  --text-48: 48px; /* the orbit's deliverable mark */
   --text-19-23: clamp(19px, 1.62vw, 23px); /* the cycle cards' large copy */
   --text-24-32: clamp(24px, 2.3vw, 32px); /* the simple cards' team names */
   --text-24-32-large: clamp(24px, 2.35vw, 32px); /* the surprise cards' large copy */
@@ -151,26 +156,25 @@
 
   /* Letter spacing, in thousandths of an em. */
   --tracking-wide-140: 0.14em; /* the label of a GIF's space */
-  --tracking-wide-80: 0.08em; /* uppercase mono labels, the orbit's numbers */
+  --tracking-wide-80: 0.08em; /* uppercase mono labels, the loop's captions */
   --tracking-wide-40: 0.04em; /* the cycle cards' step number */
-  --tracking-tight-10: -0.01em; /* brand, the thread's names, team lines */
-  --tracking-tight-20: -0.02em; /* partners, the orbit's names, the simple cards' team names */
+  --tracking-tight-10: -0.01em; /* brand, team lines */
+  --tracking-tight-20: -0.02em; /* partners, the loop's step names, the simple cards' team names */
   --tracking-tight-25: -0.025em; /* section titles */
   --tracking-tight-30: -0.03em; /* the simple cards' numbers, the cycle cards' large copy */
   --tracking-tight-35: -0.035em; /* hero title */
   --tracking-tight-40: -0.04em; /* the surprise cards' large copy */
 
   /* Line heights, in hundredths, and the fixed ones in px. */
-  --leading-100: 1; /* mono marks and chips */
+  --leading-100: 1; /* the simple cards' numbers */
   --leading-104: 1.04; /* hero title */
   --leading-110: 1.1; /* section titles */
   --leading-115: 1.15; /* the simple cards' team names */
   --leading-116: 1.16; /* the surprise cards' large copy */
-  --leading-120: 1.2; /* the cycle's names, tags and large copy */
-  --leading-130: 1.3; /* the orbit's deliverable, the GIF list's names, a cycle card's deliverable */
-  --leading-135: 1.35; /* the thread's copy */
+  --leading-120: 1.2; /* the loop's step names, the cycle's tags, the cycle cards' large copy */
+  --leading-130: 1.3; /* the loop's captions, what a step delivers in the loop and in a cycle card */
   --leading-140: 1.4; /* partners' title, the label of a GIF's space */
-  --leading-145: 1.45; /* the GIF list's copy */
+  --leading-145: 1.45; /* the copy of the loop's steps */
   --leading-150: 1.5; /* page base */
   --leading-160: 1.6; /* paragraphs */
   --leading-1200: 1.2; /* the logo's characters */
@@ -180,26 +184,16 @@
 
   /* Fluid spacing, the page width and the sizes the cycle and the cards are drawn at. */
   --spacing-gutter: clamp(20px, 4vw, 48px); /* side padding of header, main and footer */
-  --spacing-orbit-gap: clamp(40px, 6vw, 96px); /* between the orbit and its list */
-  --spacing-gif-gap: clamp(32px, 5vw, 72px); /* between the cycle's GIF and its list */
-  --spacing-orbit: min(100%, 360px); /* the orbit's figure */
   --spacing-team-card: clamp(264px, 33vw, 460px); /* the surprise cards' least height */
-  --spacing-desc-lines: 3.2em; /* the orbit's copy on a narrow list: two lines */
   --spacing-large-13: 13em; /* the cycle cards' large copy */
   --spacing-large-15: 15em; /* the surprise cards' large copy */
   --container-page: 1344px;
-  --container-orbit-list: 560px; /* below it, the orbit's list drops its tags */
 
   /* Grids: as many columns as fit, each at least its minimum, and one column when even that does not. */
   --grid-template-columns-teams: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); /* team cards */
-  --grid-template-columns-orbit-row: 56px minmax(0, 1fr) auto; /* number, name and copy, tag */
-
-  /* Flex grow factors that are not whole numbers, in hundredths, read as grow-(--grow-240): a bare
-     grow-240 would be a factor of 240. Whole ones are Tailwind's. */
-  --grow-130: 1.3; /* the cycle's GIF */
-  --grow-240: 2.4; /* the open pill of the thread */
 
   --aspect-gif: 16 / 9; /* the GIFs' spaces */
+  --aspect-loop: 760 / 360; /* the loop's drawing */
 
   --radius-2: 2px; /* the Blue Team's wall */
   --radius-6: 6px; /* a GIF's space */
@@ -207,9 +201,8 @@
   --radius-10: 10px; /* buttons */
   --radius-12: 12px; /* the inside of a simple card */
   --radius-16: 16px; /* the frame of a simple card */
-  --radius-32: 32px; /* a pill of the thread, standing on a phone */
-  --radius-pill: 999px; /* nav pill and its links, the thread's pills, tags */
-  --radius-circle: 50%; /* brand mark, stations, discs, chips */
+  --radius-pill: 999px; /* nav pill and its links, the cycle's tags */
+  --radius-circle: 50%; /* brand mark, stations, the deliverables' dots */
 
   --shadow-glow: 0 8px 28px rgba(242, 242, 242, 0.2); /* button hover */
   --shadow-wall: 0 0 14px 1px rgba(90, 144, 248, 0.55); /* the Blue Team's wall */
@@ -218,19 +211,20 @@
   /* The keyboard focus ring, in --color-blue. */
   --outline-width-focus: 2px;
   --outline-offset-focus: 3px;
+  --outline-offset-loop: 6px; /* the ring of an item of the loop's list */
 
   /* Motion. Hover transitions of links and buttons take .2s with the default ease. */
   --default-transition-duration: 0.2s;
   --default-transition-timing-function: ease;
   --ease-enter: cubic-bezier(0.2, 0.7, 0.2, 1); /* entrances, the station's arrival ring */
   --ease-settle: cubic-bezier(0.22, 1, 0.36, 1); /* what opens, grows or lights up in the cards */
-  --ease-travel: cubic-bezier(0.5, 0.05, 0.25, 1); /* a pulse travelling between two steps */
+  --ease-travel: cubic-bezier(0.5, 0.05, 0.25, 1); /* a deliverable travelling between two steps */
   --ease-pop: cubic-bezier(0.3, 0.7, 0.2, 1); /* the icons' gestures, the neon fill's opening */
   --ease-draw: cubic-bezier(0.4, 0, 0.2, 1); /* the monitor's line drawing itself */
   --ease-out: ease-out; /* the neon following the pointer */
   --duration-instant: 0.01s; /* transitions with reduced motion */
+  --duration-0: 0s; /* the cycle card's light, back to its start once it has faded */
   --duration-160: 0.16s;
-  --duration-200: 0.2s;
   --duration-300: 0.3s;
   --duration-350: 0.35s;
   --duration-400: 0.4s;
@@ -249,11 +243,9 @@
   --duration-7000: 7s;
   --duration-64000: 64s; /* one lap of the partners */
   --delay-80: 80ms;
-  --delay-120: 0.12s;
   --delay-140: 0.14s;
   --delay-150: 0.15s;
   --delay-280: 0.28s;
-  --delay-300: 0.3s;
   --delay-700: 0.7s;
   --delay-enter-2: 0.08s;
   --delay-enter-3: 0.16s;
@@ -348,46 +340,6 @@
   }
 }
 
-@keyframes wk-march1 {
-  to {
-    stroke-dashoffset: -8.901;
-  }
-}
-
-@keyframes wk-comet {
-  0% {
-    stroke-dashoffset: 24;
-    opacity: 0;
-  }
-  12% {
-    opacity: 1;
-  }
-  88% {
-    opacity: 1;
-  }
-  100% {
-    stroke-dashoffset: -214;
-    opacity: 0;
-  }
-}
-
-@keyframes wk-go-r {
-  0% {
-    left: 0;
-    opacity: 0;
-  }
-  14% {
-    opacity: 1;
-  }
-  86% {
-    opacity: 1;
-  }
-  100% {
-    left: 100%;
-    opacity: 0;
-  }
-}
-
 @keyframes wk-run {
   0% {
     left: var(--x0);
@@ -440,15 +392,6 @@
   }
 }
 
-@keyframes wk-fill {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
 @keyframes wk-arrive {
   0% {
     opacity: 1;
@@ -457,6 +400,49 @@
   100% {
     opacity: 1;
     box-shadow: 0 0 0 14px var(--color-bright-0);
+  }
+}
+
+@keyframes wk-ping {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--pc) 45%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 12px color-mix(in srgb, var(--pc) 0%, transparent);
+  }
+}
+
+@keyframes wk6-comet {
+  0% {
+    stroke-dashoffset: 6;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+
+@keyframes wk6-comet-s {
+  0% {
+    stroke-dashoffset: 16;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
   }
 }
 
@@ -808,18 +794,19 @@
 }
 
 /*
- * The cycle, the same in its four versions (wk-*). The version's root has data-cycle, and data-held while
- * a step is under the pointer, focused or pinned; a step in focus has data-on; a link between two steps
- * has data-lit when it is lit and data-fire while a pulse travels along it. --pc is the color of what travels along
- * a link: red, blue, muted or bright, from the first link to the fourth.
+ * The cycle, the same in its two versions (wk-*). The version's root has data-cycle, data-held while a
+ * step is under the pointer, focused or pinned, and data-run while the cycle runs by itself; a step in
+ * focus has data-on; a deliverable between two steps has data-lit when it is lit and data-fire while it
+ * travels. --pc is the color of a deliverable: red, blue, muted or bright, from the first to the fourth.
  */
 
-/* The ring of a focused step's button, drawn on the step (the row, the pill or the card's body). */
+/* The ring of a focused step's button, drawn on the step (the loop's item or the card's body), at the
+   step's own offset when it has one (--step-focus-offset). */
 @utility step-focus {
   @supports selector(:has(a)) {
     &:has(.step-button:focus-visible) {
       outline: var(--outline-width-focus) solid var(--color-blue);
-      outline-offset: var(--outline-offset-focus);
+      outline-offset: var(--step-focus-offset, var(--outline-offset-focus));
     }
   }
 }
@@ -893,7 +880,18 @@
   }
 }
 
-/* The pulse that travels along a link (wk-pulse): a dot in --pc with a ring and a glow. */
+/* The arrow that says which way a deliverable goes (wk-arw), a line drawing in the current color. */
+@utility step-arrow {
+  display: block;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The pulse that travels along the cards' rail (wk-pulse): a dot in --pc with a ring and a glow. */
 @utility pulse {
   position: absolute;
   width: 8px;
@@ -908,9 +906,8 @@
   pointer-events: none;
 }
 
-/* The dotted loop that closes the cycle around the thread and the cards (wk-loop), as an SVG: the
-   track and the dots that run along it. */
-@utility loop {
+/* The dotted rail around the cards (wk-loop), as an SVG: the track and the dots that run along it. */
+@utility rail-frame {
   position: absolute;
   z-index: 0;
   display: block;
@@ -918,13 +915,13 @@
   pointer-events: none;
 }
 
-@utility loop-track {
+@utility rail-track {
   fill: none;
   stroke: var(--color-rule-strong);
   stroke-width: 1;
 }
 
-@utility loop-flow {
+@utility rail-flow {
   fill: none;
   stroke: var(--color-flow);
   stroke-width: 2;
@@ -935,9 +932,9 @@
   }
 }
 
-/* A rail over the loop where a pulse runs from --x0 to --x1 (wk-rail); the last one runs the long way,
-   around the loop and back (wk-turn). */
-@utility rail {
+/* A runner over the rail where a pulse runs from --x0 to --x1 (wk-rail); the last one runs the long
+   way, around the rail and back (wk-turn). */
+@utility runner {
   position: absolute;
   z-index: 2;
   pointer-events: none;
@@ -946,13 +943,13 @@
     top: 0;
   }
   @media (prefers-reduced-motion: no-preference) {
-    &[data-fire]:not(.rail-turn) > .pulse {
+    &[data-fire]:not(.runner-turn) > .pulse {
       animation: wk-run var(--duration-950) var(--ease-travel) both;
     }
   }
 }
 
-@utility rail-turn {
+@utility runner-turn {
   @media (prefers-reduced-motion: no-preference) {
     &[data-fire] > .pulse {
       animation: wk-back var(--duration-950) linear both;
@@ -960,12 +957,13 @@
   }
 }
 
-/* The tag that says what a link carries (wk-tag), lit with its link. */
+/* The tag that says what a deliverable is (wk-tag), lit with it: its border takes the deliverable's
+   color, and it rings as the deliverable leaves. */
 @utility step-tag {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
-  padding: 5px 12px;
+  padding: 6px 12px;
   border-radius: var(--radius-pill);
   background-color: var(--color-grid);
   border: 1px solid var(--color-rule-strong);
@@ -977,50 +975,172 @@
     border-color var(--duration-350);
   &[data-lit] {
     color: var(--color-bright);
-    border-color: var(--color-rule-lit);
+    border-color: color-mix(in srgb, var(--pc) 60%, var(--color-rule-strong));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-fire] {
+      animation: wk-ping var(--duration-1100) var(--ease-out) both;
+    }
   }
 }
 
-/* Version 01, the orbit: the ring of dots runs the way of the cycle; each quarter lights in its color,
-   and a comet runs along it when the pulse travels. A station grows and rings when it comes into focus. */
-@utility orbit-flow {
+/* Version 06, the loop: one stroke in the shape of infinity, the work before production on the left
+   lobe and what happens in production on the right one; at the crossing the guardrails go over and the
+   metrics come back under (wk6-*). --fw is the width of the drawing, and the tags and the items sit
+   around its middle at shares of it. At 1099px and below the drawing goes up and the list comes below
+   it; at 600px and below the stations are smaller and the captions are gone. */
+@utility loop {
+  position: relative;
+  height: 400px;
+  container-type: inline-size;
+  --fw: min(718px, calc(100cqw - 440px));
+  @media (max-width: 1099px) {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+}
+
+@utility loop-map {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--fw);
+  aspect-ratio: var(--aspect-loop);
+  transform: translate(-50%, -50%);
+  @media (max-width: 1099px) {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: min(100%, 600px);
+    margin: 0 auto;
+  }
+}
+
+/* The lobe of the step in focus lights: the left one for Pesquisar and Desenvolver, the right one for
+   Implementar and Monitorar. */
+@utility loop-lobe {
+  fill: var(--color-white-3);
+  opacity: 0;
+  transition: opacity var(--duration-900) ease;
+  &[data-on] {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-instant);
+  }
+}
+
+@utility loop-track {
+  fill: none;
+  stroke: var(--color-rule-strong);
+  stroke-width: 1;
+}
+
+/* The dots run along the stroke the way of the cycle; an arc lights in its deliverable's color. */
+@utility loop-flow {
   fill: none;
   stroke: var(--color-flow);
-  stroke-width: 2.4;
+  stroke-width: 2;
   stroke-linecap: round;
-  stroke-dasharray: 0.01 8.891;
+  stroke-dasharray: 0.01 9;
   transition: stroke var(--duration-350);
   :where([data-lit]) > & {
     stroke: var(--pc);
   }
   @media (prefers-reduced-motion: no-preference) {
-    animation: wk-march1 var(--duration-1100) linear infinite;
+    animation: wk-march var(--duration-1100) linear infinite;
   }
 }
 
-@utility orbit-comet {
+/* The gap in the arcs under the crossing, in the color of the ground. */
+@utility loop-gap {
+  fill: none;
+  stroke: var(--color-grid);
+  stroke-width: 12;
+}
+
+/* The comet that runs along an arc while its deliverable travels; the two short arcs have a longer one. */
+@utility loop-comet {
   fill: none;
   stroke: var(--pc);
-  stroke-width: 3.5;
+  stroke-width: 3;
   stroke-linecap: round;
-  stroke-dasharray: 22 400;
-  stroke-dashoffset: 24;
+  stroke-dasharray: 6 200;
+  stroke-dashoffset: 7;
   opacity: 0;
   filter: drop-shadow(0 0 5px var(--pc));
   @media (prefers-reduced-motion: no-preference) {
     :where([data-fire]) > & {
-      animation: wk-comet var(--duration-950) var(--ease-travel) both;
+      animation: wk6-comet var(--duration-1100) var(--ease-travel) both;
     }
   }
 }
 
-@utility orbit-station {
+@utility loop-comet-short {
+  fill: none;
+  stroke: var(--pc);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 16 200;
+  stroke-dashoffset: 17;
+  opacity: 0;
+  filter: drop-shadow(0 0 5px var(--pc));
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-fire]) > & {
+      animation: wk6-comet-s var(--duration-1100) var(--ease-travel) both;
+    }
+  }
+}
+
+/* The names of the two halves, in the middle of each lobe, lit with it. */
+@utility loop-caption {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: color var(--duration-600);
+  &[data-on] {
+    color: var(--color-bright);
+  }
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
+@utility loop-caption-left {
+  left: 26.5%;
+}
+
+@utility loop-caption-right {
+  left: 73.5%;
+}
+
+/* A station on the stroke: it grows and rings when its step comes into focus. */
+@utility loop-station {
+  position: absolute;
+  z-index: 2;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  box-sizing: border-box;
+  border-radius: var(--radius-circle);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-rule-strong);
+  color: var(--color-subtle);
   transition:
     border-color var(--duration-350),
     background-color var(--duration-350),
     color var(--duration-350),
     transform var(--duration-450) var(--ease-settle);
   &[data-on] {
+    border-color: var(--color-subtle);
+    background-color: var(--color-station-on);
+    color: var(--color-bright);
     transform: scale(1.1);
   }
   &::after {
@@ -1039,183 +1159,82 @@
   @media (prefers-reduced-motion: reduce) {
     transition-duration: var(--duration-instant);
   }
-}
-
-@utility orbit-deliverable {
-  opacity: 0;
-  transform: scale(0.9);
-  transition:
-    opacity var(--duration-400),
-    transform var(--duration-400) var(--ease-settle);
-  &[data-on] {
-    opacity: 1;
-    transform: none;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    transition-duration: var(--duration-instant);
+  @media (max-width: 600px) {
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
   }
 }
 
-/* The line over the step in focus fills in 3s while the cycle runs by itself (wk1-bar). */
-@utility orbit-bar {
-  transform-origin: 0 50%;
-  opacity: 0;
-  transition: opacity var(--duration-350);
-  :where([data-on]) > & {
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    :where([data-cycle]:not([data-held])) :where([data-on]) > & {
-      animation: wk-fill var(--duration-3000) linear both;
-    }
-  }
-}
-
-/* The copy of a row opens under its name when the row comes into focus (wk1-more, wk1-desc). */
-@utility orbit-more {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows var(--duration-500) var(--ease-settle);
-  :where([data-on]) & {
-    grid-template-rows: 1fr;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    transition-duration: var(--duration-instant);
-  }
-}
-
-@utility orbit-desc {
-  opacity: 0;
-  transition: opacity var(--duration-300);
-  :where([data-on]) & {
-    opacity: 1;
-    transition: opacity var(--duration-450) var(--delay-120);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    transition-duration: var(--duration-instant);
-  }
-}
-
-/* Version 02, the thread: the step in focus grows and shows its copy; the chip of a lit link grows and
-   says what it carries; a pulse runs along the link while the cycle moves on (wk2-*). */
-@utility thread-pill {
-  transition:
-    flex-grow var(--duration-600) var(--ease-settle),
-    flex-basis var(--duration-600) var(--ease-settle),
-    border-color var(--duration-350),
-    background-color var(--duration-350);
-  @media (prefers-reduced-motion: reduce) {
-    transition-duration: var(--duration-instant);
-  }
-}
-
-@utility thread-desc {
-  opacity: 0;
-  transition: opacity var(--duration-200);
-  :where([data-on]) & {
-    opacity: 1;
-    transition: opacity var(--duration-450) var(--delay-300);
-  }
-  @media (max-width: 760px) {
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    transition-duration: var(--duration-instant);
-  }
-}
-
-@utility thread-pulse {
-  z-index: 2;
-  left: 0;
-  top: 50%;
-  @media (prefers-reduced-motion: no-preference) {
-    :where([data-fire]) > & {
-      animation: wk-go-r var(--duration-950) var(--ease-travel) both;
-    }
-  }
-  @media (max-width: 760px) {
-    display: none;
-  }
-}
-
-@utility thread-chip {
-  border-color: var(--color-rule-strong);
-  transition:
-    border-color var(--duration-350),
-    transform var(--duration-350) var(--ease-settle);
-  :where([data-lit]) > & {
-    border-color: var(--pc);
-    transform: scale(1.12);
-  }
-}
-
-@utility thread-caption {
-  position: absolute;
-  left: 50%;
-  top: calc(100% + 9px);
-  transform: translateX(-50%);
-  color: var(--color-bright);
-  opacity: 0;
-  transition: opacity var(--duration-300);
-  :where([data-lit]) > & {
-    opacity: 1;
-  }
-  @media (max-width: 760px) {
-    left: calc(100% + 2px);
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--color-muted);
-    opacity: 1;
-  }
-}
-
-/* On a phone the thread stands up, and a dotted line joins one step to the next. */
-@utility thread-link {
-  @media (max-width: 760px) {
-    &::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 3px;
-      bottom: 3px;
-      margin-left: -1px;
-      border-left: 2px dotted var(--color-rule-dotted);
-    }
-  }
-}
-
-/* Where the thread's loop, rail and back tag sit around the row of steps. */
-@utility thread-loop {
-  left: -14px;
-  top: 32px;
-  width: calc(100% + 28px);
-  height: calc(100% - 44px);
-}
-
-@utility thread-rail {
-  left: -14px;
-  right: -14px;
-  top: 32px;
-  bottom: 12px;
-  --x0: calc(100% - 14px);
-  --x1: 14px;
-}
-
-@utility thread-back {
+/* Where the tags sit around the crossing: the first and the third beside the short arcs, the second
+   above the crossing and the fourth below it. */
+@utility loop-tag {
   position: absolute;
   z-index: 3;
+}
+
+@utility loop-tag-left {
+  right: calc(50% + 0.3947 * var(--fw) + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@utility loop-tag-right {
+  left: calc(50% + 0.3947 * var(--fw) + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@utility loop-tag-top {
   left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  @media (max-width: 760px) {
+  top: calc(50% - 0.1605 * var(--fw));
+  transform: translate(-50%, -50%);
+}
+
+@utility loop-tag-bottom {
+  left: 50%;
+  top: calc(50% + 0.1605 * var(--fw));
+  transform: translate(-50%, -50%);
+}
+
+/* An item of the list, beside its station: the two steps before production on the left, aligned to
+   the drawing, and the two in production on the right. At 1099px and below the items flow in the
+   list's grid. */
+@utility loop-item {
+  position: absolute;
+  z-index: 2;
+  width: 250px;
+  cursor: pointer;
+  transform: translateY(-50%);
+  --step-focus-offset: var(--outline-offset-loop);
+  @media (max-width: 1099px) {
     position: static;
-    align-self: flex-start;
-    margin: 14px 0 0 12px;
+    width: auto;
     transform: none;
   }
 }
 
-/* Version 03, the cards: a frame of dots runs through the four seams and closes the loop below; the
+@utility loop-item-left {
+  right: calc(50% + 0.3554 * var(--fw) + 40px);
+  text-align: right;
+  @media (max-width: 1099px) {
+    text-align: left;
+  }
+}
+
+@utility loop-item-right {
+  left: calc(50% + 0.3554 * var(--fw) + 40px);
+}
+
+@utility loop-item-top {
+  top: calc(50% - 0.134 * var(--fw));
+}
+
+@utility loop-item-bottom {
+  top: calc(50% + 0.134 * var(--fw));
+}
+
+/* Version 03, the cards: a dotted rail runs through the four seams and closes the cycle below; the
    card in focus lights its edge, and while a step is held its copy grows (wk3-*). The card follows the
    pointer through --mx and --my. */
 @utility cycle-card-spot {
@@ -1309,38 +1328,38 @@
   }
 }
 
-/* Where the cards' loop, tags and rails sit: the tags over the three seams and below the middle, each
-   rail from the middle of one card to the middle of the next (the last one the long way around). */
-@utility cards-loop {
+/* Where the cards' rail, tags and runners sit: the tags over the three seams and below the middle,
+   each runner from the middle of one card to the middle of the next (the last one the long way around). */
+@utility cards-rail-frame {
   left: -14px;
   top: 12px;
   width: calc(100% + 28px);
   height: calc(100% - 24px);
 }
 
-@utility cards-rail {
+@utility cards-runner {
   left: -14px;
   right: -14px;
   top: 12px;
   bottom: 12px;
 }
 
-@utility cards-rail-1 {
+@utility cards-runner-1 {
   --x0: calc(14px + (100% - 28px) * 0.125);
   --x1: calc(14px + (100% - 28px) * 0.375);
 }
 
-@utility cards-rail-2 {
+@utility cards-runner-2 {
   --x0: calc(14px + (100% - 28px) * 0.375);
   --x1: calc(14px + (100% - 28px) * 0.625);
 }
 
-@utility cards-rail-3 {
+@utility cards-runner-3 {
   --x0: calc(14px + (100% - 28px) * 0.625);
   --x1: calc(14px + (100% - 28px) * 0.875);
 }
 
-@utility cards-rail-4 {
+@utility cards-runner-4 {
   --x0: calc(14px + (100% - 28px) * 0.875);
   --x1: calc(14px + (100% - 28px) * 0.125);
 }

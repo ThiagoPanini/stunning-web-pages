@@ -2,7 +2,7 @@
   "board": "Main.dc.html",
   "image": "Main-holofote-red-1440.png",
   "width": 1440,
-  "height": 2654,
+  "height": 2694,
   "conditions": {
     "browser": "chromium 159.0.8154.6",
     "deviceScaleFactor": 1,
@@ -37,17 +37,17 @@
       "x": 48,
       "y": 1006,
       "width": 1344,
-      "height": 720
+      "height": 760
     },
     "teams": {
       "x": 48,
-      "y": 1726,
+      "y": 1766,
       "width": 1344,
       "height": 847
     },
     "footer": {
       "x": 0,
-      "y": 2573,
+      "y": 2613,
       "width": 1440,
       "height": 81
     }

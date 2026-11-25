@@ -1,16 +1,15 @@
-// The cycle of section 01, in the three versions that move: it runs by itself while on screen, a step
-// under the pointer or focused holds it and lights the two links of that step, a click pins a step,
-// and reduced motion keeps it still.
+// The cycle of section 01, in its two versions: it runs by itself while on screen, a step under the
+// pointer or focused holds it and lights the two deliverables of that step, a click pins a step, and
+// reduced motion keeps it still.
 
 import type { Page } from "@playwright/test";
 import { expect, load, test } from "./support/test";
 
-const VERSIONS = ["01-orbita", "02-fio", "03-cartoes"] as const;
+const VERSIONS = ["06-laco", "03-cartoes"] as const;
 
-// The steps of a version: the rows of the orbit's list, the thread's pills, the cards.
+// The steps of a version: the items of the loop's list, the cards.
 const STEPS: Record<(typeof VERSIONS)[number], string> = {
-  "01-orbita": "[data-cycle] ol > li",
-  "02-fio": "[data-cycle] article",
+  "06-laco": "[data-cycle] ol > li",
   "03-cartoes": "[data-cycle] article",
 };
 
@@ -29,11 +28,11 @@ for (const version of VERSIONS) {
     const page = await newWindow(1440, { motion: "no-preference" });
     await open(page, version);
     await expect(stepOn(page, version)).toHaveText("Pesquisar");
-    // 3 s lit, .95 s for the pulse to travel.
+    // 3 s lit, 1.1 s for the deliverable to travel.
     await expect(stepOn(page, version)).toHaveText("Desenvolver", { timeout: 6000 });
   });
 
-  test(`${version}: a step under the pointer holds the cycle and lights its two links`, async ({
+  test(`${version}: a step under the pointer holds the cycle and lights its two deliverables`, async ({
     newWindow,
   }) => {
     const page = await newWindow(1440, { motion: "no-preference" });
@@ -41,11 +40,11 @@ for (const version of VERSIONS) {
     await page.locator(STEPS[version]).nth(2).hover();
     await expect(page.locator("[data-cycle]")).toHaveAttribute("data-held", "");
     await expect(stepOn(page, version)).toHaveText("Implementar");
-    // The link that reaches Implementar and the one that leaves it.
+    // The deliverable that reaches Implementar and the one that leaves it.
     const lit = await page
       .locator("[data-cycle] [data-lit]")
       .evaluateAll((elements) => elements.length);
-    expect(lit, "lit links").toBeGreaterThanOrEqual(2);
+    expect(lit, "lit deliverables").toBeGreaterThanOrEqual(2);
     await page.waitForTimeout(4500);
     await expect(stepOn(page, version)).toHaveText("Implementar");
     // On leaving, the cycle goes on from the step in focus.
@@ -78,7 +77,7 @@ for (const version of VERSIONS) {
     await page.keyboard.press("Tab");
     await expect(stepOn(page, version)).toHaveText("Monitorar");
     const ring = await page.locator(`${STEPS[version]}[data-on]`).evaluate((step) => {
-      // The ring is on the step itself, or on the body of a card.
+      // The ring is on the step itself (an item of the loop's list), or on the body of a card.
       const target = step.matches(".step-focus") ? step : step.querySelector(".step-focus");
       return target ? getComputedStyle(target).outlineStyle : "no step-focus";
     });

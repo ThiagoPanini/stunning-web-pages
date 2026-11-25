@@ -270,11 +270,15 @@ async function main() {
   await mkdir(join(originDir, 'reference'), { recursive: true });
 
   const { server, base, misses } = await serveBoards(boardsDir, runtimePath);
-  const browser = await chromium.launch({ headless: true });
   let failed = false;
   try {
     for (const entry of recipe.captures) {
       for (const width of entry.widths) {
+        // A browser per capture. One browser that has already drawn other captures may rasterize the text
+        // of the next one a fraction of a pixel apart: measured on 2026-11-25, in runs of 13 captures, one
+        // to three came out with their text drawn differently, and a second run did not give the same
+        // bytes. With a browser per capture, two runs gave the same bytes.
+        const browser = await chromium.launch({ headless: true });
         try {
           const result = await captureBoard(browser, base, { ...entry, originDir }, width);
           const overflow = result.scrollWidth > width ? `, horizontal overflow of ${result.scrollWidth - width} px` : '';
@@ -283,11 +287,12 @@ async function main() {
         } catch (error) {
           failed = true;
           console.error(`capture: ${error.message}`);
+        } finally {
+          await browser.close();
         }
       }
     }
   } finally {
-    await browser.close();
     server.close();
   }
   if (misses.length > 0) {

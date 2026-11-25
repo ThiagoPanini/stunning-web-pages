@@ -1,8 +1,9 @@
 import type { CSSProperties } from "react";
 
 // The four steps of the cycle, in its order, each with the icon of its step and what it hands to the
-// next one: the deliverable, with its mark and the color of what travels along the link that leaves
-// it (red, blue, muted, bright). The fourth link goes from Monitorar back to Pesquisar.
+// next one: the deliverable, with its mark and its color (red, blue, muted, bright), the color of the
+// dot that stands for it and of what travels with it. The fourth deliverable goes from Monitorar back
+// to Pesquisar. The first two steps happen before production, the last two in production.
 export const STEPS = [
   {
     name: "Pesquisar",
@@ -37,8 +38,8 @@ export const STEPS = [
 export const CYCLE_LABEL =
   "Ciclo de quatro etapas: pesquisar, desenvolver, implementar e monitorar, de volta a pesquisar";
 
-// What the link that leaves step i says to a screen reader: "De Pesquisar para Desenvolver: falhas
-// conhecidas", and for the last one "De Monitorar de volta para Pesquisar: métricas essenciais".
+// What the deliverable that leaves step i says to a screen reader: "De Pesquisar para Desenvolver:
+// falhas conhecidas", and for the last one "De Monitorar de volta para Pesquisar: métricas essenciais".
 export function linkLabel(i: number): string {
   const from = STEPS[i];
   const to = STEPS[(i + 1) % STEPS.length];
@@ -46,7 +47,7 @@ export function linkLabel(i: number): string {
   return `De ${from.name}${back} para ${to.name}: ${from.deliverable}`;
 }
 
-// The color of what travels along the link that leaves step i, as the --pc the link's parts read.
+// The color of the deliverable that leaves step i, as the --pc its parts read.
 export function passColor(i: number): CSSProperties {
   return { "--pc": STEPS[i].color } as CSSProperties;
 }
@@ -57,19 +58,22 @@ const GESTURES = ["step-icon-1", "step-icon-2", "step-icon-3", "step-icon-4"];
 type StepIconProps = {
   // Which step's icon: 0 to 3.
   step: number;
-  // Drawn at 20, 22 or 32px.
+  // Drawn at 22 or 32px.
   size: number;
-  // Off in the GIF version, whose list does not move.
-  gesture?: boolean;
 };
 
 // The icon of a step, a line drawing in the current color: a lens for Pesquisar, code brackets for
 // Desenvolver, a speech bubble with a check for Implementar and a pulse line for Monitorar. When its step
 // comes into focus it makes its gesture (globals.css, step-icon-1 to step-icon-4).
-export function StepIcon({ step, size, gesture = true }: StepIconProps) {
-  const className = gesture ? `step-icon ${GESTURES[step]}` : "step-icon";
+export function StepIcon({ step, size }: StepIconProps) {
   return (
-    <svg className={className} width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+    <svg
+      className={`step-icon ${GESTURES[step]}`}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
       {step === 0 && (
         <>
           <circle cx="10.5" cy="10.5" r="6.5" />

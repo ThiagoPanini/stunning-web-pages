@@ -144,7 +144,7 @@ test("each component of the Home shows on its own on the route", async ({ page }
       "ButtonLink",
       "OndasLogo",
       "OndasMini",
-      "CycleOrbit",
+      "CycleLoop",
       "TeamCardsSurprise",
     ]),
   );

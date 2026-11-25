@@ -2,9 +2,7 @@
 
 import { useRef } from "react";
 import { CycleCards } from "./cycle-cards";
-import { CycleGif } from "./cycle-gif";
-import { CycleOrbit } from "./cycle-orbit";
-import { CycleThread } from "./cycle-thread";
+import { CycleLoop } from "./cycle-loop";
 import { SectionHeader } from "./section-header";
 import { useTweaks } from "./tweaks";
 import { useCycle } from "./use-cycle";
@@ -30,10 +28,8 @@ export function Model() {
         title="Um ciclo integrado"
         lead="Da novidade à implementação prática: o trabalho contínuo de Responsible AI"
       />
-      {versaoCiclo === "01-orbita" && <CycleOrbit cycle={cycle} />}
-      {versaoCiclo === "02-fio" && <CycleThread cycle={cycle} />}
+      {versaoCiclo === "06-laco" && <CycleLoop cycle={cycle} />}
       {versaoCiclo === "03-cartoes" && <CycleCards cycle={cycle} />}
-      {versaoCiclo === "04-gif" && <CycleGif />}
     </section>
   );
 }

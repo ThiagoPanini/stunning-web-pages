@@ -2,7 +2,7 @@
   "board": "Main.dc.html",
   "image": "Main-390.png",
   "width": 390,
-  "height": 3836,
+  "height": 3822,
   "conditions": {
     "browser": "chromium 159.0.8154.6",
     "deviceScaleFactor": 1,
@@ -32,17 +32,17 @@
       "x": 20,
       "y": 1430,
       "width": 350,
-      "height": 1064
+      "height": 1050
     },
     "teams": {
       "x": 20,
-      "y": 2494,
+      "y": 2480,
       "width": 350,
       "height": 1153
     },
     "footer": {
       "x": 0,
-      "y": 3647,
+      "y": 3633,
       "width": 390,
       "height": 189
     }

@@ -277,18 +277,22 @@ export function EffectTokens({ tokens }: { tokens: Token[] }) {
 export function FocusTokens({ tokens }: { tokens: Token[] }) {
   const width = tokens.find((token) => token.name.startsWith("--outline-width-"));
   const offset = tokens.find((token) => token.name.startsWith("--outline-offset-"));
-  const ring: CSSProperties = {
-    outlineStyle: "solid",
-    outlineColor: "var(--color-blue)",
-    outlineWidth: width && variable(width),
-    outlineOffset: offset && variable(offset),
+  // Each sample draws the ring with its own token, and the first token of the other kind.
+  const ring = (token: Token): CSSProperties => {
+    const own = token.name.startsWith("--outline-width-") ? "width" : "offset";
+    return {
+      outlineStyle: "solid",
+      outlineColor: "var(--color-blue)",
+      outlineWidth: own === "width" ? variable(token) : width && variable(width),
+      outlineOffset: own === "offset" ? variable(token) : offset && variable(offset),
+    };
   };
   return (
     <TokenGrid min="wide">
       {tokens.map((token) => (
         <TokenCell key={token.name} token={token}>
           <div className="flex h-24 items-center px-6">
-            <Sample className="h-11 w-44 rounded-10 bg-bright" style={ring} />
+            <Sample className="h-11 w-44 rounded-10 bg-bright" style={ring(token)} />
           </div>
         </TokenCell>
       ))}

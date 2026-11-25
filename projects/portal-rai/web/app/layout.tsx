@@ -3,7 +3,7 @@ import "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Responsible AI · Home · Curated",
+  title: "Responsible AI · Home",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

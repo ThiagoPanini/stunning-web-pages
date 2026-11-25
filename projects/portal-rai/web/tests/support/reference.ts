@@ -20,7 +20,7 @@ import { PNG } from "pngjs";
 
 export const ORIGIN_DIR = join(import.meta.dirname, "..", "..", "..", "origin");
 
-// The widths of the pull's rule, and 1024 px, where the cycle's thread and cards take their middle
+// The widths of the pull's rule, and 1024 px, where the cycle's loop and cards take their middle
 // layouts.
 export const WIDTHS = [1440, 390] as const;
 export const ALL_WIDTHS = [1440, 1024, 390] as const;
@@ -45,8 +45,7 @@ export type ReferenceRecord = {
 
 // The element the pointer rests on, for each hover of the pull: the board's selector, and the app's.
 export const HOVER_TARGETS: Record<string, string> = {
-  ".wk1-st:nth-of-type(3)": "[data-cycle] [data-station] >> nth=2",
-  ".wk2-row > article:nth-of-type(2)": "[data-cycle] article >> nth=1",
+  ".wk6-s3": "[data-cycle] [data-station] >> nth=2",
   ".wk3-row > article:nth-of-type(2)": "[data-cycle] article >> nth=1",
   ".tm2-red": '[data-team="red"]',
   ".tm2-blue": '[data-team="blue"]',
