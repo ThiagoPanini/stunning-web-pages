@@ -76,7 +76,6 @@ const DRAWN: [RegExp, string, string][] = [
   [/^--outline-width-/, "outline-width", "7px"],
   [/^--outline-offset-/, "outline-offset", "7px"],
   [/^--grid-template-columns-/, "grid-template-columns", "1px 2px 3px"],
-  [/^--grow-/, "flex-grow", "7"],
   [/^--aspect-/, "aspect-ratio", "3 / 1"],
 ];
 

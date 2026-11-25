@@ -205,25 +205,6 @@ export function GridTokens({ tokens }: { tokens: Token[] }) {
   );
 }
 
-// Two parts of a row that start from the same basis: the first grows by 1, the sample by the token.
-export function GrowTokens({ tokens }: { tokens: Token[] }) {
-  return (
-    <ul className="flex flex-col">
-      {tokens.map((token) => (
-        <TokenRow key={token.name} token={token}>
-          <div className="flex gap-2">
-            <div className="h-2 grow basis-0 rounded-pill bg-rule-strong" />
-            <Sample
-              className="h-2 basis-0 rounded-pill bg-blue"
-              style={{ flexGrow: variable(token) }}
-            />
-          </div>
-        </TokenRow>
-      ))}
-    </ul>
-  );
-}
-
 export function RadiusTokens({ tokens }: { tokens: Token[] }) {
   return (
     <TokenGrid min="narrow">

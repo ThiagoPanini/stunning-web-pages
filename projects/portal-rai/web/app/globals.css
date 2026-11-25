@@ -21,9 +21,10 @@
  *
  * Left out on purpose: the two hover rules of the board no element uses (.chip and .atk) and the .rvf
  * reveal no element uses. The drawings keep their own geometry: the brand marks, the logos, the cycle's
- * loop and rail (where they and their parts sit around the steps), and the distances, scales and
- * opacities of the keyframes and of the neon's light, in the utilities and keyframes below; their colors,
- * durations and curves are tokens.
+ * loop and rail (their strokes, their stations, and where their tags and items sit around them), and the
+ * distances, scales and opacities of the keyframes and of the neon's light, in the utilities and
+ * keyframes below; their colors, durations and curves are tokens, and so is the room the loop takes in
+ * its section: its height, the width of its drawing and of its list's items.
  */
 
 @import "tailwindcss";
@@ -183,11 +184,17 @@
   --leading-px-22: 22px; /* the cycle cards' small copy */
   --leading-px-24: 24px; /* card names, the team cards' copy */
 
-  /* Fluid spacing, the page width and the sizes the cycle and the cards are drawn at. */
+  /* Fluid spacing, the page width and the sizes the cycle and the cards are drawn at; the loop's are
+     read by its utilities, below. */
   --spacing-gutter: clamp(20px, 4vw, 48px); /* side padding of header, main and footer */
   --spacing-team-card: clamp(264px, 33vw, 460px); /* the surprise cards' least height */
   --spacing-large-13: 13em; /* the cycle cards' large copy */
   --spacing-large-15: 15em; /* the surprise cards' large copy */
+  --spacing-loop-stage: 400px; /* the height the loop takes, with its drawing in the middle */
+  /* The loop's drawing: at most 718px wide, leaving 440px of the loop to its list's two columns. */
+  --spacing-loop-map: min(718px, calc(100cqw - 440px));
+  --spacing-loop-map-stacked: min(100%, 600px); /* the loop's drawing, above its list */
+  --spacing-loop-item: 250px; /* an item of the loop's list, beside the drawing */
   --container-page: 1344px;
 
   /* Grids: as many columns as fit, each at least its minimum, and one column when even that does not. */
@@ -224,7 +231,7 @@
   --ease-draw: cubic-bezier(0.4, 0, 0.2, 1); /* the monitor's line drawing itself */
   --ease-out: ease-out; /* the neon following the pointer */
   --duration-instant: 0.01s; /* transitions with reduced motion */
-  --duration-0: 0s; /* the cycle card's light, back to its start once it has faded */
+  --duration-0: 0s; /* the cycle card's light, back to its start at once */
   --duration-160: 0.16s;
   --duration-300: 0.3s;
   --duration-350: 0.35s;
@@ -246,6 +253,7 @@
   --delay-140: 0.14s;
   --delay-150: 0.15s;
   --delay-280: 0.28s;
+  --delay-600: 0.6s; /* the cycle card's light, back to its start once it has faded */
   --delay-700: 0.7s;
   --delay-enter-2: 0.08s;
   --delay-enter-3: 0.16s;
@@ -992,9 +1000,9 @@
    it; at 600px and below the stations are smaller and the captions are gone. */
 @utility loop {
   position: relative;
-  height: 400px;
+  height: var(--spacing-loop-stage);
   container-type: inline-size;
-  --fw: min(718px, calc(100cqw - 440px));
+  --fw: var(--spacing-loop-map);
   @media (max-width: 1099px) {
     height: auto;
     display: flex;
@@ -1015,7 +1023,7 @@
     left: auto;
     top: auto;
     transform: none;
-    width: min(100%, 600px);
+    width: var(--spacing-loop-map-stacked);
     margin: 0 auto;
   }
 }
@@ -1204,7 +1212,7 @@
 @utility loop-item {
   position: absolute;
   z-index: 2;
-  width: 250px;
+  width: var(--spacing-loop-item);
   cursor: pointer;
   transform: translateY(-50%);
   --step-focus-offset: var(--outline-offset-loop);
@@ -1334,7 +1342,7 @@
   pointer-events: none;
   transition:
     opacity var(--duration-600) ease,
-    transform var(--duration-0) var(--duration-600);
+    transform var(--duration-0) var(--delay-600);
   :where([data-on]) & {
     opacity: 0.85;
     transform: scaleX(1);

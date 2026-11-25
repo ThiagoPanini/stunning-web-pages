@@ -12,7 +12,6 @@ import {
   FamilyTokens,
   FocusTokens,
   GridTokens,
-  GrowTokens,
   LeadingTokens,
   PlainTokens,
   RadiusTokens,
@@ -99,7 +98,7 @@ export default function DesignSystem() {
           number="03"
           label="Layout"
           title="Espaçamentos e grades."
-          lead="A escala de espaçamento do Tailwind fica, com a base de 4 px; os espaçamentos fluidos, a largura da página e os tamanhos em que os cards são desenhados têm nome próprio. A grade dos Times põe quantas colunas couberem; os espaços dos GIFs têm 16:9, e o desenho do laço, 760 por 360."
+          lead="A escala de espaçamento do Tailwind fica, com a base de 4 px; os espaçamentos fluidos, a largura da página, os tamanhos em que os cards são desenhados e o lugar que o laço ocupa têm nome próprio. A grade dos Times põe quantas colunas couberem; os espaços dos GIFs têm 16:9, e o desenho do laço, 760 por 360."
         >
           <DesignGroup title="Espaçamentos e larguras">
             <SpacingTokens tokens={tokens.spacing} />
@@ -107,11 +106,6 @@ export default function DesignSystem() {
           <DesignGroup title="Grades">
             <GridTokens tokens={tokens.grids} />
           </DesignGroup>
-          {tokens.grow.length > 0 && (
-            <DesignGroup title="Crescimento">
-              <GrowTokens tokens={tokens.grow} />
-            </DesignGroup>
-          )}
           <DesignGroup title="Proporções">
             <AspectTokens tokens={tokens.aspects} />
           </DesignGroup>

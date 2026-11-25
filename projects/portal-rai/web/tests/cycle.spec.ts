@@ -123,7 +123,9 @@ for (const version of VERSIONS) {
   // Each layout of the version, wide, in two columns and in one, keeps inside the page.
   for (const width of ALL_WIDTHS) {
     for (const motion of ["no-preference", "reduce"] satisfies Motion[]) {
-      test(`${version}: nothing spills sideways at ${width} px (${motion})`, async ({ newWindow }) => {
+      test(`${version}: nothing spills sideways at ${width} px (${motion})`, async ({
+        newWindow,
+      }) => {
         const page = await newWindow(width, { motion });
         await open(page, version);
         await page.waitForLoadState("networkidle");

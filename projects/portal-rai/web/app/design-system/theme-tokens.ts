@@ -29,7 +29,6 @@ export type TokenGroup =
   | "leading"
   | "spacing"
   | "grids"
-  | "grow"
   | "aspects"
   | "radii"
   | "effects"
@@ -37,8 +36,7 @@ export type TokenGroup =
   | "motion"
   | "others";
 
-// Tailwind's namespaces, as the @theme uses them, and --grow-*, which is this design's own:
-// Tailwind has no namespace for flex grow. A token outside all of them still shows, in "others".
+// Tailwind's namespaces, as the @theme uses them. A token outside all of them still shows, in "others".
 const NAMESPACES: [TokenGroup, RegExp][] = [
   ["colors", /^--color-/],
   ["weights", /^--font-weight-/],
@@ -48,7 +46,6 @@ const NAMESPACES: [TokenGroup, RegExp][] = [
   ["leading", /^--leading-/],
   ["spacing", /^--(spacing|container-)/],
   ["grids", /^--grid-template-columns-/],
-  ["grow", /^--grow-/],
   ["aspects", /^--aspect-/],
   ["radii", /^--radius-/],
   ["effects", /^--(shadow|blur)-/],
@@ -66,7 +63,6 @@ export function groupTokens(tokens: Token[]): Record<TokenGroup, Token[]> {
     leading: [],
     spacing: [],
     grids: [],
-    grow: [],
     aspects: [],
     radii: [],
     effects: [],
