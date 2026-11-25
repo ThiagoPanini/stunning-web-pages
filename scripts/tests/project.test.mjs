@@ -4,16 +4,15 @@ import { test } from 'node:test';
 import { readProject } from '../project.mjs';
 import { makeProject, tempDir, writeTree } from './fixtures.mjs';
 
-test('a project is named by its README heading, and its title and namespace come from that name alone', () => {
+test('a project is named by its README heading, and its namespace comes from that name alone', () => {
   const project = readProject(makeProject(tempDir(), { 'README.md': '# Portal Índigo\n\nText.\n' }));
   assert.equal(project.name, 'Portal Índigo');
-  assert.equal(project.title, 'Portal Índigo');
   assert.equal(project.namespace, 'PortalIndigo');
 });
 
 test('a slug heading gives a namespace of its capitalized words', () => {
   const project = readProject(makeProject(tempDir(), { 'README.md': '# demo-portal\n\nText.\n' }));
-  assert.equal(project.title, 'demo-portal');
+  assert.equal(project.name, 'demo-portal');
   assert.equal(project.namespace, 'DemoPortal');
 });
 
