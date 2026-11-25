@@ -212,7 +212,7 @@ const DEFAULT_CLASSES = [
   "animate-spin",
 ];
 
-// Classes of the Curated's own theme, the control: each one must change the element.
+// Classes of the app's own @theme, the control: each one must change the element.
 const THEME_CLASSES = [
   "text-red",
   "bg-night",
@@ -258,9 +258,7 @@ test("a color or size class of Tailwind's default theme generates no style", asy
     },
     [DEFAULT_CLASSES, THEME_CLASSES],
   );
-  expect(changed.own, "classes of the Curated's theme that change the element").toEqual(
-    THEME_CLASSES,
-  );
+  expect(changed.own, "classes of the @theme that change the element").toEqual(THEME_CLASSES);
   expect(changed.defaults, "classes of Tailwind's default theme that change the element").toEqual(
     [],
   );

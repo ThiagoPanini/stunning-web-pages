@@ -37,7 +37,7 @@ export type TokenGroup =
   | "motion"
   | "others";
 
-// Tailwind's namespaces, as the @theme uses them, and --grow-*, which belongs to this theme alone:
+// Tailwind's namespaces, as the @theme uses them, and --grow-*, which is this design's own:
 // Tailwind has no namespace for flex grow. A token outside all of them still shows, in "others".
 const NAMESPACES: [TokenGroup, RegExp][] = [
   ["colors", /^--color-/],

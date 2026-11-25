@@ -1,5 +1,5 @@
 /*
- * The Curated's design system.
+ * The portal's design system.
  *
  * The @theme block below is the only source of the tokens: every value the origin uses (the Home board,
  * the Ondas logo board and its mini version in the header) has a name here, named as found. Close values
@@ -11,7 +11,7 @@
  * Naming: a color or a length with one job is named after the job (night, gutter); a value that belongs
  * to a scale is named after its value (text-15 is 15px, text-36-80 grows from 36 to 80px, leading-160 is
  * 1.6, tracking-tight-35 is -0.035em, radius-10 is 10px, duration-350 is .35s). The Ondas logo's own
- * values keep the names of its component, the same file in every theme of the project.
+ * values keep the names of its component.
  *
  * The board has tweaks, and the app draws every version of them (components/tweaks.tsx): the four
  * versions of the cycle in section 01, the three versions of the team cards in section 02, and the three
@@ -56,7 +56,7 @@
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 
-  /* Neutrals, from dark to light: the names of the Hélio, with neutral greys for values. */
+  /* Neutrals, from dark to light. */
   --color-black: #000000; /* text on the light fill of the neon */
   --color-night: #101010; /* page, text on the light button, logo background */
   --color-grid: #131313; /* the dotted ground of the partners and the cycle, the cycle's chips and tags */
