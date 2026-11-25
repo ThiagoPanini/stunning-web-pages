@@ -8,7 +8,7 @@ Cada Projeto é um design criado numa ferramenta de design, como o Claude Design
 
 | Projeto | Captura | Telas cobertas | Stack | Implementado em |
 |---|---|---|---|---|
-| [`portal-rai`](projects/portal-rai/README.md): o portal de um time de Responsible AI | <img src="projects/portal-rai/screenshots/home-1440.png" alt="Captura da Home do portal-rai" width="240"> | Home, com todas as versões dos Tweaks | Next.js 16, Tailwind CSS 4, export estático | 23/11/2026 |
+| [`portal-rai`](projects/portal-rai/README.md): o portal de um time de Responsible AI | <img src="projects/portal-rai/screenshots/home-1440.png" alt="Captura da Home do portal-rai" width="240"> | Home, com todas as versões dos Tweaks | Next.js 16, Tailwind CSS 4, export estático | 25/11/2026 |
 
 ## Como usar um Projeto
 
