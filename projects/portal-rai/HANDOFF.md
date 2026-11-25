@@ -1,6 +1,6 @@
-# Handoff do Curated
+# Handoff do `portal-rai`
 
-Este é o briefing para o agente que vai reimplementar o Curated no projeto de quem o consulta. O Curated é um Tema do Projeto `portal-rai`: a Home do portal de um time de Responsible AI. Esta pasta é uma referência para ler, não um template para copiar. O app em `web/` mostra como o design foi resolvido em Next.js com Tailwind 4, e você leva ao seu projeto o que servir, no arranjo dele.
+Este é o briefing para o agente que vai reimplementar o `portal-rai` no projeto de quem o consulta: a Home do portal de um time de Responsible AI. Esta pasta é uma referência para ler, não um template para copiar. O app em `web/` mostra como o design foi resolvido em Next.js com Tailwind 4, e você leva ao seu projeto o que servir, no arranjo dele.
 
 Tudo o que você precisa está nesta pasta. Nenhum documento depende de link externo.
 
@@ -12,7 +12,7 @@ Leve ao seu projeto só as versões escolhidas. O painel de tweaks (`components/
 
 ## O objetivo
 
-A Home do Curated no seu projeto, igual às Capturas [`screenshots/home-1440.png`](screenshots/home-1440.png) e [`screenshots/home-390.png`](screenshots/home-390.png), que mostram os padrões dos tweaks. As outras versões estão desenhadas na rota `/design-system` e nas Capturas dela, e o app mostra qualquer uma pelo endereço (`/?versaoCiclo=02-fio`). Cada versão é idêntica, pixel a pixel, ao design original renderizado num navegador.
+A Home do `portal-rai` no seu projeto, igual às Capturas [`screenshots/home-1440.png`](screenshots/home-1440.png) e [`screenshots/home-390.png`](screenshots/home-390.png), que mostram os padrões dos tweaks. As outras versões estão desenhadas na rota `/design-system` e nas Capturas dela, e o app mostra qualquer uma pelo endereço (`/?versaoCiclo=02-fio`). Cada versão é idêntica, pixel a pixel, ao design original renderizado num navegador.
 
 As Capturas saíram do Chromium do Playwright 1.65.1 (Chromium 159), em Linux, com `deviceScaleFactor` 1, movimento reduzido e sem toque, depois de as fontes carregarem, com a janela da altura do documento e a página inteira na imagem. Nessas condições a sua Home pode bater pixel a pixel com elas. Outro navegador ou outro sistema desenha o texto de outro jeito: aí a comparação é de olho, e uma diferença no texto não quer dizer que a página esteja errada.
 
@@ -143,8 +143,8 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`, mais as utilidades 
 
 ## Num projeto que já usa Tailwind 4
 
-- A linha `--*: initial` zera o tema padrão do projeto inteiro. Num projeto com tema próprio, deixe-a de fora e acrescente os tokens do Curated ao lado dos seus.
-- Alguns nomes coincidem com os do tema padrão, com outro valor, e mudam o projeto todo: `--font-sans`, `--font-mono`, `--default-transition-duration` e `--default-transition-timing-function`.
+- A linha `--*: initial` zera o tema padrão do Tailwind no projeto inteiro. Num projeto com `@theme` próprio, deixe-a de fora e acrescente os tokens do `portal-rai` ao lado dos seus.
+- Alguns nomes coincidem com os do tema padrão do Tailwind, com outro valor, e mudam o projeto todo: `--font-sans`, `--font-mono`, `--default-transition-duration` e `--default-transition-timing-function`.
 - A variante `hover` redefinida em `globals.css` vale para o projeto inteiro. Leve-a só se quiser o hover em qualquer ponteiro em todo lugar.
 - Um nome de classe montado em tempo de execução não é achado pelo Tailwind: por isso os lugares das etiquetas e dos trilhos do ciclo e os gestos dos ícones estão escritos inteiros, em listas.
 

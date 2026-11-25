@@ -1,6 +1,6 @@
-# Sistema de design do Curated
+# Sistema de design do `portal-rai`
 
-O Curated é um Tema do Projeto `portal-rai`: a Home do portal de um time de Responsible AI, evolução da Home do Hélio, em cinzas neutros e com só dois acentos. Este documento descreve o Sistema de design dele nas seções do formato DESIGN.md do Google Labs.
+O `portal-rai` é o portal de um time de Responsible AI, e o design dele é a Home, em cinzas neutros e com só dois acentos. Este documento descreve o Sistema de design dele nas seções do formato DESIGN.md do Google Labs.
 
 Os valores não estão aqui. A única fonte deles é o bloco `@theme` de [`web/app/globals.css`](web/app/globals.css), e este documento cita cada token pelo nome da variável. Para ver os valores desenhados, abra a rota `/design-system` do app (como rodar está no [README](README.md#como-rodar)) ou as Capturas dela: [`screenshots/design-system-1440.png`](screenshots/design-system-1440.png) e [`screenshots/design-system-390.png`](screenshots/design-system-390.png).
 
@@ -8,13 +8,13 @@ Os valores não estão aqui. A única fonte deles é o bloco `@theme` de [`web/a
 
 **Nomear sem normalizar.** Cada valor do design tem o seu token, com o nome do valor como ele foi achado, e valores parecidos não foram fundidos. Um valor que o design escreve duas vezes, uma pela variável e outra por extenso, tem um token só. O que parece inconsistente está em [Observações](#observações), para você decidir o que corrigir no seu projeto.
 
-**Só existe o que o Tema tem.** O tema padrão do Tailwind está zerado: a paleta, a escala de tipo, os raios, as sombras e as quebras dele não geram classe. Só a escala de espaçamento volta, pela base `--spacing`.
+**Só existe o que o design tem.** O tema padrão do Tailwind está zerado: a paleta, a escala de tipo, os raios, as sombras e as quebras dele não geram classe. Só a escala de espaçamento volta, pela base `--spacing`.
 
 ## Visão geral
 
-![Captura da Home do Curated](screenshots/home-1440.png)
+![Captura da Home do portal-rai](screenshots/home-1440.png)
 
-Uma página só, escura e quieta, sobre uma escala de cinzas neutros. Os nomes dos tokens são os do Hélio, mas os valores perderam o tom azulado: a página é preto e cinza. Só duas cores têm matiz, e cada uma tem um sentido: o vermelho é o ataque e o Red Team; o azul é o guardrail e o Blue Team. O título da abertura diz isso, com o ponto de "Simulamos ataques." em vermelho e o de "Protegemos sempre." em azul. A exceção é o neon dos cartões dos times na Versão 02, que só aparece no hover, em violeta para o Red Team e em azul-anil para o Blue Team.
+Uma página só, escura e quieta, sobre uma escala de cinzas neutros: a página é preto e cinza. Só duas cores têm matiz, e cada uma tem um sentido: o vermelho é o ataque e o Red Team; o azul é o guardrail e o Blue Team. O título da abertura diz isso, com o ponto de "Simulamos ataques." em vermelho e o de "Protegemos sempre." em azul. A exceção é o neon dos cartões dos times na Versão 02, que só aparece no hover, em violeta para o Red Team e em azul-anil para o Blue Team.
 
 Os títulos são grandes, de peso leve e com as letras apertadas. O mono aparece onde o texto é rótulo ou etiqueta: sobretítulos, números, o que cada etapa do ciclo entrega. A página se move pouco e de propósito: entra no carregamento, revela as seções no scroll, os parceiros correm de lado, o ciclo anda sozinho de etapa em etapa, e os dois Ondas, o logo da abertura e o mini da marca, animam as ondas que chegam ao anel de guardrails e as que saem do agente.
 
@@ -155,7 +155,7 @@ Cada arquivo de [`web/components/`](web/components/) tem um componente. Os bloco
 
 | Componente | O que é |
 |---|---|
-| `OndasLogo` | o logo da abertura, em caracteres, desenhado quadro a quadro; o mesmo arquivo do Hélio |
+| `OndasLogo` | o logo da abertura, em caracteres, desenhado quadro a quadro |
 | `OndasMini` | o Ondas na marca do cabeçalho: a mesma cena, com o agente em linhas e o que viaja como ponto |
 | `OndasCaption` | a legenda do logo |
 | `BrandMark` | a marca de anel do rodapé |
@@ -181,7 +181,7 @@ Fazer:
 - Separar seções e cartões por filete e por superfície.
 - Mostrar o estado final quando o movimento é reduzido, com o ciclo parado na primeira etapa.
 - Manter os alvos de 44 px, o anel de foco azul e o botão de cada etapa do ciclo, que é o controle dela para o teclado.
-- Escolher uma versão de cada tweak antes de levar o Tema ao seu projeto.
+- Escolher uma versão de cada tweak antes de levar o design ao seu projeto.
 
 Não fazer:
 
@@ -198,17 +198,17 @@ Inconsistências aparentes que o design carrega e o app reproduz como estão. Co
 **No design**
 
 1. **Regras de CSS sem uso.** O design traz um hover para as classes `chip` e `atk` e uma revelação `rvf`, que nenhum elemento usa. Não foram portadas.
-2. **Cores declaradas sem uso.** `--color-unlit`, `--color-red-12` e `--color-blue-12` vêm do Hélio e nenhum elemento do Curated as usa.
+2. **Cores declaradas sem uso.** O design declara `--color-unlit`, `--color-red-12` e `--color-blue-12`, e nenhum elemento as usa.
 3. **Âncoras sem destino.** "Soluções", na navegação, e "Produtos e soluções", na abertura, apontam para `#solucoes`, e o botão "Simular um ataque" aponta para `#comece`. A Home não tem essas seções.
 4. **O espaço de GIF passa da largura.** O espaço reservado de um GIF tem a largura e a proporção do miolo, e a borda tracejada soma 2 px a cada uma, porque o design não troca o modelo de caixa. Nos cartões `03-middle`, ele passa 2 px do texto à direita.
 5. **O padrão dos cartões e o código do design discordam.** O padrão declarado de `versaoCards` é `03-middle`, mas o código do design cai em `02-surprise` quando recebe um valor fora da lista. O app cai no padrão declarado.
 6. **Valores escritos por extenso.** O design escreve o valor de `--color-subtle` por extenso na borda da estação em destaque, e o app usa o token. O texto pequeno dos cartões tem um cinza próprio, `--color-quiet`, entre `--color-unlit` e `--color-subtle`.
 7. **Dois tamanhos fluidos quase iguais.** O nome dos times em `01-simple` (`--text-24-32`) e o texto grande dos `02-surprise` (`--text-24-32-large`) vão de 24 a 32 px, com inclinações de 2,3 e 2,35 vw.
-8. **A legenda do logo.** Como no Hélio, ela pinta "agente" em `--color-muted`, e não na cor da camada do agente, e nomeia três das quatro camadas.
+8. **A legenda do logo.** Ela pinta "agente" em `--color-muted`, e não na cor da camada do agente, e nomeia três das quatro camadas.
 9. **Neon só em hover.** Num celular, sem hover, os cartões `02-surprise` ficam em repouso, só com o texto pequeno, e o efeito do neon não aparece.
 
 **No Sistema de design do app**
 
 10. **As quebras fora do `@theme`.** As cinco quebras são `@custom-variant` de `globals.css`, por isso a rota `/design-system`, que lê o `@theme`, não as mostra. Elas estão descritas em [Layout](#layout).
 11. **Tokens técnicos.** `--spacing`, a base da escala do Tailwind; `--duration-timeline`; `--duration-instant`; e os apelidos `--default-font-family` e `--default-mono-font-family` não vêm do design como valor de um elemento.
-12. **Tokens do logo com o valor de tokens da página.** `--color-logo-red` e `--color-logo-blue` têm o valor de `--color-red` e `--color-blue`; `--font-logo` é a pilha de `--font-mono`, e `--leading-1200` tem o valor de `--leading-120`. Ficam separados porque guardam os nomes do componente do logo, o mesmo arquivo nos Temas do Projeto.
+12. **Tokens do logo com o valor de tokens da página.** `--color-logo-red` e `--color-logo-blue` têm o valor de `--color-red` e `--color-blue`; `--font-logo` é a pilha de `--font-mono`, e `--leading-1200` tem o valor de `--leading-120`. Ficam separados porque guardam os nomes do componente do logo.
