@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import { buildIndex, readDraft } from '../publish.mjs';
 import { tempDir, writeTree } from './fixtures.mjs';
 
-const PROJECT = { title: 'demo-portal', namespace: 'DemoPortal' };
+const PROJECT = { name: 'demo-portal', namespace: 'DemoPortal' };
 const LAST_CHANGE = { by: 'Ana', at: '2026-11-23T10:00:00Z', via: 'GitHub · owner/repo@abc1234', note: 'New colors.' };
 
 test('the draft lists its components in the order tokens.json records, then the new ones by name', () => {

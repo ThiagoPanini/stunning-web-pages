@@ -92,11 +92,6 @@ function originValues(): Use[] {
         }
       }
       if (property === "grid-template-columns") add("grid", value, /^--grid-template-columns-/);
-      // The grow factor of the flex shorthand; a whole one is a step of Tailwind's own (grow-3).
-      if (property === "flex") {
-        const grow = value.split(/\s+/)[0];
-        if (!Number.isInteger(Number(grow))) add("grow", grow, /^--grow-/);
-      }
       if (property === "outline") {
         for (const [length] of value.matchAll(/\b\d*\.?\d+px\b/g)) {
           add("outline width", length, /^--outline-width-/);

@@ -26,7 +26,7 @@ import { basename, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 import { withPropDefaults } from './board-props.mjs';
-import { askForStaticFonts, isStaticFontFile } from './google-fonts.mjs';
+import { askForStaticFonts, isFontStylesheet, isRefusedFontFile } from './google-fonts.mjs';
 
 // Start short: documentElement.scrollHeight never reports less than the viewport, so a board smaller
 // than the first viewport (the logo, 560 px) would be captured with empty space below it.
@@ -179,7 +179,7 @@ async function captureBoard(browser, base, entry, width) {
   // Google Fonts answers with one of two sets of font files, and the text drawn with each sits a fraction of
   // a pixel apart: every stylesheet is asked for until it has the static set (see google-fonts.mjs).
   await page.route(
-    (url) => url.hostname === 'fonts.googleapis.com',
+    (url) => isFontStylesheet(url),
     async (route) => {
       try {
         const { response, body } = await askForStaticFonts(async () => {
@@ -194,8 +194,7 @@ async function captureBoard(browser, base, entry, width) {
     },
   );
   page.on('request', (request) => {
-    const url = new URL(request.url());
-    if (url.hostname === 'fonts.gstatic.com' && !isStaticFontFile(request.url())) {
+    if (isRefusedFontFile(request.url())) {
       problems.push(`font file outside the static set of Google Fonts: ${request.url()}`);
     }
   });

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { CycleCards } from "@/components/cycle-cards";
 import { CycleLoop } from "@/components/cycle-loop";
+import { STEPS, StepButton, StepTag } from "@/components/cycle-steps";
 import { type Cycle, useCycle } from "@/components/use-cycle";
 
 const VERSIONS = { CycleLoop, CycleCards };
@@ -23,6 +24,39 @@ function heldCycle(on: number): Cycle {
     release: nothing,
     pin: nothing,
   };
+}
+
+// A cycle that stands still with no step in focus, its deliverables all lit or none.
+function stillCycle(lit: boolean): Cycle {
+  const nothing = () => {};
+  return {
+    on: 0,
+    held: false,
+    running: false,
+    isOn: () => false,
+    isPinned: () => false,
+    isLit: () => lit,
+    isFiring: () => false,
+    hold: nothing,
+    release: nothing,
+    pin: nothing,
+  };
+}
+
+// The names of the four steps, each as its button.
+export function StepButtonsSpecimen() {
+  const cycle = stillCycle(false);
+  return STEPS.map((step, i) => (
+    <span key={step.name} className="text-16 text-bright">
+      <StepButton cycle={cycle} step={i} />
+    </span>
+  ));
+}
+
+// The tags of the four deliverables, at rest or lit.
+export function StepTagsSpecimen({ lit = false }: { lit?: boolean }) {
+  const cycle = stillCycle(lit);
+  return STEPS.map((step, i) => <StepTag key={step.name} cycle={cycle} step={i} className="" />);
 }
 
 type CycleSpecimenProps = {

@@ -57,7 +57,6 @@ export function readProject(projectDir) {
     dir,
     web,
     name,
-    title: name,
     namespace: identifier(name),
     // The app's path from the catalog's root, for the provenance a tool records.
     appPath: relative(REPO_ROOT, web).split('\\').join('/'),

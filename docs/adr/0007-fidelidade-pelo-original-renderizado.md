@@ -15,7 +15,7 @@ A fidelidade de um Projeto se mede comparando a captura do app com a Captura de 
 
 ## Consequences
 
-- A Puxada gera as Capturas de referência em 1440 e 390 px de largura e as guarda na Origem. A Puxada e o teste do app capturam nas mesmas condições: mesmo navegador, mesmas larguras e movimento reduzido, que congela as animações num quadro determinístico.
+- A Puxada gera as Capturas de referência nas larguras que o `captures.json` da Origem declara, 1440, 1024 e 390 px nas Telas, e as guarda na Origem. O 1024 é onde uma Tela toma o arranjo do meio, entre o largo e o de celular. A Puxada e o teste do app capturam nas mesmas condições: mesmo navegador, a largura de cada Captura de referência e movimento reduzido, que congela as animações num quadro determinístico.
 - A viewport cresce até a altura do documento antes da captura. As revelações dependem da posição de scroll, e sem isso tudo abaixo da dobra sai invisível.
 - O limite de diferença é calibrado no primeiro Ciclo e fica registrado junto do teste, com a razão.
 - A conferência fina do Autor continua, depois do merge, e vira ajuste do Ciclo seguinte.

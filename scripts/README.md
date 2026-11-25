@@ -47,7 +47,7 @@ projects/<project>/origin/
   }
   ```
 
-- **Tweaks e hover.** Uma entrada pode ainda ter `props`, `hover` e `name`. `props` dá um valor a cada tweak do Quadro raiz: o servidor entrega uma cópia do Quadro com esses valores no `default` do `data-props`, que é o que o runtime usa fora do editor, e falha se o Quadro não declara o tweak ou se o valor não está nas opções dele. `hover` é um seletor que casa um único elemento: depois de a altura estabilizar, o ponteiro pousa no centro dele e a captura espera as transições. `name` dá o nome dos arquivos no lugar do nome do Quadro, e duas entradas com o mesmo nome fazem o script falhar. Assim o mesmo Quadro é capturado uma vez por versão dos tweaks e por estado de hover:
+- **Tweaks e hover.** Uma entrada pode ainda ter `props`, `hover` e `name`. `props` dá um valor a cada Tweak do Quadro raiz: o servidor entrega uma cópia do Quadro com esses valores no `default` do `data-props`, que é o que o runtime usa fora do editor, e falha se o Quadro não declara o Tweak ou se o valor não está nas opções dele. `hover` é um seletor que casa um único elemento: depois de a altura estabilizar, o ponteiro pousa no centro dele e a captura espera as transições. `name` dá o nome dos arquivos no lugar do nome do Quadro, e duas entradas com o mesmo nome fazem o script falhar. Assim o mesmo Quadro é capturado uma vez por versão dos Tweaks e por estado de hover:
 
   ```json
   { "board": "Main.dc.html", "name": "Main-dark-hover", "props": { "mode": "dark" }, "hover": ".card", "widths": [1440] }
@@ -104,10 +104,10 @@ Para cada Quadro e largura, o script grava `reference/<Quadro>-<largura>.json` a
 
 ### Mudar um Quadro a pedido do Autor
 
-Quando o Autor pede uma mudança num Quadro, como o valor de um tweak, o agente a faz no Artefato e depois puxa.
+Quando o Autor pede uma mudança num Quadro, como o valor de um Tweak, o agente a faz no Artefato e depois puxa.
 
 1. **Leia o Artefato** com `action: "read"` e só a `url`. A publicação é recusada se a versão atual não foi lida na sessão.
-2. **Baixe o Quadro** com `action: "read"` e `path: "project/<Quadro>"`. Copie-o para `<raiz>/project/<Quadro>`, numa pasta temporária, e troque só o que foi pedido. O valor de um tweak é o `default` dele no `data-props`: é ali que o editor do Claude Design grava o valor escolhido no painel, e é ele que o runtime usa fora do editor.
+2. **Baixe o Quadro** com `action: "read"` e `path: "project/<Quadro>"`. Copie-o para `<raiz>/project/<Quadro>`, numa pasta temporária, e troque só o que foi pedido. O valor de um Tweak é o `default` dele no `data-props`: é ali que o editor do Claude Design grava o valor escolhido no painel, e é ele que o runtime usa fora do editor.
 3. **Publique só esse arquivo**: `action: "publish"`, a `url`, `root` na `<raiz>` e `file_path` na cópia. O `project/canvas.json` só vai junto se o layout do canvas mudar.
 4. **Liste os arquivos**: o `sha256` do Quadro é o da cópia, e os outros Quadros não mudaram.
 5. **Faça a Puxada** do Projeto, que traz o Quadro novo para a Origem.
@@ -228,6 +228,7 @@ Ele falha, listando cada caso, quando:
 
 - um link ou imagem relativa não resolve, ou aponta para um título que o arquivo de destino não tem (a âncora é a do GitHub: minúsculas, sem pontuação, espaços viram hífens);
 - o `DESIGN.md` ou o `HANDOFF.md` cita um `--token` que o `@theme` do app não declara (um prefixo escrito como `--color-white-…` fala de uma família e não conta);
+- numa seção com o título "Tokens que saíram", até o próximo título do mesmo nível ou acima, onde o documento lista de propósito os tokens que saíram do `@theme`, um token citado continua no `@theme`;
 - o `DESIGN.md` escreve um valor literal (hex, `rgb()`, `clamp()`, `cubic-bezier()`, um comprimento ou uma duração) que o código do app não tem, em `web/app/globals.css` ou em `web/components/`;
 - um documento cita endereço de Artefato, que só o Ponteiro guarda.
 

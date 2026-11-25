@@ -23,13 +23,13 @@ A Home, de cima para baixo:
 - **Cabeçalho** fixo com desfoque: o Ondas mini e o nome, a navegação em pílula, o botão "Simular um ataque" e a barra de progresso do scroll.
 - **Abertura** em duas colunas: sobretítulo, título, parágrafo, botão e link; ao lado, o logo Ondas e a legenda de caracteres dele.
 - **Parceiros, clientes e integrações**: uma faixa de marcas inventadas que corre sem fim, sobre um chão pontilhado que continua pela seção seguinte.
-- **01 · Modelo de trabalho**: o ciclo de quatro etapas (Pesquisar, Desenvolver, Implementar e Monitorar, de volta a Pesquisar), na versão que o tweak `versaoCiclo` escolhe. As duas primeiras acontecem antes da produção; as duas últimas, em produção.
-- **02 · Times**: os cartões do Red Team e do Blue Team, na versão que o tweak `versaoCards` escolhe.
+- **01 · Modelo de trabalho**: o ciclo de quatro etapas (Pesquisar, Desenvolver, Implementar e Monitorar, de volta a Pesquisar), na versão que o Tweak `versaoCiclo` escolhe. As duas primeiras acontecem antes da produção; as duas últimas, em produção.
+- **02 · Times**: os cartões do Red Team e do Blue Team, na versão que o Tweak `versaoCards` escolhe.
 - **Rodapé**: a marca de anel, links, os espaços reservados de canal e e-mail e "Voltar ao topo ↑".
 
 ### As versões
 
-O design deixa três escolhas em aberto, como tweaks, e o app desenha todas. A Home abre nos valores padrão; o endereço (`/?versaoCiclo=03-cartoes`) e o painel de tweaks do Catálogo escolhem outra. Só a camada do tweak muda: título e parágrafo da seção ficam.
+O design deixa três escolhas em aberto, como Tweaks, e o app desenha todas. A Home abre nos valores padrão; o endereço (`/?versaoCiclo=03-cartoes`) e o painel de Tweaks do Catálogo escolhem outra. Só a camada do Tweak muda: título e parágrafo da seção ficam.
 
 | Tweak | Versão | O que desenha |
 |---|---|---|
@@ -41,6 +41,17 @@ O design deixa três escolhas em aberto, como tweaks, e o app desenha todas. A H
 | `efeitoNeon` | `preenchimento`, padrão | o gradiente pinta o cartão a partir de onde o ponteiro entrou |
 | | `contorno` | o cartão fica escuro; o gradiente gira pela borda e o brilho vaza em volta |
 | | `holofote` | o neon só existe em volta do ponteiro, dentro do cartão, na borda e vazando pelo lado mais próximo |
+
+### Tokens que saíram
+
+O Quadro não tem mais as outras versões do ciclo, e o `@theme` não tem mais os tokens que só elas usavam. Quem já levou o Sistema de design ao próprio projeto pode tirá-los de lá:
+
+- cores: `--color-pill-on` e `--color-rule-dotted`;
+- tipografia: `--text-22`, `--text-48` e `--leading-135`;
+- espaçamentos, larguras e grades: `--spacing-orbit-gap`, `--spacing-gif-gap`, `--spacing-orbit`, `--spacing-desc-lines`, `--container-orbit-list` e `--grid-template-columns-orbit-row`;
+- fatores de crescimento: `--grow-130` e `--grow-240`;
+- raio: `--radius-32`;
+- movimento: `--duration-200`, `--duration-950`, `--delay-120` e `--delay-300`.
 
 ## Cores
 
@@ -60,6 +71,7 @@ Neutros, do escuro ao claro:
 | `--color-flow` | os pontos que correm pelo laço e pelo trilho |
 | `--color-unlit` | declarado pelo design, sem uso |
 | `--color-rail-arrow` | as setas de sentido no trilho dos cartões |
+| `--color-rule-lit` | a borda da opção escolhida e do botão sob o ponteiro no painel de Tweaks, que é do Catálogo |
 | `--color-quiet` | o texto pequeno dos cartões |
 | `--color-subtle` | rótulos mono, rodapé, parceiros, a borda da estação em destaque |
 | `--color-muted` | parágrafos, navegação, links, "agente" na legenda, a terceira entrega do ciclo |
@@ -105,7 +117,7 @@ A página tem a largura máxima `--container-page`, centralizada, com o respiro 
 
 - **Abertura.** Duas colunas que quebram quando estreitas: o texto e o logo crescem cada um a partir da sua base, e o logo para na largura máxima dele.
 - **Parceiros e Modelo de trabalho** ficam sobre o chão pontilhado, da largura da janela, que entra e sai em degradê.
-- **O laço** ocupa um palco de 400 px de altura. O desenho fica no centro, na proporção `--aspect-loop`, com até 718 px de largura: a largura é a da seção menos 440 px, que ficam para as duas colunas da lista. As etiquetas e os itens da lista, de 250 px, se posicionam a partir do centro, em frações da largura do desenho, e as estações ficam sobre o traço, em porcentagens dele.
+- **O laço** ocupa a altura `--spacing-loop-stage`. O desenho fica no centro, na proporção `--aspect-loop`, com a largura `--spacing-loop-map`: até 718 px, e no máximo a largura do laço menos 440 px, que ficam para as duas colunas da lista. Os itens da lista têm a largura `--spacing-loop-item`. As etiquetas e os itens se posicionam a partir do centro, em frações da largura do desenho, e as estações ficam sobre o traço, em porcentagens dele: essa geometria é do desenho e fica em `globals.css`.
 - **Os cartões do ciclo** vão em quatro colunas, coladas por 2 px, com 320 px de altura mínima. O trilho pontilhado fica 20 px para dentro do alto e da base do ciclo e passa 14 px para fora dos lados, e embaixo sobra o espaço dele: 64 px abaixo dos cartões, contra 16 px acima. As três primeiras etiquetas ficam sobre a borda de cima dos cartões, nas emendas; a quarta e as duas setas, sobre o trilho de baixo, a quarta no meio e as setas a um quarto de cada ponta.
 - **Os cartões dos times** seguem `--grid-template-columns-teams`: duas colunas quando cabem, uma quando não. Os `02-surprise` têm a altura mínima `--spacing-team-card`, e o texto grande para em `--spacing-large-15`; o do ciclo, em `--spacing-large-13`.
 - **Os espaços de GIF** têm a proporção `--aspect-gif`.
@@ -116,7 +128,7 @@ As quebras do design, cada uma uma variante de `globals.css` com o nome do que e
 |---|---|---|
 | `narrow` | 760 px ou menos | o cabeçalho rola com a página e a navegação ganha uma linha |
 | `loop-tight` | de 1100 a 1279 px | o desenho do laço encolhe, e as etiquetas dele ficam menores |
-| `cycle-two` | 1099 px ou menos | os cartões do ciclo vão de dois em dois, sem o trilho, as etiquetas e as setas, e sem a altura mínima; o desenho do laço sobe, até 600 px de largura e sem as etiquetas, e a lista vem embaixo, de duas em duas; cada etapa diz o que entrega |
+| `cycle-two` | 1099 px ou menos | os cartões do ciclo vão de dois em dois, sem o trilho, as etiquetas e as setas, e sem a altura mínima; o desenho do laço sobe, com a largura `--spacing-loop-map-stacked` (até 600 px) e sem as etiquetas, e a lista vem embaixo, de duas em duas; cada etapa diz o que entrega |
 | `cycle-one` | 600 px ou menos | os cartões do ciclo e a lista do laço vão um por linha; os cartões perdem o texto grande, e o laço, as metades, com as estações menores |
 
 Os cartões dos times só reagem um ao outro a partir de 981 px, com ponteiro fino e movimento normal.
@@ -139,7 +151,7 @@ Tudo o que se move espera `prefers-reduced-motion: no-preference`, e o que segue
 - **Parceiros**: os dois conjuntos correm um conjunto inteiro por volta, em `--duration-64000`.
 - **O ciclo** anda sozinho enquanto a seção está na tela: cada etapa fica acesa por 3 s, e a entrega dela leva `--duration-1100` até a seguinte. A etapa sob o ponteiro ou com foco segura o ciclo e acende as duas entregas dela, a que chega e a que sai; um clique fixa a etapa, e outro a solta. O laço e o trilho correm pontos sem parar. Ao entrar em destaque, o ícone da etapa faz um gesto (`--ease-pop`, `--ease-draw`).
 - **No laço**, enquanto a entrega viaja, um cometa na cor dela corre o arco entre as duas estações, com `--ease-travel`, e a etiqueta dela solta um anel na mesma cor. O arco aceso pinta os pontos na cor da entrega (`--duration-350`). A estação em destaque cresce e solta um anel (`--ease-settle`, `--ease-enter`), e o lóbulo e o nome da metade dela acendem (`--duration-900`, `--duration-600`).
-- **Nos cartões**, o cartão em destaque clareia para `--color-card-on` em `--duration-600`, e o texto grande toma o lugar do pequeno. Com o ciclo andando sozinho, a borda do cartão da vez fica uniforme, em `--color-bright-13`, e uma luz na cor da entrega corre a borda de cima dele nos 3 s da etapa (`--duration-3000`, em ritmo constante): a linha se preenche da esquerda para a direita, com a cabeça e um brilho à frente, e some na etiqueta da entrega, que solta um anel. A luz reaparece no cartão seguinte; o cartão que sai apaga a linha em `--duration-600` e só então a devolve ao começo, em `--duration-0`. Depois do último cartão, um pulso na cor da quarta entrega desce pelo lado direito, volta pelo trilho de baixo e sobe pelo esquerdo, em `--duration-1100`.
+- **Nos cartões**, o cartão em destaque clareia para `--color-card-on` em `--duration-600`, e o texto grande toma o lugar do pequeno. Com o ciclo andando sozinho, a borda do cartão da vez fica uniforme, em `--color-bright-13`, e uma luz na cor da entrega corre a borda de cima dele nos 3 s da etapa (`--duration-3000`, em ritmo constante): a linha se preenche da esquerda para a direita, com a cabeça e um brilho à frente, e some na etiqueta da entrega, que solta um anel. A luz reaparece no cartão seguinte; o cartão que sai apaga a linha em `--duration-600` e só então, passado `--delay-600`, a devolve ao começo, em `--duration-0`. Depois do último cartão, um pulso na cor da quarta entrega desce pelo lado direito, volta pelo trilho de baixo e sobe pelo esquerdo, em `--duration-1100`.
 - **Cartões**: o que abre, cresce ou acende usa `--ease-settle`. Os cartões seguem o ponteiro por variáveis de CSS no próprio cartão, sem redesenhar a página. No neon, o preenchimento abre em círculo de onde o ponteiro entrou, o brilho pulsa, a borda do contorno gira, e o holofote segue o ponteiro com `--ease-out`.
 - **Reação entre os times**: com o Red Team sob o ponteiro, três tiros cruzam até o Blue Team, que ergue a parede e se defende; com o Blue Team sob o ponteiro, a parede fica de pé e o Red Team recua.
 - **Os dois Ondas** desenham um quadro a cada 85 ms, a partir do tempo.
@@ -148,7 +160,7 @@ As durações são tokens de nome numérico (`--duration-160` a `--duration-6400
 
 ## Componentes
 
-Cada arquivo de [`web/components/`](web/components/) tem um componente. Os blocos da página marcam `data-block`, na ordem: `SiteHeader`, `Hero`, `Partners`, `Model`, `Teams` e `SiteFooter`. A rota `/design-system` mostra cada peça isolada, nos seus estados, com todas as versões dos tweaks.
+Cada arquivo de [`web/components/`](web/components/) tem um componente. Os blocos da página marcam `data-block`, na ordem: `SiteHeader`, `Hero`, `Partners`, `Model`, `Teams` e `SiteFooter`. A rota `/design-system` mostra cada peça isolada, nos seus estados, com todas as versões dos Tweaks.
 
 | Componente | O que é |
 |---|---|
@@ -160,12 +172,13 @@ Cada arquivo de [`web/components/`](web/components/) tem um componente. Os bloco
 | `ButtonLink`, `TextLink`, `FooterLink`, `InertLink` | o botão claro, o link discreto, o link do rodapé e o link sem destino |
 | `SectionLabel`, `SectionHeader` | o rótulo mono e a abertura de uma seção numerada |
 | `CycleLoop`, `CycleCards` | as duas versões do ciclo: o laço e os cartões |
-| `StepIcon`, `CycleRail` | o ícone de cada etapa e o trilho pontilhado dos cartões |
+| `StepIcon`, `StepButton`, `StepTag`, `StepDeliverable` | as peças de uma etapa que as duas versões dividem: o ícone, o nome como botão, a etiqueta da entrega e o que a etapa entrega por extenso |
+| `CycleRail` | o trilho pontilhado dos cartões |
 | `TeamCardsSimple`, `TeamCardsSurprise`, `TeamCardsMiddle` | as três versões dos cartões dos times, com o neon dentro de `TeamCardsSurprise` |
 | `TeamIcon`, `GifSpace` | o ícone de cada time e o espaço reservado de um GIF |
-| `TweaksPanel` | o painel de tweaks, do Catálogo e não do design |
+| `TweaksPanel` | o painel de Tweaks, do Catálogo e não do design |
 
-O estado do ciclo é um só para as duas versões, em `use-cycle.ts`: a etapa da vez, a entrega em viagem, a etapa segurada e a fixada, e se o ciclo anda sozinho. Os estados chegam ao CSS como atributos: `data-cycle`, `data-held` e `data-run` na versão, `data-on` na etapa em destaque (e, no laço, no lóbulo e no nome da metade dela), `data-lit` e `data-fire` na entrega acesa e na que viaja. Nos cartões dos times, `data-neon` na grade diz o efeito, e `data-team` em cada cartão diz o time.
+As duas versões montam as etapas com os dados de `cycle-steps.tsx`: o nome, o texto, a entrega e a cor dela, a metade do trabalho e o ícone. O estado do ciclo é um só para as duas, em `use-cycle.ts`: a etapa da vez, a entrega em viagem, a etapa segurada e a fixada, e se o ciclo anda sozinho. Os estados chegam ao CSS como atributos: `data-cycle`, `data-held` e `data-run` na versão, `data-on` na etapa em destaque (e, no laço, no lóbulo e no nome da metade dela), `data-lit` e `data-fire` na entrega acesa e na que viaja. Nos cartões dos times, `data-neon` na grade diz o efeito, e `data-team` em cada cartão diz o time.
 
 ## O que fazer e o que não fazer
 
@@ -178,7 +191,7 @@ Fazer:
 - Separar seções e cartões por filete e por superfície.
 - Mostrar o estado final quando o movimento é reduzido, com o ciclo parado na primeira etapa.
 - Manter os alvos de 44 px, o anel de foco azul e o botão de cada etapa do ciclo, que é o controle dela para o teclado.
-- Escolher uma versão de cada tweak antes de levar o design ao seu projeto.
+- Escolher uma versão de cada Tweak antes de levar o design ao seu projeto.
 
 Não fazer:
 
@@ -210,4 +223,5 @@ Inconsistências aparentes que o design carrega e o app reproduz como estão. Co
 
 12. **As quebras fora do `@theme`.** As quatro quebras são `@custom-variant` de `globals.css`, por isso a rota `/design-system`, que lê o `@theme`, não as mostra. Elas estão descritas em [Layout](#layout).
 13. **Tokens técnicos.** `--spacing`, a base da escala do Tailwind; `--duration-timeline`; `--duration-instant`; e os apelidos `--default-font-family` e `--default-mono-font-family` não vêm do design como valor de um elemento.
-14. **Tokens do logo com o valor de tokens da página.** `--color-logo-red` e `--color-logo-blue` têm o valor de `--color-red` e `--color-blue`; `--font-logo` é a pilha de `--font-mono`, e `--leading-1200` tem o valor de `--leading-120`. Ficam separados porque guardam os nomes do componente do logo.
+14. **Um cinza que não é do design.** `--color-rule-lit` é a borda do painel de Tweaks, que é do Catálogo e não do design: nenhum elemento do Quadro usa esse cinza.
+15. **Tokens do logo com o valor de tokens da página.** `--color-logo-red` e `--color-logo-blue` têm o valor de `--color-red` e `--color-blue`; `--font-logo` é a pilha de `--font-mono`, e `--leading-1200` tem o valor de `--leading-120`. Ficam separados porque guardam os nomes do componente do logo.

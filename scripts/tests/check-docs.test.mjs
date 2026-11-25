@@ -63,6 +63,26 @@ test('a token the documents cite that @theme does not declare fails', () => {
   assert.deepEqual(checkDocs(project).failures, ['HANDOFF.md: tokens missing from @theme: --radius-12']);
 });
 
+// The section where DESIGN.md names the tokens that left the @theme: up to the next heading of its level.
+const GONE = '### Tokens que saíram\n\nThe cycle lost `--color-fog` and `--radius-32`.\n';
+
+test('the tokens DESIGN.md lists under "Tokens que saíram" are the ones gone from @theme', () => {
+  const project = consistentProject({
+    'DESIGN.md': `# Design\n\n## Cores e superfícies\n\n\`--color-ink\` is the page.\n\n${GONE}\n## Formas\n\nCards in \`--radius-8\`.\n`,
+  });
+  assert.deepEqual(checkDocs(project).failures, []);
+});
+
+test('a token listed as gone that @theme still declares fails, and the section ends at the next heading', () => {
+  const project = consistentProject({
+    'DESIGN.md': `# Design\n\n## Cores e superfícies\n\n${GONE}Also \`--radius-8\`.\n\n## Formas\n\nCards in \`--radius-32\`.\n`,
+  });
+  assert.deepEqual(checkDocs(project).failures, [
+    'DESIGN.md: tokens missing from @theme: --radius-32',
+    'DESIGN.md: tokens listed as gone but still in @theme: --radius-8',
+  ]);
+});
+
 test('a literal value of DESIGN.md that the code does not have fails', () => {
   const project = consistentProject({
     'DESIGN.md': '# Design\n\n## Cores e superfícies\n\n`--color-ink` at 0,5 alpha, 18 px and #101010.\n',

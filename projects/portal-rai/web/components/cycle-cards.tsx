@@ -1,23 +1,22 @@
 "use client";
 
 import { CycleRail } from "./cycle-rail";
-import { CYCLE_LABEL, linkLabel, passColor, STEPS, StepIcon } from "./cycle-steps";
+import {
+  BACK,
+  cycleGroup,
+  passColor,
+  STEPS,
+  StepButton,
+  StepDeliverable,
+  StepIcon,
+  StepTag,
+} from "./cycle-steps";
 import { type Cycle, flag, trackPointer } from "./use-cycle";
 
 // Class names written whole, so Tailwind finds them: the place of each deliverable's tag, and of the two
 // arrows on the rail below the cards.
 const TAG_PLACES = ["cards-tag-1", "cards-tag-2", "cards-tag-3", "cards-tag-4"];
 const ARROW_PLACES = ["cards-arrow-1", "cards-arrow-2"];
-
-// The last deliverable, the one that goes from Monitorar back to Pesquisar along the rail.
-const BACK = STEPS.length - 1;
-
-// A small dot in the color of a deliverable, as in the loop.
-function Dot() {
-  return (
-    <span aria-hidden="true" className="inline-block size-1.5 flex-none rounded-circle bg-(--pc)" />
-  );
-}
 
 // Version 03 of the cycle, the cards: four cards in a row, and a dotted rail below them that closes the
 // cycle, with two arrows that say which way it goes. Each deliverable is a tag, with a dot in its color,
@@ -29,14 +28,8 @@ function Dot() {
 // what it delivers; at 600px and below they stack, and the large copy is gone, as a phone has no hover.
 export function CycleCards({ cycle }: { cycle: Cycle }) {
   return (
-    // biome-ignore lint/a11y/useSemanticElements: the board names the cycle as a group of steps; a fieldset would make it part of a form
     <div
-      role="group"
-      aria-label={CYCLE_LABEL}
-      data-cycle
-      data-version="03-cartoes"
-      data-held={flag(cycle.held)}
-      data-run={flag(cycle.running)}
+      {...cycleGroup(cycle, "03-cartoes")}
       className="reveal-2 relative pt-4 pb-16 cycle-two:p-0"
     >
       <CycleRail className="cards-rail-frame cycle-two:hidden" radius={20} />
@@ -73,15 +66,7 @@ export function CycleCards({ cycle }: { cycle: Cycle }) {
                 </span>
                 <div className="flex min-w-0 flex-col gap-0.5">
                   <h3 className="font-medium text-16 text-bright leading-px-24">
-                    <button
-                      type="button"
-                      aria-pressed={cycle.isPinned(i)}
-                      onFocus={() => cycle.hold(i)}
-                      onBlur={cycle.release}
-                      className="step-button"
-                    >
-                      {step.name}
-                    </button>
+                    <StepButton cycle={cycle} step={i} />
                   </h3>
                   <p className="font-mono font-normal text-12 text-subtle leading-px-19 tracking-wide-40">
                     {`Etapa 0${i + 1}`}
@@ -97,29 +82,19 @@ export function CycleCards({ cycle }: { cycle: Cycle }) {
                   {step.copy}
                 </p>
               </div>
-              <p className="hidden items-center gap-2 font-mono font-normal text-12 text-subtle leading-130 cycle-two:flex">
-                <span>entrega</span>
-                <Dot />
-                <span>{step.deliverable}</span>
-              </p>
+              <StepDeliverable step={i} className="hidden cycle-two:flex" />
             </div>
             <span aria-hidden="true" className="cycle-card-head" />
           </article>
         ))}
       </div>
       {STEPS.map((step, i) => (
-        <div
+        <StepTag
           key={step.name}
-          role="img"
-          aria-label={linkLabel(i)}
-          data-lit={flag(cycle.isLit(i))}
-          data-fire={flag(cycle.isFiring(i))}
-          style={passColor(i)}
-          className={`step-tag cards-tag ${TAG_PLACES[i]} cycle-two:hidden`}
-        >
-          <Dot />
-          <span aria-hidden="true">{step.deliverable}</span>
-        </div>
+          cycle={cycle}
+          step={i}
+          className={`cards-tag ${TAG_PLACES[i]} cycle-two:hidden`}
+        />
       ))}
       {ARROW_PLACES.map((place) => (
         <svg

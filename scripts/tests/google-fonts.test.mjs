@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { askForStaticFonts, isStaticFontFile, usesStaticFontFiles } from '../google-fonts.mjs';
+import { askForStaticFonts, isFontStylesheet, isRefusedFontFile, isStaticFontFile, usesStaticFontFiles } from '../google-fonts.mjs';
 
 // Two answers of fonts.googleapis.com to the same css2 request, cut to two faces each.
 const face = (src) => `@font-face {\n  font-family: 'Geist';\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: ${src} format('woff2');\n}\n`;
@@ -15,6 +15,20 @@ test('a font file is static only under fonts.gstatic.com/s/', () => {
   assert.ok(isStaticFontFile('https://fonts.gstatic.com/s/geist/v5/gyByhwUxId8gMEwcGFU.woff2'));
   assert.ok(!isStaticFontFile('https://fonts.gstatic.com/l/font?kit=gyBUhwUxId8gMGYQ&skey=70a816dcd17c8a3c&v=v5'));
   assert.ok(!isStaticFontFile('https://example.com/s/geist/v5/gyByhwUxId8gMEwcGFU.woff2'));
+});
+
+test('a stylesheet of Google Fonts is told by its host, as a string or as a URL', () => {
+  assert.ok(isFontStylesheet('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap'));
+  assert.ok(isFontStylesheet(new URL('https://fonts.googleapis.com/css2?family=Geist+Mono')));
+  assert.ok(!isFontStylesheet('https://fonts.gstatic.com/s/geist/v5/gyByhwUxId8gMEwcGFU.woff2'));
+  assert.ok(!isFontStylesheet('http://127.0.0.1:4173/Main.dc.html'));
+});
+
+test('a font file of Google Fonts outside the static set is refused, and no other request is', () => {
+  assert.ok(isRefusedFontFile('https://fonts.gstatic.com/l/font?kit=gyBUhwUxId8gMGYQ&skey=70a816dcd17c8a3c&v=v5'));
+  assert.ok(!isRefusedFontFile('https://fonts.gstatic.com/s/geist/v5/gyByhwUxId8gMEwcGFU.woff2'));
+  assert.ok(!isRefusedFontFile('https://fonts.googleapis.com/css2?family=Geist'));
+  assert.ok(!isRefusedFontFile('http://127.0.0.1:4173/support.js'));
 });
 
 test('a stylesheet uses the static files when every font file it points to is static', () => {

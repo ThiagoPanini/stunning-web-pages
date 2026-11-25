@@ -86,7 +86,7 @@ export function buildTokens({ project, faces, draft, meta }) {
   }
 
   const tokens = {
-    name: project.title,
+    name: project.name,
     version: draft.version ?? 1,
     meta,
     color: { themes: draft.color.themes, tokens: families.color ?? [] },
@@ -199,13 +199,13 @@ export function buildIndex({ index, project, groups, lastChange, now }) {
     if (!hasMarker(index)) {
       throw new Error('the draft design-system.json has no marker of a system kept in files: write nothing over it');
     }
-    built = { ...index, title: project.title, namespace: project.namespace, lastChange };
+    built = { ...index, title: project.name, namespace: project.namespace, lastChange };
   } else {
     built = {
       v: 3,
       layout: 'files',
       createdOnFiles: { v: 1, at: now },
-      title: project.title,
+      title: project.name,
       namespace: project.namespace,
       libraries: [],
       sections: {},
@@ -323,7 +323,7 @@ export function checkArtifact(project, dir) {
 
   const index = JSON.parse(read('design-system.json'));
   if (!hasMarker(index)) failures.push('design-system.json: no marker of a system kept in files');
-  if (index.title !== project.title) failures.push(`design-system.json: title "${index.title}", the project is "${project.title}"`);
+  if (index.title !== project.name) failures.push(`design-system.json: title "${index.title}", the project is "${project.name}"`);
 
   return {
     failures,
@@ -708,7 +708,7 @@ export async function build({ projectDir, draftDir, outDir, note, ref }) {
   const lastChange = { by: info.user, at: now, via: `GitHub · ${info.repo}@${label.split('@').pop()}`, note };
   write('design-system.json', `${JSON.stringify(buildIndex({ index: draft.index, project, groups, lastChange, now }), null, 2)}\n`);
 
-  const summary = { title: project.title, ref: label, components: draft.components.length, leftOut, kept, heights, warnings };
+  const summary = { title: project.name, ref: label, components: draft.components.length, leftOut, kept, heights, warnings };
   writeFileSync(join(outDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
   return summary;
 }

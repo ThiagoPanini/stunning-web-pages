@@ -3,7 +3,9 @@
 // reduced motion keeps it still.
 
 import type { Page } from "@playwright/test";
-import { expect, load, test } from "./support/test";
+import { spilledElements } from "./support/overflow";
+import { ALL_WIDTHS } from "./support/reference";
+import { expect, load, type Motion, test } from "./support/test";
 
 const VERSIONS = ["06-laco", "03-cartoes"] as const;
 
@@ -117,4 +119,23 @@ for (const version of VERSIONS) {
     await page.waitForTimeout(4500);
     await expect(stepOn(page, version)).toHaveText("Pesquisar");
   });
+
+  // Each layout of the version, wide, in two columns and in one, keeps inside the page.
+  for (const width of ALL_WIDTHS) {
+    for (const motion of ["no-preference", "reduce"] satisfies Motion[]) {
+      test(`${version}: nothing spills sideways at ${width} px (${motion})`, async ({
+        newWindow,
+      }) => {
+        const page = await newWindow(width, { motion });
+        await open(page, version);
+        await page.waitForLoadState("networkidle");
+        expect
+          .soft(await spilledElements(page, width, ["model"]), "elements outside the page width")
+          .toEqual([]);
+        expect
+          .soft(await page.evaluate(() => document.documentElement.scrollWidth), "scrollable width")
+          .toBe(width);
+      });
+    }
+  }
 }
