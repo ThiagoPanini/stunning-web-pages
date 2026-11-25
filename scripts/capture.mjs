@@ -10,7 +10,9 @@
 //
 // Capture conditions: headless Chromium from the pinned Playwright, deviceScaleFactor 1, reduced motion,
 // no touch emulation, and a viewport grown to the document height. The reveals of the boards use CSS
-// scroll-driven animations; in a short viewport everything below the fold would stay invisible.
+// scroll-driven animations; in a short viewport everything below the fold would stay invisible. The Google
+// Fonts stylesheets of the boards are held to their static font files (google-fonts.mjs), so a second run
+// writes the same bytes.
 //
 // An entry may also set tweaks (`props`, served as the defaults of the board's data-props), hover one
 // element (`hover`) and name its files (`name`, by default the board's name), so the same board is
@@ -24,6 +26,7 @@ import { basename, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 import { withPropDefaults } from './board-props.mjs';
+import { askForStaticFonts, isStaticFontFile } from './google-fonts.mjs';
 
 // Start short: documentElement.scrollHeight never reports less than the viewport, so a board smaller
 // than the first viewport (the logo, 560 px) would be captured with empty space below it.
@@ -173,6 +176,29 @@ async function captureBoard(browser, base, entry, width) {
   page.on('response', (response) => {
     if (response.status() >= 400) problems.push(`HTTP ${response.status()}: ${response.url()}`);
   });
+  // Google Fonts answers with one of two sets of font files, and the text drawn with each sits a fraction of
+  // a pixel apart: every stylesheet is asked for until it has the static set (see google-fonts.mjs).
+  await page.route(
+    (url) => url.hostname === 'fonts.googleapis.com',
+    async (route) => {
+      try {
+        const { response, body } = await askForStaticFonts(async () => {
+          const response = await route.fetch();
+          return { status: response.status(), body: await response.text(), response };
+        });
+        await route.fulfill({ response, body });
+      } catch (error) {
+        problems.push(`${route.request().url()}: ${error.message}`);
+        await route.abort();
+      }
+    },
+  );
+  page.on('request', (request) => {
+    const url = new URL(request.url());
+    if (url.hostname === 'fonts.gstatic.com' && !isStaticFontFile(request.url())) {
+      problems.push(`font file outside the static set of Google Fonts: ${request.url()}`);
+    }
+  });
 
   await page.goto(base + entry.board, { waitUntil: 'networkidle', timeout: 60_000 });
   await page.waitForSelector('#dc-root *', { timeout: 15_000 });
@@ -270,15 +296,11 @@ async function main() {
   await mkdir(join(originDir, 'reference'), { recursive: true });
 
   const { server, base, misses } = await serveBoards(boardsDir, runtimePath);
+  const browser = await chromium.launch({ headless: true });
   let failed = false;
   try {
     for (const entry of recipe.captures) {
       for (const width of entry.widths) {
-        // A browser per capture. One browser that has already drawn other captures may rasterize the text
-        // of the next one a fraction of a pixel apart: measured on 2026-11-25, in runs of 13 captures, one
-        // to three came out with their text drawn differently, and a second run did not give the same
-        // bytes. With a browser per capture, two runs gave the same bytes.
-        const browser = await chromium.launch({ headless: true });
         try {
           const result = await captureBoard(browser, base, { ...entry, originDir }, width);
           const overflow = result.scrollWidth > width ? `, horizontal overflow of ${result.scrollWidth - width} px` : '';
@@ -287,12 +309,11 @@ async function main() {
         } catch (error) {
           failed = true;
           console.error(`capture: ${error.message}`);
-        } finally {
-          await browser.close();
         }
       }
     }
   } finally {
+    await browser.close();
     server.close();
   }
   if (misses.length > 0) {

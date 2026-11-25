@@ -115,10 +115,11 @@ Quando o Autor pede uma mudança num Quadro, como o valor de um tweak, o agente 
 ### Como o script captura
 
 - Serve `origin/boards/` por HTTP em `127.0.0.1`, numa porta livre escolhida pelo sistema, e responde `/support.js` com o runtime dado em `--runtime`. Cada Quadro pede `./support.js`, e o runtime busca o próprio Quadro e os importados por `fetch`, por isso não funciona sem servidor.
-- Abre o Chromium headless do Playwright fixado, com `deviceScaleFactor` 1, movimento reduzido e sem emular toque. Abre um navegador novo para cada captura: um navegador que já desenhou outras capturas pode desenhar o texto da seguinte uma fração de pixel deslocado, e a segunda rodada não daria os mesmos bytes.
+- Abre o Chromium headless do Playwright fixado, com `deviceScaleFactor` 1, movimento reduzido e sem emular toque. Cada captura tem um contexto novo do navegador, sem cache.
+- Segura as fontes do Google Fonts num conjunto só de arquivos (`google-fonts.mjs`). O Google Fonts responde o mesmo pedido de CSS ora com os arquivos estáticos, em `fonts.gstatic.com/s/<família>/<versão>/`, ora com um kit em `fonts.gstatic.com/l/font?kit=…`: a mesma família na mesma versão, mas outros arquivos, e o texto desenhado com o kit sai uma fração de pixel deslocado na página inteira. Medido em 25/11/2026: numa rodada, 4 de 48 respostas vieram com o kit, e cada captura cuja página o recebeu saiu diferente da referência; com os arquivos estáticos forçados, as mesmas capturas deram os mesmos bytes. Por isso o script intercepta cada CSS do Google Fonts e o pede de novo, até 10 vezes, até vir com os arquivos estáticos, e recusa qualquer outro arquivo de fonte do Google.
 - Espera a rede parar, o `#dc-root` montar e as fontes carregarem, e então cresce a viewport até a altura do documento, até ela parar de mudar. As revelações dos Quadros são animações guiadas por scroll; numa viewport curta, tudo abaixo da dobra sairia invisível. A viewport começa baixa, porque a altura do documento nunca é medida menor que a viewport.
 - Tira a captura de página inteira com animações desligadas.
-- Falha, sem gravar aquela captura, se houver erro de página ou de console, requisição falha, resposta HTTP de erro, arquivo que o servidor não achou, rolagem diferente de zero, altura que não estabiliza ou seletor de bloco que não casa um único elemento.
+- Falha, sem gravar aquela captura, se houver erro de página ou de console, requisição falha, resposta HTTP de erro, arquivo que o servidor não achou, rolagem diferente de zero, altura que não estabiliza, CSS do Google Fonts que não veio com os arquivos estáticos em 10 pedidos, arquivo de fonte do Google fora do conjunto estático ou seletor de bloco que não casa um único elemento.
 
 ### Armadilhas
 
@@ -126,6 +127,7 @@ Quando o Autor pede uma mudança num Quadro, como o valor de um tweak, o agente 
 - **A versão do navegador muda a altura.** Num experimento, a mesma Home em 390 px mediu 5753 px no Chromium 159 e 5717 px no Chromium 153, com a diferença toda numa seção. Atualizar o Playwright daqui pede uma Puxada nova e muda as referências.
 - **Versão nova sem Quadro novo é lançamento do editor.** O publicador do tipo atualiza os arquivos de `artifact-type/`, e o Artefato muda de versão sem mudança em `project/`. Se o runtime vier mudado, as Capturas de referência podem mudar sem o design ter mudado: o `git diff` de `reference/` com os Quadros intactos mostra isso.
 - **A captura precisa de rede.** Os Quadros carregam as fontes do Google Fonts, e sem elas a altura e o desenho mudam. Uma requisição de fonte que falha faz o script falhar.
+- **As fontes do Google podem mudar por fora.** As Capturas de referência são desenhadas com os arquivos estáticos de uma versão da família (`/s/geist/v5/`, por exemplo). Se o Google publicar uma versão nova, ou deixar de servir os arquivos estáticos, as capturas mudam ou o script falha sem o design ter mudado: o `git diff` de `reference/` com os Quadros intactos mostra isso.
 - **Sem toque emulado**, a regra `@media (pointer: coarse)` não é exercida em 390 px.
 - **A altura medida fica uns 30 px abaixo da declarada** no `$preview` do Quadro (3622 contra 3650 numa Home). A causa não foi isolada; a medida fora do editor é a que vale.
 
