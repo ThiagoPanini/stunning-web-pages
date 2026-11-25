@@ -4,13 +4,13 @@
   "tool": "Claude Design",
   "title": "Portal RAI · Curated",
   "url": "https://claude.ai/artifact/W9yTbJN4vGFsXEgRaNhz2X",
-  "version": "1795485787-66dd",
-  "pulledAt": "2026-11-23",
+  "version": "1795614924-c867",
+  "pulledAt": "2026-11-25",
   "boards": [
     {
       "file": "Main.dc.html",
       "title": "Home · Curated",
-      "sha256": "1a913135315deb41f247804d6e4f68dacbefd427028f3a23eaaab8b9949c6f30"
+      "sha256": "a90ea21c7abbb15409ef6051ffdd343eb607133eb705b1e5b66abcdd4bb05a1c"
     },
     {
       "file": "LogoMini.dc.html",

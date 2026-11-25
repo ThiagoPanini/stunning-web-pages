@@ -1,18 +1,15 @@
 {
   "board": "Main.dc.html",
-  "image": "Main-cartoes-surprise-1440.png",
+  "image": "Main-laco-hover-1440.png",
   "width": 1440,
-  "height": 2582,
+  "height": 2766,
   "conditions": {
     "browser": "chromium 159.0.8154.6",
     "deviceScaleFactor": 1,
     "reducedMotion": "reduce",
     "touch": false
   },
-  "props": {
-    "versaoCiclo": "03-cartoes",
-    "versaoCards": "02-surprise"
-  },
+  "hover": ".wk6-s3",
   "blocks": {
     "header": {
       "x": 0,
@@ -36,17 +33,17 @@
       "x": 48,
       "y": 1006,
       "width": 1344,
-      "height": 648
+      "height": 760
     },
     "teams": {
       "x": 48,
-      "y": 1654,
+      "y": 1766,
       "width": 1344,
-      "height": 847
+      "height": 919
     },
     "footer": {
       "x": 0,
-      "y": 2501,
+      "y": 2685,
       "width": 1440,
       "height": 81
     }
