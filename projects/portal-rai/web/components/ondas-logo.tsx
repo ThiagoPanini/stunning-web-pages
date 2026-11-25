@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 // the number comes from time (85 ms per frame), never from a counter or a random draw.
 //
 // It imports nothing but React; its colors and type are the design system's tokens, as Tailwind classes.
-// A theme that copies this file changes only the background it passes.
+// A page that uses it changes only the background it passes.
 
 type OndasLogoProps = {
   // Any CSS color behind the characters. The board's default is its own night.

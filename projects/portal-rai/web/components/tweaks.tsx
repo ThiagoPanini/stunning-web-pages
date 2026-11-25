@@ -7,7 +7,7 @@ import { useState, useSyncExternalStore } from "react";
 // (/?versaoCiclo=02-fio&versaoCards=02-surprise&efeitoNeon=contorno), so a link opens the version it
 // names, and the panel below changes the query string in place.
 //
-// The panel is the catalog's, not the design's: a consumer who rebuilds the theme keeps the chosen
+// The panel is the catalog's, not the design's: a consumer who rebuilds the design keeps the chosen
 // version and leaves the panel and the other versions out (HANDOFF.md).
 
 export const TWEAKS = {

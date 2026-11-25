@@ -258,7 +258,7 @@ test("with normal motion the animated logo changes and the stopped one does not"
   expect(stoppedLater.equals(stopped), "the stopped logo stayed the same").toBe(true);
 });
 
-// The route's screenshots, in the theme's screenshots/, taken under the conditions of the reference
+// The route's screenshots, in the project's screenshots/, taken under the conditions of the reference
 // captures: reduced motion, so both logos rest on the same frame, and a viewport as tall as the
 // document. Each one must be the route as it is now (support/screenshots.ts).
 for (const width of WIDTHS) {

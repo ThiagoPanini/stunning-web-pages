@@ -1,4 +1,4 @@
-// The app's screenshots, in the theme's screenshots/. A plain run writes nothing: it checks that
+// The app's screenshots, in the project's screenshots/. A plain run writes nothing: it checks that
 // each saved screenshot is, byte for byte, what the app renders now. Playwright's own flag rewrites
 // them, as it does with its snapshots: `pnpm test --update-snapshots`.
 

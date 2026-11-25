@@ -23,7 +23,7 @@ import { CycleSpecimen } from "./cycle-specimen";
 
 // Each component of the Home on its own, with the same files the Home is built with and, where the Home
 // has it, the same text. A link or a button is shown at rest, then hovered and focused: inside
-// data-show-state the theme draws that state with no pointer or keyboard on it (app/globals.css).
+// data-show-state the stylesheet draws that state with no pointer or keyboard on it (app/globals.css).
 // Components with no state of their own show their variants. The versions of the board's tweaks are
 // components too: each version of the cycle and of the team cards shows here, the neon in its three
 // forms, hovered.

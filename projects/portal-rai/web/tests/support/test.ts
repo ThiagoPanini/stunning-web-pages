@@ -30,8 +30,8 @@ type Fixtures = {
 export const test = base.extend<Fixtures>({
   // biome-ignore lint/correctness/noEmptyPattern: Playwright reads a fixture's dependencies from this pattern
   baseURL: async ({}, use) => {
-    const url = process.env.CURATED_BASE_URL;
-    if (!url) throw new Error("CURATED_BASE_URL is not set: run the tests through `pnpm test`.");
+    const url = process.env.APP_BASE_URL;
+    if (!url) throw new Error("APP_BASE_URL is not set: run the tests through `pnpm test`.");
     await use(url);
   },
   referencePage: async ({ browser, baseURL }, use) => {

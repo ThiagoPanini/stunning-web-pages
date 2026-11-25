@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { Teams } from "@/components/teams";
 import { TweaksPanel } from "@/components/tweaks";
 
-// The Curated's Home: header, opening, the partners and section 01 over a dotted ground, section 02 and
+// The Home: header, opening, the partners and section 01 over a dotted ground, section 02 and
 // the footer, in the board's order. The panel of tweaks is the catalog's, not the design's.
 export default function Home() {
   return (

@@ -1,5 +1,5 @@
 // Starts the static server over the export before any test, and stops it after the last one.
-// The address reaches the tests through CURATED_BASE_URL, which the workers inherit.
+// The address reaches the tests through APP_BASE_URL, which the workers inherit.
 
 import { access } from "node:fs/promises";
 import { join } from "node:path";
@@ -14,6 +14,6 @@ export default async function globalSetup() {
     );
   });
   const server = await startStaticServer(OUT_DIR);
-  process.env.CURATED_BASE_URL = server.url;
+  process.env.APP_BASE_URL = server.url;
   return server.close;
 }
