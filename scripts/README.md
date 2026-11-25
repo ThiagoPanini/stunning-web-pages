@@ -115,7 +115,7 @@ Quando o Autor pede uma mudança num Quadro, como o valor de um tweak, o agente 
 ### Como o script captura
 
 - Serve `origin/boards/` por HTTP em `127.0.0.1`, numa porta livre escolhida pelo sistema, e responde `/support.js` com o runtime dado em `--runtime`. Cada Quadro pede `./support.js`, e o runtime busca o próprio Quadro e os importados por `fetch`, por isso não funciona sem servidor.
-- Abre o Chromium headless do Playwright fixado, com `deviceScaleFactor` 1, movimento reduzido e sem emular toque.
+- Abre o Chromium headless do Playwright fixado, com `deviceScaleFactor` 1, movimento reduzido e sem emular toque. Abre um navegador novo para cada captura: um navegador que já desenhou outras capturas pode desenhar o texto da seguinte uma fração de pixel deslocado, e a segunda rodada não daria os mesmos bytes.
 - Espera a rede parar, o `#dc-root` montar e as fontes carregarem, e então cresce a viewport até a altura do documento, até ela parar de mudar. As revelações dos Quadros são animações guiadas por scroll; numa viewport curta, tudo abaixo da dobra sairia invisível. A viewport começa baixa, porque a altura do documento nunca é medida menor que a viewport.
 - Tira a captura de página inteira com animações desligadas.
 - Falha, sem gravar aquela captura, se houver erro de página ou de console, requisição falha, resposta HTTP de erro, arquivo que o servidor não achou, rolagem diferente de zero, altura que não estabiliza ou seletor de bloco que não casa um único elemento.
