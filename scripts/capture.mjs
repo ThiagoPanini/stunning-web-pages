@@ -8,11 +8,12 @@
 //   <origin-dir>/reference/<board>-<width>.png    the full page, the reference capture itself
 //   <origin-dir>/reference/<board>-<width>.json   page size, capture conditions and the box of each block
 //
-// Capture conditions: headless Chromium from the pinned Playwright, deviceScaleFactor 1, reduced motion,
-// no touch emulation, and a viewport grown to the document height. The reveals of the boards use CSS
-// scroll-driven animations; in a short viewport everything below the fold would stay invisible. The Google
-// Fonts stylesheets of the boards are held to their static font files (google-fonts.mjs), so a second run
-// writes the same bytes.
+// Capture conditions: headless Chromium from the pinned Playwright without partial raster, deviceScaleFactor
+// 1, reduced motion, no touch emulation, and a viewport grown to the document height. The reveals of the
+// boards use CSS scroll-driven animations; in a short viewport everything below the fold would stay
+// invisible. The Google Fonts stylesheets of the boards are held to their static font files
+// (google-fonts.mjs) and every changed tile is redrawn whole (BROWSER_ARGS), so a second run writes the same
+// bytes.
 //
 // An entry may also set tweaks (`props`, served as the defaults of the board's data-props), hover one
 // element (`hover`) and name its files (`name`, by default the board's name), so the same board is
@@ -35,6 +36,11 @@ const MAX_GROW_STEPS = 6;
 const SETTLE_MS = 500;
 // After the pointer moves onto the hovered element: the longest hover transition of the boards is .9s.
 const HOVER_SETTLE_MS = 1500;
+// By default Chromium redraws only the changed part of a tile (partial raster) and keeps the rest of the tile
+// from earlier frames. The frames a hover's transitions draw then leave their mark on the final pixels, and
+// which frames get drawn depends on timing: the same final state came out a few pixels apart from run to
+// run. Redrawing every changed tile whole makes the image depend on the final state alone.
+const BROWSER_ARGS = ['--disable-partial-raster'];
 
 const CONTENT_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -266,7 +272,13 @@ async function captureBoard(browser, base, entry, width) {
     image: `${image}.png`,
     width,
     height,
-    conditions: { browser: `chromium ${browser.version()}`, deviceScaleFactor: 1, reducedMotion: 'reduce', touch: false },
+    conditions: {
+      browser: `chromium ${browser.version()}`,
+      partialRaster: false,
+      deviceScaleFactor: 1,
+      reducedMotion: 'reduce',
+      touch: false,
+    },
     ...(entry.props ? { props: entry.props } : {}),
     ...(entry.hover ? { hover: entry.hover } : {}),
     blocks,
@@ -295,7 +307,7 @@ async function main() {
   await mkdir(join(originDir, 'reference'), { recursive: true });
 
   const { server, base, misses } = await serveBoards(boardsDir, runtimePath);
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, args: BROWSER_ARGS });
   let failed = false;
   try {
     for (const entry of recipe.captures) {
