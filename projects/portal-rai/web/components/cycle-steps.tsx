@@ -1,35 +1,31 @@
 import type { CSSProperties } from "react";
 
 // The four steps of the cycle, in its order, each with the icon of its step and what it hands to the
-// next one: the deliverable, with its mark and its color (red, blue, muted, bright), the color of the
-// dot that stands for it and of what travels with it. The fourth deliverable goes from Monitorar back
-// to Pesquisar. The first two steps happen before production, the last two in production.
+// next one: the deliverable, with its color (red, blue, muted, bright), the color of the dot that stands
+// for it and of what travels with it. The fourth deliverable goes from Monitorar back to Pesquisar. The
+// first two steps happen before production, the last two in production.
 export const STEPS = [
   {
     name: "Pesquisar",
     copy: "Estudamos como agentes conversacionais falham.",
-    mark: "×",
     deliverable: "falhas conhecidas",
     color: "var(--color-red)",
   },
   {
     name: "Desenvolver",
     copy: "Transformamos cada falha em um guardrail testável e medido.",
-    mark: ":",
     deliverable: "guardrails testados",
     color: "var(--color-blue)",
   },
   {
     name: "Implementar",
     copy: "Colocamos os guardrails em produção, dentro de cada conversa.",
-    mark: "*",
     deliverable: "conversas em produção",
     color: "var(--color-muted)",
   },
   {
     name: "Monitorar",
     copy: "Analytics by design: métricas essenciais para decidir com dados.",
-    mark: "=",
     deliverable: "métricas essenciais",
     color: "var(--color-bright)",
   },

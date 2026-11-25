@@ -23,6 +23,33 @@ function stepOn(page: Page, version: (typeof VERSIONS)[number]) {
   return page.locator(`${STEPS[version]}[data-on]`).getByRole("button");
 }
 
+// The board's keyframes of the light on the cards' top edge: the line that fills, and its head and glow.
+const LIGHT = ["wk-fill", "wk3-head", "wk3-head"];
+
+test("03-cartoes: while the cycle runs by itself, a light runs along the top edge of the card of the turn", async ({
+  newWindow,
+}) => {
+  const page = await newWindow(1440, { motion: "no-preference" });
+  await open(page, "03-cartoes");
+  const lightIn = (card: string) =>
+    page.locator(card).evaluateAll((elements) =>
+      elements
+        .flatMap((element) => element.getAnimations({ subtree: true }))
+        .map((animation) => (animation as CSSAnimation).animationName)
+        .filter((name) => name === "wk-fill" || name === "wk3-head")
+        .sort(),
+    );
+  await expect(stepOn(page, "03-cartoes")).toHaveText("Pesquisar");
+  await expect.poll(() => lightIn("[data-cycle] article[data-on]")).toEqual(LIGHT);
+  expect(await lightIn("[data-cycle] article:not([data-on])"), "the other cards").toEqual([]);
+  // On the next card once the deliverable has travelled.
+  await expect(stepOn(page, "03-cartoes")).toHaveText("Desenvolver", { timeout: 6000 });
+  await expect.poll(() => lightIn("[data-cycle] article[data-on]")).toEqual(LIGHT);
+  // A held step stops the cycle, and the light with it.
+  await page.locator(STEPS["03-cartoes"]).nth(2).hover();
+  await expect.poll(() => lightIn("[data-cycle] article")).toEqual([]);
+});
+
 for (const version of VERSIONS) {
   test(`${version}: with normal motion the cycle moves on by itself`, async ({ newWindow }) => {
     const page = await newWindow(1440, { motion: "no-preference" });

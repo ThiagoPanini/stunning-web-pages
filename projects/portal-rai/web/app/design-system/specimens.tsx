@@ -372,7 +372,7 @@ export function ComponentSpecimens() {
       <Specimen
         name="CycleCards"
         file="cycle-cards.tsx"
-        about="Versão 03 do ciclo, os cartões: o trilho pontilhado passa pelas quatro emendas; segurada, a etapa acende a borda e o texto cresce."
+        about="Versão 03 do ciclo, os cartões: quatro cartões em fila e o trilho pontilhado por baixo, com as setas do sentido; as entregas em etiquetas com o ponto da cor delas, sobre as emendas. O cartão em destaque clareia, acende a borda e mostra o texto grande; com o ciclo andando sozinho, uma luz corre a borda de cima dele. Segurada, a etapa acende as duas entregas."
       >
         <State label="repouso" size="full">
           <CycleSpecimen version="CycleCards" />
