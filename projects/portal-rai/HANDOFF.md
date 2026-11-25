@@ -6,9 +6,13 @@ Tudo o que você precisa está nesta pasta. Nenhum documento depende de link ext
 
 ## Antes de começar: escolha as versões
 
-O design tem três tweaks, e o app desenha todas as versões deles (a tabela está em [Os tweaks](README.md#os-tweaks), no README). Antes de reimplementar, quem consulta escolhe uma versão de cada: `versaoCiclo` para o ciclo da seção 01, `versaoCards` para os cartões da seção 02 e, se os cartões forem `02-surprise`, `efeitoNeon` para o hover deles. Sem escolha, valem os padrões do design: `06-laco`, `03-middle` e `preenchimento`.
+Os três tweaks do design estão em aberto: o Autor ainda compara as duas versões do ciclo, as três dos cartões dos times e as três formas do neon, e o app desenha todas (a tabela está em [Os Tweaks](README.md#os-tweaks), no README). Antes de reimplementar, quem consulta escolhe uma versão de cada: `versaoCiclo` para o ciclo da seção 01, `versaoCards` para os cartões da seção 02 e, se os cartões forem `02-surprise`, `efeitoNeon` para o hover deles. Sem escolha, valem os padrões do design: `06-laco`, `03-middle` e `preenchimento`.
 
-Leve ao seu projeto só as versões escolhidas. O painel de tweaks (`components/tweaks.tsx`) e a leitura do endereço são do Catálogo, para comparar as versões: ficam de fora. No seu projeto, a seção monta direto a versão escolhida, sem `useTweaks`.
+Leve ao seu projeto só as versões escolhidas, sem o painel:
+
+- **A seção monta a versão direto.** Em `model.tsx`, no lugar da escolha por `useTweaks`, fica só a versão do ciclo escolhida: `<CycleLoop cycle={cycle} />` ou `<CycleCards cycle={cycle} />`. O `useCycle` fica, porque as duas versões dependem dele. Em `teams.tsx`, o mesmo com os cartões dos times; nos `02-surprise`, `neon` recebe o efeito escolhido.
+- **O painel e o endereço ficam de fora.** `components/tweaks.tsx`, com o painel, `useTweaks` e a leitura do endereço, e o `<TweaksPanel />` de `page.tsx` são do Catálogo, para comparar as versões.
+- **O que só a outra versão usa fica de fora também.** O laço é `cycle-loop.tsx`, as utilidades `loop*`, a variante `loop-tight` e os keyframes `wk-arrive`, `wk6-comet` e `wk6-comet-s`. Os cartões do ciclo são `cycle-cards.tsx` e `cycle-rail.tsx`, as utilidades `cycle-card-*`, `cards-*`, `rail-*`, `runner*` e `pulse` e os keyframes `wk-fill`, `wk3-head` e `wk3-back`. As duas versões dividem `cycle-steps.tsx`, `use-cycle.ts`, as utilidades `step-*`, as variantes `cycle-two` e `cycle-one` e os keyframes `wk-march`, `wk-ping` e os dos gestos dos ícones. Nos cartões dos times, cada versão tem o seu arquivo; as utilidades `team-*`, com o neon e os keyframes `tm-*`, são só dos `02-surprise`, e cada efeito é um valor de `data-neon` (`fill`, `line` e `spot`) nos seletores delas. Um token que só a versão deixada de fora usa também sai do `@theme`: o papel de cada um está no `DESIGN.md`.
 
 ## O objetivo
 
@@ -147,7 +151,7 @@ O estilo do app são classes do Tailwind 4 sobre o `@theme`, mais as utilidades 
 - A linha `--*: initial` zera o tema padrão do Tailwind no projeto inteiro. Num projeto com `@theme` próprio, deixe-a de fora e acrescente os tokens do `portal-rai` ao lado dos seus.
 - Alguns nomes coincidem com os do tema padrão do Tailwind, com outro valor, e mudam o projeto todo: `--font-sans`, `--font-mono`, `--default-transition-duration` e `--default-transition-timing-function`.
 - A variante `hover` redefinida em `globals.css` vale para o projeto inteiro. Leve-a só se quiser o hover em qualquer ponteiro em todo lugar.
-- Um nome de classe montado em tempo de execução não é achado pelo Tailwind: por isso os lugares das etiquetas, dos itens e dos pulsos do ciclo e os gestos dos ícones estão escritos inteiros, em listas.
+- Um nome de classe montado em tempo de execução não é achado pelo Tailwind: por isso os lugares das etiquetas, dos itens e das setas do ciclo e os gestos dos ícones estão escritos inteiros, em listas.
 
 ## Fora do Next.js
 
