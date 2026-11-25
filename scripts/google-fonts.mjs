@@ -8,13 +8,26 @@
 // capture, while the same captures with the static files forced gave the same bytes. So the capture asks
 // again until the answer has the static files, and refuses any other font file from Google.
 
-const STATIC_FONT_FILES = 'https://fonts.gstatic.com/s/';
+const STYLESHEETS = 'fonts.googleapis.com';
+const FONT_FILES = 'fonts.gstatic.com';
+const STATIC_FONT_FILES = `https://${FONT_FILES}/s/`;
 
 // With one answer in twelve coming with the kit, ten in a row would happen about once in 10^11 stylesheets.
 const TRIES = 10;
 
 export function isStaticFontFile(url) {
   return url.startsWith(STATIC_FONT_FILES);
+}
+
+// A request for a stylesheet of Google Fonts, which the capture asks for again until it has the static
+// files. The url is a string or a URL.
+export function isFontStylesheet(url) {
+  return new URL(url).hostname === STYLESHEETS;
+}
+
+// A request for a font file of Google Fonts outside the static set, which the capture refuses.
+export function isRefusedFontFile(url) {
+  return new URL(url).hostname === FONT_FILES && !isStaticFontFile(String(url));
 }
 
 function fontFiles(css) {
