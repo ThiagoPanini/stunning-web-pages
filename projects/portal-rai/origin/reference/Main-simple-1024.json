@@ -1,0 +1,53 @@
+{
+  "board": "Main.dc.html",
+  "image": "Main-simple-1024.png",
+  "width": 1024,
+  "height": 3233,
+  "conditions": {
+    "browser": "chromium 159.0.8154.6",
+    "deviceScaleFactor": 1,
+    "reducedMotion": "reduce",
+    "touch": false
+  },
+  "props": {
+    "versaoCards": "01-simple"
+  },
+  "blocks": {
+    "header": {
+      "x": 0,
+      "y": 0,
+      "width": 1024,
+      "height": 65
+    },
+    "hero": {
+      "x": 41,
+      "y": 65,
+      "width": 942,
+      "height": 1211
+    },
+    "partners": {
+      "x": 41,
+      "y": 1276,
+      "width": 942,
+      "height": 213
+    },
+    "model": {
+      "x": 41,
+      "y": 1489,
+      "width": 942,
+      "height": 845
+    },
+    "teams": {
+      "x": 41,
+      "y": 2334,
+      "width": 942,
+      "height": 774
+    },
+    "footer": {
+      "x": 0,
+      "y": 3108,
+      "width": 1024,
+      "height": 125
+    }
+  }
+}
