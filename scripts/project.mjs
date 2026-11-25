@@ -1,5 +1,5 @@
-// What the tools of scripts/ take from a theme folder (projects/<project>/themes/<theme>): its names and
-// the tokens of its app. Everything else a tool needs from the theme, it reads from the same folder.
+// What the tools of scripts/ take from a project folder (projects/<project>): its names and the tokens of
+// its app. Everything else a tool needs from the project, it reads from the same folder.
 
 import { readFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
@@ -39,24 +39,25 @@ function identifier(name) {
     .join('');
 }
 
-export function readTheme(themeDir) {
-  const dir = resolve(themeDir);
-  if (basename(dirname(dir)) !== 'themes' || basename(dirname(dirname(dirname(dir)))) !== 'projects') {
-    throw new Error(`${themeDir}: a theme folder is projects/<project>/themes/<theme>`);
+// A project as the tools see it. Its name is the "# " heading of its README.md, and that name alone is the
+// title of its published design system; the namespace is the name as an identifier. Any folder but
+// projects/<project> is refused, a folder nested inside a project among them.
+export function readProject(projectDir) {
+  const dir = resolve(projectDir);
+  if (basename(dirname(dir)) !== 'projects') {
+    throw new Error(`${projectDir}: a project folder is projects/<project>`);
   }
-  const project = basename(dirname(dirname(dir)));
-  const heading = readFileSync(join(dir, 'README.md'), 'utf8').match(/^# (.+)$/m);
-  if (!heading) throw new Error(`${join(dir, 'README.md')}: no "# <name>" heading to name the theme`);
+  const readme = join(dir, 'README.md');
+  const heading = readFileSync(readme, 'utf8').match(/^# (.+)$/m);
+  if (!heading) throw new Error(`${readme}: no "# <name>" heading to name the project`);
   const name = heading[1].trim();
   const web = join(dir, 'web');
   const css = readFileSync(join(web, 'app', 'globals.css'), 'utf8');
   return {
     dir,
     web,
-    project,
-    slug: basename(dir),
     name,
-    title: `${project} · ${name}`,
+    title: name,
     namespace: identifier(name),
     // The app's path from the catalog's root, for the provenance a tool records.
     appPath: relative(REPO_ROOT, web).split('\\').join('/'),

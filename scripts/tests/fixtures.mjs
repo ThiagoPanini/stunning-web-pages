@@ -1,5 +1,5 @@
-// Builds small throwaway trees on disk for the tests: a theme laid out as the catalog lays one out, and a
-// directory with project/ as a Design System artifact serves it.
+// Builds small throwaway trees on disk for the tests: a catalog with one project laid out as the catalog
+// lays one out, and a directory with project/ as a Design System artifact serves it.
 
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -40,11 +40,11 @@ export const GLOBALS_CSS = `@import "tailwindcss";
 }
 `;
 
-// A theme of project "demo-portal" named "Aurora", with the files the tools read.
-export function makeTheme(root, files = {}) {
-  const dir = join(root, 'projects', 'demo-portal', 'themes', 'aurora');
+// The project "demo-portal" of a catalog at root, with the files the tools read; returns its folder.
+export function makeProject(root, files = {}) {
+  const dir = join(root, 'projects', 'demo-portal');
   writeTree(dir, {
-    'README.md': '# Aurora\n\nA theme.\n',
+    'README.md': '# demo-portal\n\nA project.\n',
     'web/app/globals.css': GLOBALS_CSS,
     ...files,
   });
