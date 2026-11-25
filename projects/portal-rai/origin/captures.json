@@ -1,0 +1,257 @@
+{
+  "captures": [
+    {
+      "board": "Main.dc.html",
+      "widths": [1440, 1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      },
+      "regions": {
+        "logo": ".orbx > div:first-child",
+        "brand": ".hdr a > span:first-child"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-laco-hover",
+      "hover": ".wk6-s3",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-cartoes",
+      "props": {
+        "versaoCiclo": "03-cartoes"
+      },
+      "widths": [1440, 1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-cartoes-hover",
+      "props": {
+        "versaoCiclo": "03-cartoes"
+      },
+      "hover": ".wk3-row > article:nth-of-type(2)",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-simple",
+      "props": {
+        "versaoCards": "01-simple"
+      },
+      "widths": [1440, 1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-surprise",
+      "props": {
+        "versaoCards": "02-surprise"
+      },
+      "widths": [1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-contorno",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "contorno"
+      },
+      "widths": [1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-holofote",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "holofote"
+      },
+      "widths": [1024, 390],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-preenchimento-red",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "preenchimento"
+      },
+      "hover": ".tm2-red",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-preenchimento-blue",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "preenchimento"
+      },
+      "hover": ".tm2-blue",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-contorno-red",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "contorno"
+      },
+      "hover": ".tm2-red",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-contorno-blue",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "contorno"
+      },
+      "hover": ".tm2-blue",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-holofote-red",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "holofote"
+      },
+      "hover": ".tm2-red",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "Main.dc.html",
+      "name": "Main-holofote-blue",
+      "props": {
+        "versaoCards": "02-surprise",
+        "efeitoNeon": "holofote"
+      },
+      "hover": ".tm2-blue",
+      "widths": [1440],
+      "blocks": {
+        "header": "header.hdr",
+        "hero": "main > section:nth-of-type(1)",
+        "partners": "section[aria-labelledby='parceiros-t']",
+        "model": "#modelo",
+        "teams": "#times",
+        "footer": "footer"
+      }
+    },
+    {
+      "board": "LogoMini.dc.html",
+      "widths": [160]
+    },
+    {
+      "board": "LogoLab1.dc.html",
+      "widths": [560]
+    },
+    {
+      "board": "LogoLab1.dc.html",
+      "name": "LogoLab1-night",
+      "props": {
+        "fundo": "#101010"
+      },
+      "widths": [560]
+    }
+  ]
+}

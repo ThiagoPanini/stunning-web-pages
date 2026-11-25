@@ -1,18 +1,18 @@
-// The check of a theme, in one command: install its app from the frozen lockfile, then lint, typecheck and
-// test it (the app's own scripts), then check its documents. One step at a time, with its output in view;
+// The check of a project, in one command: install its app from the frozen lockfile, then lint, typecheck
+// and test it (the app's own scripts), then check its documents. One step at a time, with its output in view;
 // the first step that fails stops the check, which exits with that step's code. The last line says what
 // passed.
 //
-// Usage: node scripts/check.mjs <theme dir>
+// Usage: node scripts/check.mjs projects/<project>
 
 import { spawnSync } from 'node:child_process';
 import { isAbsolute, join, relative } from 'node:path';
-import { REPO_ROOT, readTheme } from './theme.mjs';
+import { REPO_ROOT, readProject } from './project.mjs';
 
-// The steps of a theme's check, in order; refuses a folder that is not a theme.
-export function checkSteps(themeDir) {
-  const theme = readTheme(themeDir);
-  const app = (name, ...args) => ({ name, command: 'pnpm', args, cwd: theme.web });
+// The steps of a project's check, in order; refuses a folder that is not projects/<project>.
+export function checkSteps(projectDir) {
+  const project = readProject(projectDir);
+  const app = (name, ...args) => ({ name, command: 'pnpm', args, cwd: project.web });
   return [
     app('install', 'install', '--frozen-lockfile'),
     app('lint', 'lint'),
@@ -21,7 +21,7 @@ export function checkSteps(themeDir) {
     {
       name: 'docs',
       command: process.execPath,
-      args: [join(import.meta.dirname, 'check-docs.mjs'), theme.dir],
+      args: [join(import.meta.dirname, 'check-docs.mjs'), project.dir],
       cwd: REPO_ROOT,
     },
   ];
@@ -56,14 +56,14 @@ export function runSteps(steps, { stdio = 'inherit', log = console.log } = {}) {
 }
 
 if (import.meta.main) {
-  const [themeDir] = process.argv.slice(2);
-  if (!themeDir) {
-    console.error('usage: node scripts/check.mjs <theme dir>');
+  const [projectDir] = process.argv.slice(2);
+  if (!projectDir) {
+    console.error('usage: node scripts/check.mjs projects/<project>');
     process.exit(2);
   }
   let steps;
   try {
-    steps = checkSteps(themeDir);
+    steps = checkSteps(projectDir);
   } catch (error) {
     console.error(error.message);
     process.exit(2);

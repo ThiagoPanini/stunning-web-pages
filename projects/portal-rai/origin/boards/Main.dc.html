@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Responsible AI · Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+/* Tokens de cor. Os valores são cinzas neutros.
+   Vermelho e azul são os acentos com significado (ataque e Red Team; guardrail e Blue Team). */
+:root{
+--color-night:#101010;
+--color-surface:#161616;
+--color-rule:#252525;
+--color-rule-strong:#333333;
+--color-bright:#F2F2F2;
+--color-muted:#B8B8B8;
+--color-subtle:#8C8C8C;
+--color-unlit:#696969;
+--color-red:#EC5B48;
+--color-blue:#5A90F8;
+--color-white-4:rgba(255,255,255,.04);
+--color-white-6:rgba(255,255,255,.06);
+--color-white-7:rgba(255,255,255,.07);
+--color-white-9:rgba(255,255,255,.09);
+--color-white-10:rgba(255,255,255,.10);
+--color-red-12:rgba(236,91,72,.12);
+--color-blue-12:rgba(90,144,248,.12);
+--color-header:rgba(16,16,16,.82);
+--color-grid:#131313;
+--color-grid-dot:#2C2C2C;
+--font-mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+body{margin:0;background:var(--color-night)}
+a{color:inherit;text-decoration:none}
+.hdr{position:sticky;top:0;z-index:20;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.nav{display:flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;color:var(--color-muted);white-space:nowrap;transition:color .2s,background-color .2s}
+.nav:hover{color:var(--color-bright);background-color:var(--color-white-6)}
+.lk{color:var(--color-muted);transition:color .2s}
+.lk:hover{color:var(--color-bright)}
+.ft{color:var(--color-subtle);transition:color .2s}
+.ft:hover{color:var(--color-bright)}
+.btn{transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(242,242,242,.2)}
+.chip:hover{border-color:var(--color-subtle) !important}
+.atk:hover{background-color:rgba(236,91,72,.14) !important}
+a:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--color-blue);outline-offset:3px}
+@media (pointer:coarse){.nav{height:44px}}
+@media (max-width:760px){.hdr{position:relative}.navwrap{order:3;flex:1 1 100%;overflow-x:auto}}
+
+/* Parceiros: carrossel contínuo. Dois conjuntos iguais em fila e um deslocamento de exatamente um conjunto. */
+.mq{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%)}
+.mq-track{display:flex;width:max-content}
+.mq-set{display:flex;align-items:center;gap:84px;margin:0;padding:0 84px 0 0;list-style:none}
+.mq-brand{display:inline-flex;align-items:center;gap:11px;min-height:44px;font-size:19px;font-weight:500;letter-spacing:-0.02em;color:var(--color-subtle);white-space:nowrap}
+.mq-brand svg{flex:0 0 auto;display:block}
+
+/* Modelo de trabalho: fundo de diagrama (malha de pontos) e o ciclo de quatro etapas, em duas versões (tweak versaoCiclo).
+   As duas dividem o mesmo estado: is-on = etapa em destaque; is-lit = entrega acesa; is-fire = entrega em viagem;
+   is-run = o ciclo anda sozinho; at-1 a at-4 = qual etapa está em destaque. --pc é a cor do que a etapa entrega.
+   Nada aqui usa caractere como símbolo: a entrega é um ponto na cor dela, e o sentido, quando precisa, é um ícone de seta. */
+.wk-zone{position:relative}
+.wk-bg{position:absolute;z-index:0;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);pointer-events:none;background-color:var(--color-grid);background-image:radial-gradient(circle at 1px 1px,var(--color-grid-dot) 1px,transparent 1.5px);background-size:28px 28px;background-position:50% 0;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 200px,#000 calc(100% - 140px),transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 200px,#000 calc(100% - 140px),transparent 100%)}
+.wk-btn{display:inline;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;text-align:left;cursor:pointer}
+/* O botão é o controle de cada etapa (teclado e leitor de tela); o clique vale na etapa inteira, e o foco aparece nela. */
+@supports selector(:has(a)){
+.wk-btn:focus-visible{outline:none}
+.wk3-card:has(.wk-btn:focus-visible) .wk3-body{outline:2px solid var(--color-blue);outline-offset:3px}
+.wk6-item:has(.wk-btn:focus-visible){outline:2px solid var(--color-blue);outline-offset:6px}
+}
+.wk-ico{display:block;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.wk-c1{--pc:var(--color-red)}
+.wk-c2{--pc:var(--color-blue)}
+.wk-c3{--pc:var(--color-muted)}
+.wk-c4{--pc:var(--color-bright)}
+.wk-dot{flex:0 0 auto;display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pc)}
+.wk-arw{flex:0 0 auto;display:block;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.wk-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.wk-pulse{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--pc);box-shadow:0 0 0 3px color-mix(in srgb,var(--pc) 22%,transparent),0 0 16px 3px color-mix(in srgb,var(--pc) 60%,transparent);opacity:0;pointer-events:none}
+.wk-loop{position:absolute;z-index:0;display:block;overflow:visible;pointer-events:none}
+.wk-loop-track{fill:none;stroke:var(--color-rule-strong);stroke-width:1}
+.wk-loop-flow{fill:none;stroke:#666666;stroke-width:2;stroke-linecap:round;stroke-dasharray:.01 9}
+.wk-rail{position:absolute;z-index:2;pointer-events:none}
+.wk-rail .wk-pulse{left:100%;top:0}
+.wk-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background-color:var(--color-grid);border:1px solid var(--color-rule-strong);font:400 12px/1.2 var(--font-mono);color:var(--color-subtle);white-space:nowrap;transition:color .35s,border-color .35s}
+.wk-tag.is-lit{color:var(--color-bright);border-color:color-mix(in srgb,var(--pc) 60%,var(--color-rule-strong))}
+
+/* Ciclo · Versão 03 (cartões): quatro cards em fila. A luz corre pela borda de cima do card da vez, some na entrega
+   que fica na emenda e reaparece no card seguinte; depois do último, volta pelo trilho de baixo até o primeiro.
+   No hover, o texto cresce e as duas entregas do card (a que chega e a que sai) acendem. */
+.wk3{position:relative;padding:16px 0 64px}
+.wk3-loop{left:-14px;top:20px;width:calc(100% + 28px);height:calc(100% - 40px)}
+.wk3-rail{left:-14px;right:-14px;top:20px;bottom:20px}
+.wk3-row{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px}
+.wk3-card{position:relative;cursor:pointer;min-width:0;--mx:96px;--my:72px}
+.wk3-body{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:40px;box-sizing:border-box;height:100%;min-height:320px;padding:28px;border-radius:8px;background-color:var(--color-surface);overflow:hidden;isolation:isolate;transition:background-color .6s ease}
+.wk3-card.is-on .wk3-body{background-color:#1A1A1A}
+.wk3-spec{position:absolute;left:0;top:0;z-index:-1;width:440px;height:440px;margin:-220px 0 0 -220px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.075),rgba(255,255,255,0));opacity:0;transform:translate3d(var(--mx),var(--my),0);transition:opacity .45s ease;pointer-events:none}
+.wk3-card:hover .wk3-spec{opacity:1}
+.wk3-edge{position:absolute;inset:0;z-index:2;border-radius:inherit;padding:1px;background:radial-gradient(300px circle at var(--mx) var(--my),rgba(242,242,242,.85),rgba(242,242,242,.1) 72%);opacity:0;transition:opacity .45s ease;pointer-events:none;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.wk3-card.is-on .wk3-edge{opacity:1}
+/* Com o ciclo andando sozinho não há cursor: a moldura do card da vez fica uniforme, e quem se move é a luz de cima. */
+.wk3.is-run .wk3-card.is-on .wk3-edge{background:rgba(242,242,242,.13)}
+.wk3-glow{position:absolute;left:0;top:0;z-index:-1;width:100%;height:0;opacity:0;pointer-events:none}
+.wk3-glow::before{content:"";position:absolute;left:-180px;top:-180px;width:360px;height:360px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pc) 15%,transparent),transparent)}
+.wk3-run{position:absolute;left:0;top:0;z-index:2;width:100%;height:1px;background:var(--pc);transform:scaleX(0);transform-origin:0 50%;opacity:0;pointer-events:none;transition:opacity .6s ease,transform 0s .6s}
+.wk3-card.is-on .wk3-run{opacity:.85;transform:scaleX(1);transition:opacity .35s ease,transform 0s}
+.wk3-head{position:absolute;left:0;top:0;z-index:1;width:100%;height:0;opacity:0;pointer-events:none}
+.wk3-head::before{content:"";position:absolute;left:-4px;top:-3.5px;width:8px;height:8px;border-radius:50%;background:var(--pc);box-shadow:0 0 0 3px color-mix(in srgb,var(--pc) 22%,transparent),0 0 16px 3px color-mix(in srgb,var(--pc) 60%,transparent)}
+.wk3-top{display:flex;align-items:center;gap:16px}
+.wk3-ico{flex:0 0 32px;display:block;color:var(--color-muted);transition:color .5s cubic-bezier(.22,1,.36,1)}
+.wk3-card.is-on .wk3-ico{color:var(--color-bright)}
+.wk3-name{margin:0;font-size:16px;font-weight:500;line-height:24px;color:var(--color-bright)}
+.wk3-sub{margin:0;font:400 12px/19px var(--font-mono);letter-spacing:.04em;color:var(--color-subtle)}
+.wk3-desc{position:relative}
+.wk3-large{margin:0;max-width:13em;font-size:clamp(19px,1.62vw,23px);font-weight:400;line-height:1.2;letter-spacing:-0.03em;color:var(--color-bright);opacity:0;transform:translateY(14px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+.wk3-small{position:absolute;left:0;right:0;bottom:0;margin:0;font-size:15px;line-height:22px;color:#858585;transition:opacity .35s cubic-bezier(.22,1,.36,1),transform .35s cubic-bezier(.22,1,.36,1)}
+.wk3-card.is-on .wk3-small{opacity:0;transform:translateY(-10px)}
+.wk3-card.is-on .wk3-large{opacity:1;transform:none;transition-delay:80ms}
+.wk3-out{display:none;align-items:center;gap:8px;margin:0;font:400 12px/1.3 var(--font-mono);color:var(--color-subtle)}
+.wk3-tag{position:absolute;z-index:3;top:16px;transform:translate(-50%,-50%)}
+.wk3-t1{left:25%}
+.wk3-t2{left:50%}
+.wk3-t3{left:75%}
+.wk3-t4{left:50%;top:calc(100% - 20px)}
+.wk3-dir{position:absolute;z-index:1;top:calc(100% - 20px);margin:-5px 0 0 -5px;color:#6E6E6E}
+.wk3-d1{left:24%}
+.wk3-d2{left:76%}
+/* Abaixo de 1100 px os quatro cards não cabem em fila: sem trilho, cada card diz o que entrega. */
+@media (max-width:1099px){
+.wk3{padding:0}
+.wk3-loop,.wk3-rail,.wk3-tag,.wk3-dir{display:none}
+.wk3-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+.wk3-body{min-height:0;gap:28px}
+.wk3-out{display:flex}
+}
+/* No celular não há hover: o texto grande sai e o card fica na altura do que mostra. */
+@media (max-width:600px){
+.wk3-row{grid-template-columns:minmax(0,1fr)}
+.wk3-large{display:none}
+.wk3-small,.wk3-card.is-on .wk3-small{position:static;opacity:1;transform:none}
+}
+
+/* Ciclo · Versão 06 (laço): um traço só, em forma de infinito. No laço da esquerda fica o trabalho antes da produção;
+   no da direita, o que acontece em produção. No cruzamento, os guardrails vão por cima e as métricas voltam por baixo.
+   --fw é a largura do desenho; etapas e entregas se posicionam a partir do centro, em frações dela. */
+.wk6{position:relative;height:400px;container-type:inline-size;--fw:min(718px,calc(100cqw - 440px))}
+.wk6-map{position:absolute;left:50%;top:50%;width:var(--fw);aspect-ratio:760 / 360;transform:translate(-50%,-50%)}
+.wk6-svg{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible}
+.wk6-lobe{fill:rgba(255,255,255,.03);opacity:0;transition:opacity .9s ease}
+.wk6.at-1 .wk6-lobeL,.wk6.at-2 .wk6-lobeL,.wk6.at-3 .wk6-lobeR,.wk6.at-4 .wk6-lobeR{opacity:1}
+.wk6-track{fill:none;stroke:var(--color-rule-strong);stroke-width:1}
+.wk6-flow{fill:none;stroke:#666666;stroke-width:2;stroke-linecap:round;stroke-dasharray:.01 9;transition:stroke .35s}
+.wk6-arc.is-lit .wk6-flow{stroke:var(--pc)}
+.wk6-gap{fill:none;stroke:var(--color-grid);stroke-width:12}
+.wk6-comet{fill:none;stroke:var(--pc);stroke-width:3;stroke-linecap:round;stroke-dasharray:6 200;stroke-dashoffset:7;opacity:0;filter:drop-shadow(0 0 5px var(--pc))}
+.wk6-short .wk6-comet{stroke-dasharray:16 200;stroke-dashoffset:17}
+.wk6-cap{position:absolute;top:50%;transform:translate(-50%,-50%);font:400 11px/1.3 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--color-subtle);white-space:nowrap;pointer-events:none;transition:color .6s}
+.wk6-capL{left:26.5%}
+.wk6-capR{left:73.5%}
+.wk6.at-1 .wk6-capL,.wk6.at-2 .wk6-capL,.wk6.at-3 .wk6-capR,.wk6.at-4 .wk6-capR{color:var(--color-bright)}
+.wk6-st{position:absolute;z-index:2;cursor:pointer;display:grid;place-items:center;width:48px;height:48px;margin:-24px 0 0 -24px;box-sizing:border-box;border-radius:50%;background-color:var(--color-surface);border:1px solid var(--color-rule-strong);color:var(--color-subtle);transition:border-color .35s,background-color .35s,color .35s,transform .45s cubic-bezier(.22,1,.36,1)}
+.wk6-st.is-on{border-color:#8C8C8C;background-color:#1F1F1F;color:var(--color-bright);transform:scale(1.1)}
+.wk6-st::after{content:"";position:absolute;inset:-1px;border-radius:50%;opacity:0;pointer-events:none}
+.wk6-s1{left:14.46%;top:21.71%}
+.wk6-s2{left:14.46%;top:78.29%}
+.wk6-s3{left:85.54%;top:21.71%}
+.wk6-s4{left:85.54%;top:78.29%}
+.wk6-tag{position:absolute;z-index:3}
+.wk6-tL{right:calc(50% + .3947 * var(--fw) + 14px);top:50%;transform:translateY(-50%)}
+.wk6-tR{left:calc(50% + .3947 * var(--fw) + 14px);top:50%;transform:translateY(-50%)}
+.wk6-tT{left:50%;top:calc(50% - .1605 * var(--fw));transform:translate(-50%,-50%)}
+.wk6-tB{left:50%;top:calc(50% + .1605 * var(--fw));transform:translate(-50%,-50%)}
+.wk6-list{margin:0;padding:0;list-style:none}
+.wk6-item{position:absolute;z-index:2;width:250px;cursor:pointer;transform:translateY(-50%)}
+.wk6-i1,.wk6-i2{right:calc(50% + .3554 * var(--fw) + 40px);text-align:right}
+.wk6-i3,.wk6-i4{left:calc(50% + .3554 * var(--fw) + 40px)}
+.wk6-i1,.wk6-i3{top:calc(50% - .134 * var(--fw))}
+.wk6-i2,.wk6-i4{top:calc(50% + .134 * var(--fw))}
+.wk6-name{margin:0;font-size:20px;font-weight:400;line-height:1.2;letter-spacing:-0.02em;color:var(--color-muted);transition:color .35s}
+.wk6-desc{margin:6px 0 0;font-size:15px;line-height:1.45;color:var(--color-subtle);text-wrap:pretty;transition:color .35s}
+.wk6-item.is-on .wk6-name{color:var(--color-bright)}
+.wk6-item.is-on .wk6-desc{color:var(--color-muted)}
+.wk6-out{display:none;align-items:center;gap:8px;margin:10px 0 0;font:400 12px/1.3 var(--font-mono);color:var(--color-subtle)}
+/* Entre 1100 e 1279 px o desenho encolhe: as entregas ficam um pouco menores para caber no vão do cruzamento. */
+@media (min-width:1100px) and (max-width:1279px){.wk6 .wk-tag{padding:5px 10px;font-size:11px}}
+/* Abaixo de 1100 px o laço fica em cima e as quatro etapas vêm embaixo, em ordem; cada uma diz o que entrega. */
+@media (max-width:1099px){
+.wk6{height:auto;display:flex;flex-direction:column;gap:32px}
+.wk6-map{position:relative;left:auto;top:auto;transform:none;width:min(100%,600px);margin:0 auto}
+.wk6 .wk-tag{display:none}
+.wk6-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 32px}
+.wk6-item,.wk6-i1,.wk6-i2,.wk6-i3,.wk6-i4{position:static;width:auto;text-align:left;transform:none}
+.wk6-out{display:flex}
+}
+@media (max-width:600px){
+.wk6-list{grid-template-columns:minmax(0,1fr)}
+.wk6-st{width:40px;height:40px;margin:-20px 0 0 -20px}
+.wk6-cap{display:none}
+}
+
+/* Times · Versão 01 (simple): moldura fina, número, ícone em disco e texto na base. */
+.tm1{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:16px}
+.tm1-card{display:flex;min-width:0;padding:4px;border-radius:16px;background-color:var(--color-rule);transition:background-color .3s}
+.tm1-card:hover{background-color:var(--color-rule-strong)}
+.tm1-in{flex:1 1 auto;display:flex;flex-direction:column;justify-content:space-between;gap:48px;min-width:0;min-height:344px;padding:24px;border-radius:12px;background:var(--color-night)}
+.tm1-ic{flex:0 0 44px;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--color-rule)}
+
+/* Times · Versão 02 (surprise): cards quase encostados; no hover, o neon em três formas (classe tm-fx-*). */
+.tm2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:2px}
+.tm2-card{position:relative;z-index:0;min-width:0;--mx:160px;--my:120px;--ex:50px;--ey:50px;--px:.5;--py:.5}
+.tm2-card:hover{z-index:2}
+.tm2-red{--gc:174,60,255;--nl:225,200,255}
+.tm2-blue{--gc:61,77,255;--nl:190,230,255}
+.tm2-body{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:space-between;gap:56px;box-sizing:border-box;height:100%;min-height:clamp(264px,33vw,460px);padding:32px;border-radius:8px;background:var(--color-surface);overflow:hidden;isolation:isolate}
+.tm2-top{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
+.tm2-ico{flex:0 0 36px;display:block;width:36px;height:36px;color:var(--color-bright);transition:color .5s cubic-bezier(.22,1,.36,1)}
+.tm2-ico svg{display:block;overflow:visible}
+.tm2-name{margin:0;font-size:16px;font-weight:500;line-height:24px;color:var(--color-bright);transition:color .5s cubic-bezier(.22,1,.36,1)}
+.tm2-sub{margin:0;font-size:14px;font-weight:400;line-height:19px;letter-spacing:-0.01em;color:var(--color-subtle);transition:color .5s cubic-bezier(.22,1,.36,1)}
+.tm2-desc{position:relative;z-index:1}
+.tm2-large{margin:0;max-width:15em;font-size:clamp(24px,2.35vw,32px);font-weight:400;line-height:1.16;letter-spacing:-0.04em;color:#000000;opacity:0;transform:translateY(16px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+.tm2-small{position:absolute;left:0;right:0;bottom:0;margin:0;font-size:16px;line-height:24px;color:#858585;transition:opacity .35s cubic-bezier(.22,1,.36,1),transform .35s cubic-bezier(.22,1,.36,1)}
+.tm2-card:hover .tm2-small{opacity:0;transform:translateY(-12px)}
+.tm2-card:hover .tm2-large{opacity:1;transform:none;transition-delay:80ms}
+.tm2-fill,.tm2-spec,.tm2-edge,.tm2-glow,.tm2-leak,.tm2-wall,.tm2-shot{position:absolute;pointer-events:none}
+.tm2-glow{inset:0;z-index:0;border-radius:8px;opacity:0;translate:calc((var(--px) - .5) * 28px) calc((var(--py) - .5) * 28px);transition:opacity .5s cubic-bezier(.22,1,.36,1),translate .4s ease-out}
+.tm2-leak{left:0;top:0;z-index:0;width:440px;height:440px;margin:-220px 0 0 -220px;border-radius:50%;background:radial-gradient(closest-side,rgba(var(--gc),.62),rgba(var(--gc),.22) 55%,rgba(var(--gc),0));opacity:0;transform:translate3d(var(--mx),var(--my),0);transition:opacity .45s ease}
+.tm2-fill{inset:0;z-index:0;border-radius:inherit;background-size:200% 200%;opacity:0;clip-path:circle(0 at var(--ex) var(--ey));transition:clip-path .9s cubic-bezier(.3,.7,.2,1),opacity .35s ease}
+.tm2-red .tm2-fill{background-image:linear-gradient(135deg,#CDCCFF 0%,#EBCFFF 33%,#C3D2FF 66%,#E1C8FF 100%)}
+.tm2-blue .tm2-fill{background-image:linear-gradient(135deg,#9492FF 0%,#CFF4FF 33%,#AAAAFF 66%,#BEE6FF 100%)}
+.tm2-spec{left:0;top:0;z-index:0;width:560px;height:560px;margin:-280px 0 0 -280px;border-radius:50%;opacity:0;transform:translate3d(var(--mx),var(--my),0);transition:opacity .45s ease}
+.tm2-edge{inset:0;z-index:2;border-radius:inherit;padding:1.5px;opacity:0;transition:opacity .45s ease;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.tm2-wall{left:0;top:10%;bottom:10%;z-index:2;width:2px;border-radius:2px;background:linear-gradient(180deg,rgba(90,144,248,0),var(--color-blue) 22%,var(--color-blue) 78%,rgba(90,144,248,0));box-shadow:0 0 14px 1px rgba(90,144,248,.55);opacity:0;transform:scaleY(.4)}
+.tm2-shot{z-index:1;left:56%;font:500 13px/1 var(--font-mono);color:var(--color-red);opacity:0}
+
+/* Preenchimento: o gradiente pinta o card inteiro a partir do ponto por onde o cursor entrou. */
+.tm-fx-fill .tm2-card:hover .tm2-fill{opacity:1;clip-path:circle(160% at var(--ex) var(--ey))}
+.tm-fx-fill .tm2-spec{background:radial-gradient(closest-side,rgba(255,255,255,.5),rgba(255,255,255,0))}
+.tm-fx-fill .tm2-card:hover .tm2-spec{opacity:1}
+.tm-fx-fill .tm2-glow{box-shadow:0 0 70px 20px rgba(var(--gc),.45)}
+.tm-fx-fill .tm2-card:hover .tm2-glow{opacity:1}
+.tm-fx-fill .tm2-card:hover .tm2-ico,.tm-fx-fill .tm2-card:hover .tm2-name{color:#000000}
+.tm-fx-fill .tm2-card:hover .tm2-sub{color:rgba(0,0,0,.72)}
+
+/* Contorno: o card continua escuro; o gradiente corre pela borda e o brilho vaza em volta. */
+.tm-fx-line .tm2-large,.tm-fx-spot .tm2-large{color:var(--color-bright)}
+.tm-fx-line .tm2-red .tm2-edge{background:conic-gradient(from var(--tm-a) at 50% 50%,#EBCFFF,#AE3CFF,#C3D2FF,#E1C8FF,#CDCCFF,#AE3CFF,#EBCFFF)}
+.tm-fx-line .tm2-blue .tm2-edge{background:conic-gradient(from var(--tm-a) at 50% 50%,#CFF4FF,#3D4DFF,#AAAAFF,#BEE6FF,#9492FF,#3D4DFF,#CFF4FF)}
+.tm-fx-line .tm2-card:hover .tm2-edge{opacity:1}
+.tm-fx-line .tm2-spec{background:radial-gradient(closest-side,rgba(var(--nl),.16),rgba(var(--nl),0))}
+.tm-fx-line .tm2-card:hover .tm2-spec{opacity:1}
+.tm-fx-line .tm2-glow{box-shadow:0 0 26px 2px rgba(var(--gc),.55),0 0 80px 8px rgba(var(--gc),.3)}
+.tm-fx-line .tm2-card:hover .tm2-glow{opacity:1}
+.tm-fx-line .tm2-card:hover .tm2-ico,.tm-fx-spot .tm2-card:hover .tm2-ico{color:rgb(var(--nl))}
+
+/* Holofote: o neon só existe em volta do cursor, dentro do card, na borda e vazando pelo lado mais próximo. */
+.tm-fx-spot .tm2-spec{background:radial-gradient(closest-side,rgba(var(--nl),.5),rgba(var(--gc),.2) 52%,rgba(var(--gc),0))}
+.tm-fx-spot .tm2-card:hover .tm2-spec{opacity:1}
+.tm-fx-spot .tm2-edge{background:radial-gradient(320px circle at var(--mx) var(--my),rgb(var(--nl)),rgba(var(--nl),0) 72%)}
+.tm-fx-spot .tm2-card:hover .tm2-edge{opacity:1}
+.tm-fx-spot .tm2-card:hover .tm2-leak{opacity:1}
+
+/* Times · Versão 03 (middle): a Versão 02 em repouso, sem hover, com o espaço do GIF no miolo. */
+.tm3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:2px}
+.tm3-card{display:flex;flex-direction:column;gap:28px;min-width:0;padding:32px;border-radius:8px;background:var(--color-surface)}
+.tm-gif{position:relative;display:grid;place-items:center;width:100%;aspect-ratio:16 / 9;margin:0;overflow:hidden;border-radius:6px;border:1px dashed var(--color-rule-strong);background-color:var(--color-night);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,transparent 1px 11px)}
+.tm-gif-mark{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 12px;font:500 11px/1.4 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--color-subtle);text-align:center}
+
+@property --tm-a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes rai-up{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rai-left{from{opacity:0;transform:translateX(-80px)}to{opacity:1;transform:translateX(0)}}
+@keyframes rai-right{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:translateX(0)}}
+@keyframes rai-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes rai-orb{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:.12;transform:translateY(72px) scale(.9)}}
+@keyframes rai-fade{from{opacity:0}to{opacity:1}}
+@keyframes mq-run{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes wk-march{to{stroke-dashoffset:-9.01}}
+@keyframes wk-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes wk-ping{from{box-shadow:0 0 0 0 color-mix(in srgb,var(--pc) 45%,transparent)}to{box-shadow:0 0 0 12px color-mix(in srgb,var(--pc) 0%,transparent)}}
+@keyframes wk-arrive{0%{opacity:1;box-shadow:0 0 0 0 rgba(242,242,242,.5)}100%{opacity:1;box-shadow:0 0 0 14px rgba(242,242,242,0)}}
+@keyframes wk3-head{0%{transform:translateX(0);opacity:0}5%{opacity:1}95%{opacity:1}100%{transform:translateX(100%);opacity:0}}
+@keyframes wk3-back{0%{left:calc(100% - 14px);top:0;opacity:0}4%{left:100%;top:0;opacity:1}22%{left:100%;top:100%}78%{left:0;top:100%}96%{left:0;top:0;opacity:1}100%{left:14px;top:0;opacity:0}}
+@keyframes wk6-comet{0%{stroke-dashoffset:6;opacity:0}8%{opacity:1}90%{opacity:1}100%{stroke-dashoffset:-100;opacity:0}}
+@keyframes wk6-comet-s{0%{stroke-dashoffset:16;opacity:0}10%{opacity:1}88%{opacity:1}100%{stroke-dashoffset:-100;opacity:0}}
+@keyframes wk-scan{0%,100%{transform:translate(0,0)}25%{transform:translate(2px,-2px)}50%{transform:translate(-2px,-1px)}75%{transform:translate(1px,2px)}}
+@keyframes wk-open-l{0%,100%{transform:translateX(0)}40%{transform:translateX(-2.5px)}}
+@keyframes wk-open-r{0%,100%{transform:translateX(0)}40%{transform:translateX(2.5px)}}
+@keyframes wk-draw3{from{stroke-dashoffset:8.6}to{stroke-dashoffset:0}}
+@keyframes wk-draw4{from{stroke-dashoffset:36.3}to{stroke-dashoffset:0}}
+@keyframes tm-shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes tm-glow{0%,100%{box-shadow:0 0 70px 20px rgba(var(--gc),.45)}50%{box-shadow:0 0 90px 28px rgba(var(--gc),.25)}}
+@keyframes tm-glow-line{0%,100%{box-shadow:0 0 26px 2px rgba(var(--gc),.55),0 0 80px 8px rgba(var(--gc),.3)}50%{box-shadow:0 0 34px 4px rgba(var(--gc),.4),0 0 100px 14px rgba(var(--gc),.18)}}
+@keyframes tm-spin{to{--tm-a:360deg}}
+@keyframes tm-thrust{0%,30%,100%{transform:translate(0,0) rotate(0deg)}7%{transform:translate(-3px,3px) rotate(-5deg)}15%{transform:translate(5px,-5px) rotate(3deg)}}
+@keyframes tm-brace{0%,34%,100%{transform:translateY(0) scale(1)}10%{transform:translateY(-2px) scale(1.14)}22%{transform:translateY(0) scale(.97)}}
+@keyframes tm-recoil{0%,100%{transform:translate(0,0) rotate(0deg)}30%{transform:translate(-4px,4px) rotate(-9deg)}}
+@keyframes tm-shot{0%,10%{left:56%;opacity:0}16%{opacity:1}34%{left:calc(100% - 18px);opacity:1}40%,100%{left:calc(100% - 18px);opacity:0}}
+@keyframes tm-wall{0%,26%{opacity:0;transform:scaleY(.4)}36%{opacity:1;transform:scaleY(1)}62%{opacity:.75;transform:scaleY(1)}84%,100%{opacity:0;transform:scaleY(.7)}}
+@media (prefers-reduced-motion:no-preference){
+html{scroll-behavior:smooth}
+.in1,.in2,.in3,.in4{animation:rai-up .8s cubic-bezier(.2,.7,.2,1) both}
+.in2{animation-delay:.08s}
+.in3{animation-delay:.16s}
+.in4{animation-delay:.24s}
+.mq-track{animation:mq-run 64s linear infinite;will-change:transform}
+.wk-loop-flow,.wk6-flow{animation:wk-march 1.1s linear infinite}
+.wk-tag.is-fire{animation:wk-ping 1.1s ease-out both}
+.wk3.is-run .wk3-card.is-on .wk3-run{animation:wk-fill 3s linear both}
+.wk3.is-run .wk3-card.is-on .wk3-head,.wk3.is-run .wk3-card.is-on .wk3-glow{animation:wk3-head 3s linear both}
+.wk-rail.wk-turn.is-fire .wk-pulse{animation:wk3-back 1.1s linear both}
+.wk6-arc.is-fire .wk6-comet{animation:wk6-comet 1.1s cubic-bezier(.5,.05,.25,1) both}
+.wk6-arc.wk6-short.is-fire .wk6-comet{animation-name:wk6-comet-s}
+.wk6-st.is-on::after{animation:wk-arrive 1.1s cubic-bezier(.2,.7,.2,1) both}
+.is-on .wk-ico1{animation:wk-scan 1.5s cubic-bezier(.3,.7,.2,1) both}
+.is-on .wk-ico2 path:nth-child(1){animation:wk-open-l .9s cubic-bezier(.3,.7,.2,1) both}
+.is-on .wk-ico2 path:nth-child(2){animation:wk-open-r .9s cubic-bezier(.3,.7,.2,1) both}
+.is-on .wk-ico3 path:nth-child(2){stroke-dasharray:8.6;animation:wk-draw3 .7s .15s cubic-bezier(.3,.7,.2,1) both}
+.is-on .wk-ico4 path{stroke-dasharray:36.3;animation:wk-draw4 1.1s cubic-bezier(.4,0,.2,1) both}
+.tm2-spec,.tm2-leak{transition:opacity .45s ease,transform .16s ease-out}
+.tm-fx-fill .tm2-card:hover .tm2-fill{animation:tm-shimmer 5s ease-in-out infinite}
+.tm-fx-fill .tm2-card:hover .tm2-glow{animation:tm-glow 3s ease-in-out infinite}
+.tm-fx-line .tm2-card:hover .tm2-glow{animation:tm-glow-line 3s ease-in-out infinite}
+.tm-fx-line .tm2-card:hover .tm2-edge{animation:tm-spin 7s linear infinite}
+.tm2-red:hover .tm2-ico svg{animation:tm-thrust 2.6s cubic-bezier(.3,.7,.2,1) infinite}
+.tm2-blue:hover .tm2-ico svg{animation:tm-brace 2.6s cubic-bezier(.3,.7,.2,1) infinite}
+@supports (animation-timeline:view()){
+.rv,.rv2,.rv3,.rv4{animation:rai-up linear both;animation-duration:1ms;animation-timeline:view()}
+.rv{animation-range:entry 0% entry 40%}
+.rv2{animation-range:entry 8% entry 50%}
+.rv3{animation-range:entry 16% entry 60%}
+.rv4{animation-range:entry 24% entry 70%}
+.rvf{animation:rai-fade linear both;animation-duration:1ms;animation-timeline:view();animation-range:entry 20% entry 80%}
+.fl{animation:rai-left linear both;animation-duration:1ms;animation-timeline:view();animation-range:entry 0% entry 55%}
+.fr{animation:rai-right linear both;animation-duration:1ms;animation-timeline:view();animation-range:entry 0% entry 55%}
+.prog{animation:rai-grow linear both;animation-duration:1ms;animation-timeline:scroll()}
+.orbx{animation:rai-orb linear both;animation-duration:1ms;animation-timeline:view();animation-range:exit 0% exit 100%}
+.wk-bg{animation:rai-fade linear both;animation-duration:1ms;animation-timeline:view();animation-range:entry 0% entry 85%}
+}
+}
+/* A reação entre os cards (ataque e bloqueio) só existe com ponteiro fino e com os dois cards lado a lado. */
+@media (prefers-reduced-motion:no-preference) and (hover:hover) and (min-width:981px){
+.tm2:has(.tm2-red:hover) .tm2-shot{animation:tm-shot 2.6s linear infinite}
+.tm2:has(.tm2-red:hover) .tm2-wall{animation:tm-wall 2.6s ease-out infinite}
+.tm2:has(.tm2-red:hover) .tm2-blue .tm2-ico svg{animation:tm-brace 2.6s cubic-bezier(.3,.7,.2,1) .7s infinite}
+.tm2:has(.tm2-blue:hover) .tm2-wall{opacity:.85;transform:scaleY(1);transition:opacity .4s ease,transform .5s cubic-bezier(.22,1,.36,1)}
+.tm2:has(.tm2-blue:hover) .tm2-red .tm2-ico svg{animation:tm-recoil .7s cubic-bezier(.3,.7,.2,1) both}
+}
+@media (prefers-reduced-motion:reduce){
+.mq{-webkit-mask-image:none;mask-image:none}
+.mq-track{width:auto;justify-content:center}
+.mq-set{flex-wrap:wrap;justify-content:center;gap:4px 56px;padding:0}
+.mq-set[aria-hidden="true"]{display:none}
+.wk3-large,.wk3-small,.wk6-st,.wk6-lobe,.tm2-fill,.tm2-large,.tm2-small{transition-duration:.01s}
+}
+</style>
+</helmet>
+<div id="topo" style="position: relative; overflow-x: clip; background: var(--color-night); color: var(--color-bright); font-family: 'Geist', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased">
+<header class="hdr" style="background: var(--color-header); border-bottom: 1px solid var(--color-white-7)">
+<div style="max-width: 1344px; margin: 0 auto; padding: 10px clamp(20px, 4vw, 48px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px">
+<a href="Main.dc.html" style="flex: 1 1 0; display: flex; align-items: center; gap: 7px; min-height: 44px; font-size: 15px; font-weight: 500; letter-spacing: -0.01em; white-space: nowrap">
+<span aria-hidden="true" style="flex: 0 0 38px; display: block; width: 38px; height: 38px; margin-left: -5px"><dc-import name="LogoMini" fundo="transparent" hint-size="38px,38px"></dc-import></span>
+<span>Responsible AI</span>
+</a>
+<div class="navwrap">
+<nav aria-label="Principal" style="display: flex; align-items: center; gap: 2px; width: max-content; padding: 3px; background: var(--color-white-4); border: 1px solid var(--color-white-9); border-radius: 999px; font-size: 14px">
+<a class="nav" href="Main.dc.html" aria-current="page" style="background-color: var(--color-white-10); color: var(--color-bright)">Home</a>
+<a class="nav" href="#solucoes">Soluções</a>
+<a class="nav" href="#">Dados</a>
+<a class="nav" href="#">Integrações</a>
+</nav>
+</div>
+<div style="flex: 1 1 0; display: flex; justify-content: flex-end">
+<a class="btn" href="#comece" style="display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 10px; background: var(--color-bright); color: var(--color-night); font-size: 14px; font-weight: 500; white-space: nowrap">Simular um ataque</a>
+</div>
+</div>
+<div class="prog" aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--color-bright); transform: scaleX(0); transform-origin: 0 50%"></div>
+</header>
+
+<main style="max-width: 1344px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 48px)">
+
+<section style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 40px 48px; padding: 48px 0 96px">
+<div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 28px; padding-bottom: 36px">
+<div class="in1" style="font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-subtle)">Soluções de AI responsável para agentes conversacionais</div>
+<h1 class="in2" style="margin: 0; font-size: clamp(36px, 4.9vw, 80px); font-weight: 300; line-height: 1.04; letter-spacing: -0.035em">Simulamos ataques<span style="color: var(--color-red)">.</span><br>Protegemos sempre<span style="color: var(--color-blue)">.</span></h1>
+<p class="in3" style="margin: 0; max-width: 540px; font-size: 17px; line-height: 1.6; color: var(--color-muted); text-wrap: pretty">Em Responsible AI, pesquisamos, desenvolvemos e implementamos soluções que garantem a confiabilidade de agentes de AI por meio de guardrails: do ataque simulado à proteção de cada interação em ambiente produtivo.</p>
+<div class="in4" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px">
+<a class="btn" href="#times" style="display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border-radius: 10px; background: var(--color-bright); color: var(--color-night); font-size: 14px; font-weight: 500">Conhecer os times</a>
+<a class="lk" href="#solucoes" style="display: inline-flex; align-items: center; min-height: 44px; font-size: 14px">Produtos e soluções</a>
+</div>
+</div>
+<div class="orbx" style="flex: 1 1 420px; max-width: 600px; min-width: 0; margin: 0 auto; display: flex; flex-direction: column; gap: 14px">
+<div style="width: 100%; aspect-ratio: 1 / 1; overflow: hidden">
+<dc-import name="LogoLab1" fundo="#101010" hint-size="100%,100%"></dc-import>
+</div>
+<div style="display: flex; flex-wrap: nowrap; justify-content: center; gap: 24px; white-space: nowrap; font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px">
+<div style="display: flex; gap: 8px; color: var(--color-red)"><span aria-hidden="true">×</span><span>ataque</span></div>
+<div style="display: flex; gap: 8px; color: var(--color-blue)"><span aria-hidden="true">:</span><span>guardrails</span></div>
+<div style="display: flex; gap: 8px; color: var(--color-muted)"><span aria-hidden="true">*</span><span>agente</span></div>
+</div>
+</div>
+</section>
+
+<div class="wk-zone">
+<div class="wk-bg" aria-hidden="true"></div>
+
+<section aria-labelledby="parceiros-t" style="position: relative; z-index: 1; display: flex; flex-direction: column; gap: 20px; padding: 36px 0 44px; border-top: 1px solid var(--color-rule)">
+<h2 id="parceiros-t" style="margin: 0; text-align: center; font-size: 14px; font-weight: 400; line-height: 1.4; color: var(--color-subtle)">Parceiros, clientes e integrações</h2>
+<div class="mq">
+<div class="mq-track">
+<ul class="mq-set">
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="10" r="6.9"></circle><path d="M14.9 14.9 19.6 19.6"></path></svg>Quoril</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 5.5h9M3.5 11h15M7 16.5h6"></path></svg>Nimbrava</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M11 2.5 20 18.5H2z" fill="currentColor"></path></svg>Talvique</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M11 2.2 18.6 6.6v8.8L11 19.8 3.4 15.4V6.6z" fill="none" stroke="currentColor" stroke-width="2"></path><circle cx="11" cy="11" r="2.4" fill="currentColor"></circle></svg>Hexaluz</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M4 3h6.5a8 8 0 0 1 0 16H4z" fill="currentColor"></path></svg>Dorsova</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.3" cy="11" r="5.8"></circle><circle cx="13.7" cy="11" r="5.8"></circle></svg>Cendrava</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="15" height="15" rx="2.5"></rect><path d="M7.6 14.4 14.4 7.6"></path></svg>Pravessa</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M11 1.8 13.5 8.5 20.2 11 13.5 13.5 11 20.2 8.5 13.5 1.8 11 8.5 8.5z" fill="currentColor"></path></svg>Brisquel</li>
+</ul>
+<ul class="mq-set" aria-hidden="true">
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="10" r="6.9"></circle><path d="M14.9 14.9 19.6 19.6"></path></svg>Quoril</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M7 5.5h9M3.5 11h15M7 16.5h6"></path></svg>Nimbrava</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M11 2.5 20 18.5H2z" fill="currentColor"></path></svg>Talvique</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M11 2.2 18.6 6.6v8.8L11 19.8 3.4 15.4V6.6z" fill="none" stroke="currentColor" stroke-width="2"></path><circle cx="11" cy="11" r="2.4" fill="currentColor"></circle></svg>Hexaluz</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M4 3h6.5a8 8 0 0 1 0 16H4z" fill="currentColor"></path></svg>Dorsova</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.3" cy="11" r="5.8"></circle><circle cx="13.7" cy="11" r="5.8"></circle></svg>Cendrava</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="15" height="15" rx="2.5"></rect><path d="M7.6 14.4 14.4 7.6"></path></svg>Pravessa</li>
+<li class="mq-brand"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22"><path d="M11 1.8 13.5 8.5 20.2 11 13.5 13.5 11 20.2 8.5 13.5 1.8 11 8.5 8.5z" fill="currentColor"></path></svg>Brisquel</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section id="modelo" aria-labelledby="modelo-t" style="position: relative; z-index: 1; display: flex; flex-direction: column; gap: 48px; padding: 96px 0; border-top: 1px solid var(--color-rule); scroll-margin-top: 64px">
+<div class="rv" style="display: flex; flex-direction: column; gap: 16px">
+<div style="font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-subtle)">01 · Modelo de trabalho</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<h2 id="modelo-t" style="margin: 0; font-size: clamp(28px, 2.9vw, 42px); font-weight: 300; line-height: 1.1; letter-spacing: -0.025em">Um ciclo integrado</h2>
+<p style="margin: 0; max-width: 640px; font-size: 17px; line-height: 1.6; color: var(--color-muted); text-wrap: pretty">Da novidade à implementação prática: o trabalho contínuo de Responsible AI</p>
+</div>
+</div>
+
+<sc-if value="{{cicloV3}}" hint-placeholder-val="{{true}}">
+<div class="wk3 rv2 {{wkClass}}" role="group" aria-label="Ciclo de quatro etapas: pesquisar, desenvolver, implementar e monitorar, de volta a pesquisar">
+<svg class="wk-loop wk3-loop" aria-hidden="true"><rect class="wk-loop-track" x="0" y="0" width="100%" height="100%" rx="20"></rect><rect class="wk-loop-flow" x="0" y="0" width="100%" height="100%" rx="20"></rect></svg>
+<div class="wk3-row">
+
+<article class="wk3-card {{n1}} wk-c1" onMouseEnter="{{wk3In1}}" onMouseMove="{{tmMove}}" onMouseLeave="{{wk3Out}}" onClick="{{wkPin1}}">
+<div class="wk3-body">
+<span class="wk3-spec" aria-hidden="true"></span>
+<span class="wk3-glow" aria-hidden="true"></span>
+<span class="wk3-edge" aria-hidden="true"></span>
+<span class="wk3-run" aria-hidden="true"></span>
+<div class="wk3-top">
+<span class="wk3-ico" aria-hidden="true"><svg class="wk-ico wk-ico1" width="32" height="32" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.3 15.3 20.5 20.5"></path></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h3 class="wk3-name"><button type="button" class="wk-btn" aria-pressed="{{p1}}" onFocus="{{wkIn1}}" onBlur="{{wkOut}}">Pesquisar</button></h3>
+<p class="wk3-sub">Etapa 01</p>
+</div>
+</div>
+<div class="wk3-desc">
+<p class="wk3-small">Estudamos como agentes conversacionais falham.</p>
+<p class="wk3-large" aria-hidden="true">Estudamos como agentes conversacionais falham.</p>
+</div>
+<p class="wk3-out"><span>entrega</span><span class="wk-dot" aria-hidden="true"></span><span>falhas conhecidas</span></p>
+</div>
+<span class="wk3-head" aria-hidden="true"></span>
+</article>
+
+<article class="wk3-card {{n2}} wk-c2" onMouseEnter="{{wk3In2}}" onMouseMove="{{tmMove}}" onMouseLeave="{{wk3Out}}" onClick="{{wkPin2}}">
+<div class="wk3-body">
+<span class="wk3-spec" aria-hidden="true"></span>
+<span class="wk3-glow" aria-hidden="true"></span>
+<span class="wk3-edge" aria-hidden="true"></span>
+<span class="wk3-run" aria-hidden="true"></span>
+<div class="wk3-top">
+<span class="wk3-ico" aria-hidden="true"><svg class="wk-ico wk-ico2" width="32" height="32" viewBox="0 0 24 24"><path d="M8.5 7 3.5 12l5 5"></path><path d="M15.5 7l5 5-5 5"></path><path d="M13.5 5.5 10.5 18.5"></path></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h3 class="wk3-name"><button type="button" class="wk-btn" aria-pressed="{{p2}}" onFocus="{{wkIn2}}" onBlur="{{wkOut}}">Desenvolver</button></h3>
+<p class="wk3-sub">Etapa 02</p>
+</div>
+</div>
+<div class="wk3-desc">
+<p class="wk3-small">Transformamos cada falha em um guardrail testável e medido.</p>
+<p class="wk3-large" aria-hidden="true">Transformamos cada falha em um guardrail testável e medido.</p>
+</div>
+<p class="wk3-out"><span>entrega</span><span class="wk-dot" aria-hidden="true"></span><span>guardrails testados</span></p>
+</div>
+<span class="wk3-head" aria-hidden="true"></span>
+</article>
+
+<article class="wk3-card {{n3}} wk-c3" onMouseEnter="{{wk3In3}}" onMouseMove="{{tmMove}}" onMouseLeave="{{wk3Out}}" onClick="{{wkPin3}}">
+<div class="wk3-body">
+<span class="wk3-spec" aria-hidden="true"></span>
+<span class="wk3-glow" aria-hidden="true"></span>
+<span class="wk3-edge" aria-hidden="true"></span>
+<span class="wk3-run" aria-hidden="true"></span>
+<div class="wk3-top">
+<span class="wk3-ico" aria-hidden="true"><svg class="wk-ico wk-ico3" width="32" height="32" viewBox="0 0 24 24"><path d="M6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 3.5V16A2.5 2.5 0 0 1 4 13.5v-7A2.5 2.5 0 0 1 6.5 4z"></path><path d="M9 10.2l2.1 2.1 3.9-4"></path></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h3 class="wk3-name"><button type="button" class="wk-btn" aria-pressed="{{p3}}" onFocus="{{wkIn3}}" onBlur="{{wkOut}}">Implementar</button></h3>
+<p class="wk3-sub">Etapa 03</p>
+</div>
+</div>
+<div class="wk3-desc">
+<p class="wk3-small">Colocamos os guardrails em produção, dentro de cada conversa.</p>
+<p class="wk3-large" aria-hidden="true">Colocamos os guardrails em produção, dentro de cada conversa.</p>
+</div>
+<p class="wk3-out"><span>entrega</span><span class="wk-dot" aria-hidden="true"></span><span>conversas em produção</span></p>
+</div>
+<span class="wk3-head" aria-hidden="true"></span>
+</article>
+
+<article class="wk3-card {{n4}} wk-c4" onMouseEnter="{{wk3In4}}" onMouseMove="{{tmMove}}" onMouseLeave="{{wk3Out}}" onClick="{{wkPin4}}">
+<div class="wk3-body">
+<span class="wk3-spec" aria-hidden="true"></span>
+<span class="wk3-glow" aria-hidden="true"></span>
+<span class="wk3-edge" aria-hidden="true"></span>
+<span class="wk3-run" aria-hidden="true"></span>
+<div class="wk3-top">
+<span class="wk3-ico" aria-hidden="true"><svg class="wk-ico wk-ico4" width="32" height="32" viewBox="0 0 24 24"><path d="M2.5 12.5h4L9 6l4.5 12.5L16 12.5h5.5"></path></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h3 class="wk3-name"><button type="button" class="wk-btn" aria-pressed="{{p4}}" onFocus="{{wkIn4}}" onBlur="{{wkOut}}">Monitorar</button></h3>
+<p class="wk3-sub">Etapa 04</p>
+</div>
+</div>
+<div class="wk3-desc">
+<p class="wk3-small">Analytics by design: métricas essenciais para decidir com dados.</p>
+<p class="wk3-large" aria-hidden="true">Analytics by design: métricas essenciais para decidir com dados.</p>
+</div>
+<p class="wk3-out"><span>entrega</span><span class="wk-dot" aria-hidden="true"></span><span>métricas essenciais</span></p>
+</div>
+<span class="wk3-head" aria-hidden="true"></span>
+</article>
+
+</div>
+<div class="wk-tag wk3-tag wk3-t1 {{e1}} wk-c1" role="img" aria-label="De Pesquisar para Desenvolver: falhas conhecidas"><span class="wk-dot" aria-hidden="true"></span><span aria-hidden="true">falhas conhecidas</span></div>
+<div class="wk-tag wk3-tag wk3-t2 {{e2}} wk-c2" role="img" aria-label="De Desenvolver para Implementar: guardrails testados"><span class="wk-dot" aria-hidden="true"></span><span aria-hidden="true">guardrails testados</span></div>
+<div class="wk-tag wk3-tag wk3-t3 {{e3}} wk-c3" role="img" aria-label="De Implementar para Monitorar: conversas em produção"><span class="wk-dot" aria-hidden="true"></span><span aria-hidden="true">conversas em produção</span></div>
+<div class="wk-tag wk3-tag wk3-t4 {{e4}} wk-c4" role="img" aria-label="De Monitorar de volta para Pesquisar: métricas essenciais"><span class="wk-dot" aria-hidden="true"></span><span aria-hidden="true">métricas essenciais</span></div>
+<svg class="wk-arw wk3-dir wk3-d1" aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><path d="M6.5 1.5 3 5l3.5 3.5"></path></svg>
+<svg class="wk-arw wk3-dir wk3-d2" aria-hidden="true" width="10" height="10" viewBox="0 0 10 10"><path d="M6.5 1.5 3 5l3.5 3.5"></path></svg>
+<span class="wk-rail wk-turn wk3-rail {{e4}} wk-c4" aria-hidden="true"><span class="wk-pulse"></span></span>
+</div>
+</sc-if>
+
+<sc-if value="{{cicloV6}}" hint-placeholder-val="{{false}}">
+<div class="wk6 rv2 {{wkClass}}" role="group" aria-label="Ciclo de quatro etapas: pesquisar, desenvolver, implementar e monitorar, de volta a pesquisar">
+<div class="wk6-map">
+<svg class="wk6-svg" viewBox="0 0 760 360" aria-hidden="true">
+<path class="wk6-lobe wk6-lobeL" d="M380 180C340.7 214 301.5 247.9 265.2 271.9C228.9 296 195.6 310 167.9 310C140.1 310 117.9 296 102.8 271.9C87.8 247.9 80 214 80 180C80 146 87.8 112.1 102.8 88.1C117.9 64 140.1 50 167.9 50C195.6 50 228.9 64 265.2 88.1C301.5 112.1 340.7 146 380 180Z"></path>
+<path class="wk6-lobe wk6-lobeR" d="M380 180C419.3 214 458.5 247.9 494.8 271.9C531.1 296 564.4 310 592.1 310C619.9 310 642.1 296 657.2 271.9C672.2 247.9 680 214 680 180C680 146 672.2 112.1 657.2 88.1C642.1 64 619.9 50 592.1 50C564.4 50 531.1 64 494.8 88.1C458.5 112.1 419.3 146 380 180Z"></path>
+<g class="wk6-arc {{e4}} wk-c4"><path class="wk6-track" d="M650.1 281.8C633.9 302 611.3 312.1 583.9 309.6C556.5 307.1 524.3 292.1 489.5 268.3C454.7 244.6 417.4 212.4 380 180C342.6 147.6 305.3 115.4 270.5 91.7C235.7 67.9 203.5 52.9 176.1 50.4C148.7 47.9 126.1 58 109.9 78.2"></path><path class="wk6-flow" d="M650.1 281.8C633.9 302 611.3 312.1 583.9 309.6C556.5 307.1 524.3 292.1 489.5 268.3C454.7 244.6 417.4 212.4 380 180C342.6 147.6 305.3 115.4 270.5 91.7C235.7 67.9 203.5 52.9 176.1 50.4C148.7 47.9 126.1 58 109.9 78.2"></path><path class="wk6-comet" pathLength="100" d="M650.1 281.8C633.9 302 611.3 312.1 583.9 309.6C556.5 307.1 524.3 292.1 489.5 268.3C454.7 244.6 417.4 212.4 380 180C342.6 147.6 305.3 115.4 270.5 91.7C235.7 67.9 203.5 52.9 176.1 50.4C148.7 47.9 126.1 58 109.9 78.2"></path></g>
+<g class="wk6-arc wk6-short {{e1}} wk-c1"><path class="wk6-track" d="M109.9 78.2C96.8 94.3 87.9 116.7 83.4 141.6C78.9 166.4 78.9 193.6 83.4 218.4C87.9 243.3 96.8 265.7 109.9 281.8"></path><path class="wk6-flow" d="M109.9 78.2C96.8 94.3 87.9 116.7 83.4 141.6C78.9 166.4 78.9 193.6 83.4 218.4C87.9 243.3 96.8 265.7 109.9 281.8"></path><path class="wk6-comet" pathLength="100" d="M109.9 78.2C96.8 94.3 87.9 116.7 83.4 141.6C78.9 166.4 78.9 193.6 83.4 218.4C87.9 243.3 96.8 265.7 109.9 281.8"></path></g>
+<g class="wk6-arc wk6-short {{e3}} wk-c3"><path class="wk6-track" d="M650.1 78.2C663.2 94.3 672.1 116.7 676.6 141.6C681.1 166.4 681.1 193.6 676.6 218.4C672.1 243.3 663.2 265.7 650.1 281.8"></path><path class="wk6-flow" d="M650.1 78.2C663.2 94.3 672.1 116.7 676.6 141.6C681.1 166.4 681.1 193.6 676.6 218.4C672.1 243.3 663.2 265.7 650.1 281.8"></path><path class="wk6-comet" pathLength="100" d="M650.1 78.2C663.2 94.3 672.1 116.7 676.6 141.6C681.1 166.4 681.1 193.6 676.6 218.4C672.1 243.3 663.2 265.7 650.1 281.8"></path></g>
+<path class="wk6-gap" d="M369.2 189.4 390.8 170.6"></path>
+<g class="wk6-arc {{e2}} wk-c2"><path class="wk6-track" d="M109.9 281.8C126.1 302 148.7 312.1 176.1 309.6C203.5 307.1 235.7 292.1 270.5 268.3C305.3 244.6 342.6 212.4 380 180C417.4 147.6 454.7 115.4 489.5 91.7C524.3 67.9 556.5 52.9 583.9 50.4C611.3 47.9 633.9 58 650.1 78.2"></path><path class="wk6-flow" d="M109.9 281.8C126.1 302 148.7 312.1 176.1 309.6C203.5 307.1 235.7 292.1 270.5 268.3C305.3 244.6 342.6 212.4 380 180C417.4 147.6 454.7 115.4 489.5 91.7C524.3 67.9 556.5 52.9 583.9 50.4C611.3 47.9 633.9 58 650.1 78.2"></path><path class="wk6-comet" pathLength="100" d="M109.9 281.8C126.1 302 148.7 312.1 176.1 309.6C203.5 307.1 235.7 292.1 270.5 268.3C305.3 244.6 342.6 212.4 380 180C417.4 147.6 454.7 115.4 489.5 91.7C524.3 67.9 556.5 52.9 583.9 50.4C611.3 47.9 633.9 58 650.1 78.2"></path></g>
+</svg>
+<span class="wk6-cap wk6-capL" aria-hidden="true">antes da produção</span>
+<span class="wk6-cap wk6-capR" aria-hidden="true">em produção</span>
+<span class="wk6-st wk6-s1 {{n1}}" aria-hidden="true" onMouseEnter="{{wkIn1}}" onMouseLeave="{{wkOut}}" onClick="{{wkPin1}}"><svg class="wk-ico wk-ico1" width="22" height="22" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.3 15.3 20.5 20.5"></path></svg></span>
+<span class="wk6-st wk6-s2 {{n2}}" aria-hidden="true" onMouseEnter="{{wkIn2}}" onMouseLeave="{{wkOut}}" onClick="{{wkPin2}}"><svg class="wk-ico wk-ico2" width="22" height="22" viewBox="0 0 24 24"><path d="M8.5 7 3.5 12l5 5"></path><path d="M15.5 7l5 5-5 5"></path><path d="M13.5 5.5 10.5 18.5"></path></svg></span>
+<span class="wk6-st wk6-s3 {{n3}}" aria-hidden="true" onMouseEnter="{{wkIn3}}" onMouseLeave="{{wkOut}}" onClick="{{wkPin3}}"><svg class="wk-ico wk-ico3" width="22" height="22" viewBox="0 0 24 24"><path d="M6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 3.5V16A2.5 2.5 0 0 1 4 13.5v-7A2.5 2.5 0 0 1 6.5 4z"></path><path d="M9 10.2l2.1 2.1 3.9-4"></path></svg></span>
+<span class="wk6-st wk6-s4 {{n4}}" aria-hidden="true" onMouseEnter="{{wkIn4}}" onMouseLeave="{{wkOut}}" onClick="{{wkPin4}}"><svg class="wk-ico wk-ico4" width="22" height="22" viewBox="0 0 24 24"><path d="M2.5 12.5h4L9 6l4.5 12.5L16 12.5h5.5"></path></svg></span>
+</div>
+<div class="wk-tag wk6-tag wk6-tL {{e1}} wk-c1" role="img" aria-label="De Pesquisar para Desenvolver: falhas conhecidas"><span class="wk-dot" aria-hidden="true"></span><span aria-hidden="true">falhas conhecidas</span><svg class="wk-arw" aria-hidden="true" width="12" height="12" viewBox="0 0 12 12"><path d="M6 2v8M2.5 6.5 6 10l3.5-3.5"></path></svg></div>
+<div class="wk-tag wk6-tag wk6-tT {{e2}} wk-c2" role="img" aria-label="De Desenvolver para Implementar: guardrails testados"><span class="wk-dot" aria-hidden="true"></span><span aria-hidden="true">guardrails testados</span><svg class="wk-arw" aria-hidden="true" width="12" height="12" viewBox="0 0 12 12"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5"></path></svg></div>
+<div class="wk-tag wk6-tag wk6-tR {{e3}} wk-c3" role="img" aria-label="De Implementar para Monitorar: conversas em produção"><span class="wk-dot" aria-hidden="true"></span><span aria-hidden="true">conversas em produção</span><svg class="wk-arw" aria-hidden="true" width="12" height="12" viewBox="0 0 12 12"><path d="M6 2v8M2.5 6.5 6 10l3.5-3.5"></path></svg></div>
+<div class="wk-tag wk6-tag wk6-tB {{e4}} wk-c4" role="img" aria-label="De Monitorar de volta para Pesquisar: métricas essenciais"><svg class="wk-arw" aria-hidden="true" width="12" height="12" viewBox="0 0 12 12"><path d="M10 6H2M5.5 2.5 2 6l3.5 3.5"></path></svg><span class="wk-dot" aria-hidden="true"></span><span aria-hidden="true">métricas essenciais</span></div>
+<ol class="wk6-list">
+<li class="wk6-item wk6-i1 {{n1}} wk-c1" onMouseEnter="{{wkIn1}}" onMouseLeave="{{wkOut}}" onClick="{{wkPin1}}">
+<h3 class="wk6-name"><button type="button" class="wk-btn" aria-pressed="{{p1}}" onFocus="{{wkIn1}}" onBlur="{{wkOut}}">Pesquisar</button></h3>
+<p class="wk6-desc"><span class="wk-sr">Antes da produção. </span>Estudamos como agentes conversacionais falham.</p>
+<p class="wk6-out"><span>entrega</span><span class="wk-dot" aria-hidden="true"></span><span>falhas conhecidas</span></p>
+</li>
+<li class="wk6-item wk6-i2 {{n2}} wk-c2" onMouseEnter="{{wkIn2}}" onMouseLeave="{{wkOut}}" onClick="{{wkPin2}}">
+<h3 class="wk6-name"><button type="button" class="wk-btn" aria-pressed="{{p2}}" onFocus="{{wkIn2}}" onBlur="{{wkOut}}">Desenvolver</button></h3>
+<p class="wk6-desc"><span class="wk-sr">Antes da produção. </span>Transformamos cada falha em um guardrail testável e medido.</p>
+<p class="wk6-out"><span>entrega</span><span class="wk-dot" aria-hidden="true"></span><span>guardrails testados</span></p>
+</li>
+<li class="wk6-item wk6-i3 {{n3}} wk-c3" onMouseEnter="{{wkIn3}}" onMouseLeave="{{wkOut}}" onClick="{{wkPin3}}">
+<h3 class="wk6-name"><button type="button" class="wk-btn" aria-pressed="{{p3}}" onFocus="{{wkIn3}}" onBlur="{{wkOut}}">Implementar</button></h3>
+<p class="wk6-desc"><span class="wk-sr">Em produção. </span>Colocamos os guardrails em produção, dentro de cada conversa.</p>
+<p class="wk6-out"><span>entrega</span><span class="wk-dot" aria-hidden="true"></span><span>conversas em produção</span></p>
+</li>
+<li class="wk6-item wk6-i4 {{n4}} wk-c4" onMouseEnter="{{wkIn4}}" onMouseLeave="{{wkOut}}" onClick="{{wkPin4}}">
+<h3 class="wk6-name"><button type="button" class="wk-btn" aria-pressed="{{p4}}" onFocus="{{wkIn4}}" onBlur="{{wkOut}}">Monitorar</button></h3>
+<p class="wk6-desc"><span class="wk-sr">Em produção. </span>Analytics by design: métricas essenciais para decidir com dados.</p>
+<p class="wk6-out"><span>entrega</span><span class="wk-dot" aria-hidden="true"></span><span>métricas essenciais</span></p>
+</li>
+</ol>
+</div>
+</sc-if>
+</section>
+
+</div>
+
+<section id="times" aria-labelledby="times-t" style="display: flex; flex-direction: column; gap: 48px; padding: 96px 0; border-top: 1px solid var(--color-rule); scroll-margin-top: 64px">
+<div class="rv" style="display: flex; flex-direction: column; gap: 16px">
+<div style="font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-subtle)">02 · Times</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<h2 id="times-t" style="margin: 0; font-size: clamp(28px, 2.9vw, 42px); font-weight: 300; line-height: 1.1; letter-spacing: -0.025em">Dois times, um propósito</h2>
+<p style="margin: 0; max-width: 640px; font-size: 17px; line-height: 1.6; color: var(--color-muted); text-wrap: pretty">O Red Team procura a falha e o Blue Team corrige: o que um descobre vira backlog do outro.</p>
+</div>
+</div>
+
+<sc-if value="{{cardsV1}}" hint-placeholder-val="{{false}}">
+<div class="tm1">
+
+<article class="tm1-card fl">
+<div class="tm1-in">
+<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+<span style="font-size: 28px; font-weight: 300; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums">01.</span>
+<span class="tm1-ic" aria-hidden="true" style="color: var(--color-red)"><svg width="22" height="22" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M30.5 5.5v3.6L15.7 23.9M30.5 5.5h-3.6L12.1 20.3"></path><path d="M9.2 18.8l8 8"></path><path d="M12.6 23.4 8 28"></path><circle cx="6.4" cy="29.6" r="1.9"></circle></svg></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-subtle)">Ofensiva · antes da produção</p>
+<h3 style="margin: 0; font-size: clamp(24px, 2.3vw, 32px); font-weight: 300; line-height: 1.15; letter-spacing: -0.02em">Red Team</h3>
+<p style="margin: 0; max-width: 560px; font-size: 15px; line-height: 1.6; color: var(--color-muted); text-wrap: pretty">Ataca os agentes antes que alguém de fora ataque. Cria agentes de ataque que simulam adversários reais em conversas com os agentes da companhia, turno a turno, até descobrir onde eles cedem.</p>
+</div>
+</div>
+</article>
+
+<article class="tm1-card fr">
+<div class="tm1-in">
+<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+<span style="font-size: 28px; font-weight: 300; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums">02.</span>
+<span class="tm1-ic" aria-hidden="true" style="color: var(--color-blue)"><svg width="22" height="22" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4.5 29.5 8.8v8.4c0 6.9-4.6 11.6-11.5 14.3C11.1 28.8 6.5 24.1 6.5 17.2V8.8z"></path><circle cx="18" cy="14.4" r="1.7" fill="currentColor" stroke="none"></circle><circle cx="18" cy="20.6" r="1.7" fill="currentColor" stroke="none"></circle></svg></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-family: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-subtle)">Defensiva · em produção</p>
+<h3 style="margin: 0; font-size: clamp(24px, 2.3vw, 32px); font-weight: 300; line-height: 1.15; letter-spacing: -0.02em">Blue Team</h3>
+<p style="margin: 0; max-width: 560px; font-size: 15px; line-height: 1.6; color: var(--color-muted); text-wrap: pretty">Protege cada conversa entre clientes e agentes. Implementa os guardrails que avaliam o que entra e o que sai de cada interação entre clientes e agentes, em produção e em tempo real.</p>
+</div>
+</div>
+</article>
+
+</div>
+</sc-if>
+
+<sc-if value="{{cardsV2}}" hint-placeholder-val="{{true}}">
+<div class="tm2 {{neonClass}}">
+
+<article class="tm2-card tm2-red fl" onMouseEnter="{{tmEnter}}" onMouseMove="{{tmMove}}" onMouseLeave="{{tmLeave}}">
+<span class="tm2-glow" aria-hidden="true"></span>
+<span class="tm2-leak" aria-hidden="true"></span>
+<div class="tm2-body">
+<span class="tm2-fill" aria-hidden="true"></span>
+<span class="tm2-spec" aria-hidden="true"></span>
+<span class="tm2-edge" aria-hidden="true"></span>
+<span class="tm2-shot" aria-hidden="true" style="top: 44%">×</span>
+<span class="tm2-shot" aria-hidden="true" style="top: 52%; animation-delay: 0.14s">×</span>
+<span class="tm2-shot" aria-hidden="true" style="top: 60%; animation-delay: 0.28s">×</span>
+<div class="tm2-top">
+<span class="tm2-ico" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M30.5 5.5v3.6L15.7 23.9M30.5 5.5h-3.6L12.1 20.3"></path><path d="M9.2 18.8l8 8"></path><path d="M12.6 23.4 8 28"></path><circle cx="6.4" cy="29.6" r="1.9"></circle></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h3 class="tm2-name">Red Team</h3>
+<p class="tm2-sub">Ofensiva · antes da produção</p>
+</div>
+</div>
+<div class="tm2-desc">
+<p class="tm2-small">Ataca os agentes antes que alguém de fora ataque.</p>
+<p class="tm2-large" aria-hidden="true">Ataca os agentes antes que alguém de fora ataque.</p>
+</div>
+</div>
+</article>
+
+<article class="tm2-card tm2-blue fr" onMouseEnter="{{tmEnter}}" onMouseMove="{{tmMove}}" onMouseLeave="{{tmLeave}}">
+<span class="tm2-glow" aria-hidden="true"></span>
+<span class="tm2-leak" aria-hidden="true"></span>
+<div class="tm2-body">
+<span class="tm2-fill" aria-hidden="true"></span>
+<span class="tm2-spec" aria-hidden="true"></span>
+<span class="tm2-edge" aria-hidden="true"></span>
+<span class="tm2-wall" aria-hidden="true"></span>
+<div class="tm2-top">
+<span class="tm2-ico" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4.5 29.5 8.8v8.4c0 6.9-4.6 11.6-11.5 14.3C11.1 28.8 6.5 24.1 6.5 17.2V8.8z"></path><circle cx="18" cy="14.4" r="1.6" fill="currentColor" stroke="none"></circle><circle cx="18" cy="20.6" r="1.6" fill="currentColor" stroke="none"></circle></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h3 class="tm2-name">Blue Team</h3>
+<p class="tm2-sub">Defensiva · em produção</p>
+</div>
+</div>
+<div class="tm2-desc">
+<p class="tm2-small">Protege cada conversa entre clientes e agentes.</p>
+<p class="tm2-large" aria-hidden="true">Protege cada conversa entre clientes e agentes.</p>
+</div>
+</div>
+</article>
+
+</div>
+</sc-if>
+
+<sc-if value="{{cardsV3}}" hint-placeholder-val="{{false}}">
+<div class="tm3">
+
+<article class="tm3-card fl">
+<div class="tm2-top">
+<span class="tm2-ico" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M30.5 5.5v3.6L15.7 23.9M30.5 5.5h-3.6L12.1 20.3"></path><path d="M9.2 18.8l8 8"></path><path d="M12.6 23.4 8 28"></path><circle cx="6.4" cy="29.6" r="1.9"></circle></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h3 class="tm2-name">Red Team</h3>
+<p class="tm2-sub">Ofensiva · antes da produção</p>
+</div>
+</div>
+<figure class="tm-gif" role="img" aria-label="Espaço reservado para o GIF do Red Team, proporção 16:9">
+<span class="tm-gif-mark" aria-hidden="true"><span>Inserir GIF · Red Team</span><span>16:9 · 1280 × 720</span></span>
+</figure>
+<p style="margin: 0; font-size: 16px; line-height: 24px; color: #858585">Ataca os agentes antes que alguém de fora ataque.</p>
+</article>
+
+<article class="tm3-card fr">
+<div class="tm2-top">
+<span class="tm2-ico" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4.5 29.5 8.8v8.4c0 6.9-4.6 11.6-11.5 14.3C11.1 28.8 6.5 24.1 6.5 17.2V8.8z"></path><circle cx="18" cy="14.4" r="1.6" fill="currentColor" stroke="none"></circle><circle cx="18" cy="20.6" r="1.6" fill="currentColor" stroke="none"></circle></svg></span>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<h3 class="tm2-name">Blue Team</h3>
+<p class="tm2-sub">Defensiva · em produção</p>
+</div>
+</div>
+<figure class="tm-gif" role="img" aria-label="Espaço reservado para o GIF do Blue Team, proporção 16:9">
+<span class="tm-gif-mark" aria-hidden="true"><span>Inserir GIF · Blue Team</span><span>16:9 · 1280 × 720</span></span>
+</figure>
+<p style="margin: 0; font-size: 16px; line-height: 24px; color: #858585">Protege cada conversa entre clientes e agentes.</p>
+</article>
+
+</div>
+</sc-if>
+</section>
+
+</main>
+
+<footer style="max-width: 1344px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 48px)">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 32px; padding: 16px 0 20px; border-top: 1px solid var(--color-rule); font-size: 13px; color: var(--color-subtle)">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; min-height: 44px">
+<span aria-hidden="true" style="display: flex; align-items: center; justify-content: center; width: 14px; height: 14px; box-sizing: border-box; border: 1.25px solid var(--color-muted); border-radius: 50%"><span style="width: 4px; height: 4px; border-radius: 50%; background: var(--color-muted)"></span></span>
+<span style="color: var(--color-muted)">Responsible AI</span>
+<span>· [NOME DA COMPANHIA]</span>
+</div>
+<nav aria-label="Rodapé" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px">
+<a class="ft" href="Main.dc.html" aria-current="page" style="display: inline-flex; align-items: center; min-height: 44px; color: var(--color-bright)">Home</a>
+<a class="ft" href="#" style="display: inline-flex; align-items: center; min-height: 44px">Dados</a>
+<a class="ft" href="#" style="display: inline-flex; align-items: center; min-height: 44px">Playground</a>
+<a class="ft" href="#" style="display: inline-flex; align-items: center; min-height: 44px">Integrações</a>
+</nav>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px">
+<span>[CANAL DO TIME]</span>
+<span>[E-MAIL DO TIME]</span>
+<a class="ft" href="#topo" style="display: inline-flex; align-items: center; min-height: 44px">Voltar ao topo ↑</a>
+</div>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;versaoCiclo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;03-cartoes&quot;,&quot;06-laco&quot;],&quot;default&quot;:&quot;06-laco&quot;,&quot;section&quot;:&quot;Modelo · ciclo&quot;},&quot;versaoCards&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;01-simple&quot;,&quot;02-surprise&quot;,&quot;03-middle&quot;],&quot;default&quot;:&quot;03-middle&quot;,&quot;section&quot;:&quot;Times · cards&quot;},&quot;efeitoNeon&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;preenchimento&quot;,&quot;contorno&quot;,&quot;holofote&quot;],&quot;default&quot;:&quot;preenchimento&quot;,&quot;section&quot;:&quot;Times · Versão 02&quot;},&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:2864}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    var self = this;
+    // Ciclo do Modelo de trabalho, igual nas duas versões. step = etapa da vez no modo automático; fire = entrega
+    // em viagem (a que sai da etapa de mesmo índice); hold = etapa sob o cursor ou com foco; pin = etapa fixada com
+    // clique (-1 = nenhuma); run = o ciclo está andando sozinho, e é ele quem liga as animações de progresso.
+    this.state = { step: 0, fire: -1, hold: -1, pin: -1, run: false };
+    this._wkIn = [0, 1, 2, 3].map(function (i) { return function () { self.wkHold(i); }; });
+    this._wkPin = [0, 1, 2, 3].map(function (i) { return function () { self.wkPin(i); }; });
+    this._wkOut = function () { self.wkRelease(); };
+    // Cards (times, Versão 02, e ciclo, Versão 03): a posição do cursor vai para o card como variável de CSS.
+    this._tmEnter = function (e) { self.tmTrack(e, true); };
+    this._tmMove = function (e) { self.tmTrack(e, false); };
+    this._tmLeave = function (e) { self.tmTrack(e, true); };
+    // Os cards do ciclo fazem as duas coisas: seguram a etapa e acompanham o cursor.
+    this._wk3In = [0, 1, 2, 3].map(function (i) { return function (e) { self.tmTrack(e, true); self.wkHold(i); }; });
+    this._wk3Out = function (e) { self.tmTrack(e, true); self.wkRelease(); };
+  }
+
+  componentDidMount() {
+    var self = this;
+    try { this._mq = window.matchMedia('(prefers-reduced-motion: reduce)'); } catch (e) { this._mq = null; }
+    this._replan = function () { self.wkPlan(); };
+    if (this._mq && this._mq.addEventListener) this._mq.addEventListener('change', this._replan);
+    document.addEventListener('visibilitychange', this._replan);
+    // O ciclo só anda sozinho enquanto a seção está na tela. A seção existe em todas as versões do tweak.
+    this._seen = true;
+    var el = document.getElementById('modelo');
+    if (el && typeof IntersectionObserver !== 'undefined') {
+      this._seen = false;
+      this._io = new IntersectionObserver(function (es) {
+        self._seen = es[es.length - 1].isIntersecting;
+        self.wkPlan();
+      }, { threshold: 0.25 });
+      this._io.observe(el);
+    }
+    this.wkPlan();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._wkT);
+    if (this._io) this._io.disconnect();
+    if (this._mq && this._mq.removeEventListener) this._mq.removeEventListener('change', this._replan);
+    document.removeEventListener('visibilitychange', this._replan);
+  }
+
+  // Modo automático: a etapa da vez fica acesa por 3 s, a entrega leva 1,1 s até a seguinte, e assim por diante,
+  // de Monitorar de volta a Pesquisar. Para com movimento reduzido, fora da tela, com a aba oculta e enquanto
+  // houver uma etapa sob o cursor, com foco ou fixada. run liga junto com a contagem, para o progresso desenhado
+  // em CSS (3 s) começar no mesmo instante que o tempo contado aqui.
+  wkPlan() {
+    var self = this, s = this.state;
+    clearTimeout(this._wkT);
+    var still = !!(this._mq && this._mq.matches);
+    if (still || !this._seen || document.hidden || s.hold >= 0 || s.pin >= 0) {
+      if (s.fire >= 0 || s.run) this.setState({ fire: -1, run: false });
+      return;
+    }
+    if (!s.run) {
+      this.setState({ run: true }, function () { self.wkPlan(); });
+      return;
+    }
+    if (s.fire >= 0) {
+      this._wkT = setTimeout(function () {
+        self.setState({ step: (self.state.step + 1) % 4, fire: -1 }, function () { self.wkPlan(); });
+      }, 1100);
+    } else {
+      this._wkT = setTimeout(function () {
+        self.setState({ fire: self.state.step }, function () { self.wkPlan(); });
+      }, 3000);
+    }
+  }
+
+  wkHold(i) {
+    var s = this.state;
+    clearTimeout(this._wkT);
+    if (s.hold !== i || s.fire >= 0 || s.run) this.setState({ hold: i, fire: -1, run: false });
+  }
+
+  // Ao sair, o ciclo automático continua da etapa que estava em destaque.
+  wkRelease() {
+    var self = this, s = this.state;
+    if (s.hold < 0) return;
+    this.setState({ hold: -1, step: s.pin >= 0 ? s.pin : s.hold }, function () { self.wkPlan(); });
+  }
+
+  wkPin(i) {
+    var self = this;
+    this.setState({ pin: this.state.pin === i ? -1 : i, step: i, fire: -1 }, function () { self.wkPlan(); });
+  }
+
+  // --mx/--my: cursor em px dentro do card; --px/--py: o mesmo de 0 a 1; --ex/--ey: ponto de entrada ou de saída,
+  // de onde o preenchimento abre e para onde ele fecha. Direto no estilo do card, sem redesenhar a página.
+  tmTrack(e, edge) {
+    var el = e.currentTarget;
+    if (!el || !el.getBoundingClientRect) return;
+    var r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    var x = e.clientX - r.left, y = e.clientY - r.top, st = el.style;
+    st.setProperty('--mx', x.toFixed(1) + 'px');
+    st.setProperty('--my', y.toFixed(1) + 'px');
+    st.setProperty('--px', Math.max(0, Math.min(1, x / r.width)).toFixed(3));
+    st.setProperty('--py', Math.max(0, Math.min(1, y / r.height)).toFixed(3));
+    if (edge) {
+      st.setProperty('--ex', x.toFixed(1) + 'px');
+      st.setProperty('--ey', y.toFixed(1) + 'px');
+    }
+  }
+
+  renderVals() {
+    var p = this.props || {}, s = this.state || {}, v = {}, i;
+
+    // Tweak "versaoCiclo": qual versão do ciclo aparece na seção 01. Só essa camada muda; título e subtítulo ficam.
+    // 03-cartoes é a versão mantida; 06 é a nova. Um valor antigo (01, 02, 04, 05 ou 07) cai nos cartões.
+    var ciclo = ['03-cartoes', '06-laco'].indexOf(p.versaoCiclo) >= 0 ? p.versaoCiclo : '03-cartoes';
+    v.cicloV3 = ciclo === '03-cartoes';
+    v.cicloV6 = ciclo === '06-laco';
+
+    // Tweak "versaoCards": qual versão dos cards dos times aparece. Só os cards mudam.
+    var ver = ['01-simple', '02-surprise', '03-middle'].indexOf(p.versaoCards) >= 0 ? p.versaoCards : '02-surprise';
+    v.cardsV1 = ver === '01-simple';
+    v.cardsV2 = ver === '02-surprise';
+    v.cardsV3 = ver === '03-middle';
+
+    // Tweak "efeitoNeon": a forma do hover na Versão 02.
+    v.neonClass = { preenchimento: 'tm-fx-fill', contorno: 'tm-fx-line', holofote: 'tm-fx-spot' }[p.efeitoNeon] || 'tm-fx-fill';
+
+    // Ciclo: a etapa em destaque é a que está sob o cursor ou com foco; senão a fixada; senão a da vez.
+    var held = s.hold >= 0 || s.pin >= 0;
+    var on = s.hold >= 0 ? s.hold : (s.pin >= 0 ? s.pin : s.step);
+    for (i = 0; i < 4; i++) {
+      var k = i + 1;
+      v['n' + k] = i === on ? 'is-on' : '';
+      v['p' + k] = s.pin === i ? 'true' : 'false';
+      // a entrega i sai da etapa i e chega na seguinte: acende enquanto viaja ou, com uma etapa segurada,
+      // quando é a que chega nela (o que ela recebe) ou a que sai dela (o que ela entrega)
+      v['e' + k] = s.fire === i ? 'is-lit is-fire' : (held && (i === on || (i + 1) % 4 === on) ? 'is-lit' : '');
+      v['wkIn' + k] = this._wkIn[i];
+      v['wkPin' + k] = this._wkPin[i];
+      v['wk3In' + k] = this._wk3In[i];
+    }
+    v.wkOut = this._wkOut;
+    v.wk3Out = this._wk3Out;
+    v.wkClass = (held ? 'is-held ' : '') + (s.run ? 'is-run ' : '') + 'at-' + (on + 1);
+
+    v.tmEnter = this._tmEnter;
+    v.tmMove = this._tmMove;
+    v.tmLeave = this._tmLeave;
+    return v;
+  }
+}
+</script>
+</body>
+</html>

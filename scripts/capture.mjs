@@ -1,15 +1,19 @@
 // Reference captures of the Claude Design boards (.dc.html), rendered outside the editor.
 //
 // Usage: node scripts/capture.mjs <origin-dir> --runtime <path/to/dc-runtime.js>
+// where <origin-dir> is the origin of a project: projects/<project>/origin.
 //
 // Reads <origin-dir>/captures.json, serves <origin-dir>/boards/ over HTTP on 127.0.0.1 (ephemeral port),
 // answering /support.js with the editor runtime given in --runtime, and writes for each board and width:
 //   <origin-dir>/reference/<board>-<width>.png    the full page, the reference capture itself
 //   <origin-dir>/reference/<board>-<width>.json   page size, capture conditions and the box of each block
 //
-// Capture conditions: headless Chromium from the pinned Playwright, deviceScaleFactor 1, reduced motion,
-// no touch emulation, and a viewport grown to the document height. The reveals of the boards use CSS
-// scroll-driven animations; in a short viewport everything below the fold would stay invisible.
+// Capture conditions: headless Chromium from the pinned Playwright without partial raster, deviceScaleFactor
+// 1, reduced motion, no touch emulation, and a viewport grown to the document height. The reveals of the
+// boards use CSS scroll-driven animations; in a short viewport everything below the fold would stay
+// invisible. The Google Fonts stylesheets of the boards are held to their static font files
+// (google-fonts.mjs) and every changed tile is redrawn whole (BROWSER_ARGS), so a second run writes the same
+// bytes.
 //
 // An entry may also set tweaks (`props`, served as the defaults of the board's data-props), hover one
 // element (`hover`) and name its files (`name`, by default the board's name), so the same board is
@@ -23,6 +27,7 @@ import { basename, join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { chromium } from 'playwright';
 import { withPropDefaults } from './board-props.mjs';
+import { askForStaticFonts, isFontStylesheet, isRefusedFontFile } from './google-fonts.mjs';
 
 // Start short: documentElement.scrollHeight never reports less than the viewport, so a board smaller
 // than the first viewport (the logo, 560 px) would be captured with empty space below it.
@@ -31,6 +36,11 @@ const MAX_GROW_STEPS = 6;
 const SETTLE_MS = 500;
 // After the pointer moves onto the hovered element: the longest hover transition of the boards is .9s.
 const HOVER_SETTLE_MS = 1500;
+// By default Chromium redraws only the changed part of a tile (partial raster) and keeps the rest of the tile
+// from earlier frames. The frames a hover's transitions draw then leave their mark on the final pixels, and
+// which frames get drawn depends on timing: the same final state came out a few pixels apart from run to
+// run. Redrawing every changed tile whole makes the image depend on the final state alone.
+const BROWSER_ARGS = ['--disable-partial-raster'];
 
 const CONTENT_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -172,6 +182,28 @@ async function captureBoard(browser, base, entry, width) {
   page.on('response', (response) => {
     if (response.status() >= 400) problems.push(`HTTP ${response.status()}: ${response.url()}`);
   });
+  // Google Fonts answers with one of two sets of font files, and the text drawn with each sits a fraction of
+  // a pixel apart: every stylesheet is asked for until it has the static set (see google-fonts.mjs).
+  await page.route(
+    (url) => isFontStylesheet(url),
+    async (route) => {
+      try {
+        const { response, body } = await askForStaticFonts(async () => {
+          const response = await route.fetch();
+          return { status: response.status(), body: await response.text(), response };
+        });
+        await route.fulfill({ response, body });
+      } catch (error) {
+        problems.push(`${route.request().url()}: ${error.message}`);
+        await route.abort();
+      }
+    },
+  );
+  page.on('request', (request) => {
+    if (isRefusedFontFile(request.url())) {
+      problems.push(`font file outside the static set of Google Fonts: ${request.url()}`);
+    }
+  });
 
   await page.goto(base + entry.board, { waitUntil: 'networkidle', timeout: 60_000 });
   await page.waitForSelector('#dc-root *', { timeout: 15_000 });
@@ -240,7 +272,13 @@ async function captureBoard(browser, base, entry, width) {
     image: `${image}.png`,
     width,
     height,
-    conditions: { browser: `chromium ${browser.version()}`, deviceScaleFactor: 1, reducedMotion: 'reduce', touch: false },
+    conditions: {
+      browser: `chromium ${browser.version()}`,
+      partialRaster: false,
+      deviceScaleFactor: 1,
+      reducedMotion: 'reduce',
+      touch: false,
+    },
     ...(entry.props ? { props: entry.props } : {}),
     ...(entry.hover ? { hover: entry.hover } : {}),
     blocks,
@@ -256,7 +294,7 @@ async function main() {
     options: { runtime: { type: 'string' } },
   });
   if (positionals.length !== 1 || !values.runtime) {
-    fail('usage: node scripts/capture.mjs <theme origin dir> --runtime <downloaded dc-runtime.js>');
+    fail('usage: node scripts/capture.mjs projects/<project>/origin --runtime <downloaded dc-runtime.js>');
   }
   const originDir = resolve(positionals[0]);
   const runtimePath = resolve(values.runtime);
@@ -269,7 +307,7 @@ async function main() {
   await mkdir(join(originDir, 'reference'), { recursive: true });
 
   const { server, base, misses } = await serveBoards(boardsDir, runtimePath);
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, args: BROWSER_ARGS });
   let failed = false;
   try {
     for (const entry of recipe.captures) {

@@ -45,8 +45,8 @@ Leia como em **Ler uma issue**, acima.
 Aqui as specs são construídas pelo `/implement-spec`: cada ticket chega a uma branch de integração (`feature/<project_slug>`, ou `feature/catalog` para trabalho só na raiz) a partir do próprio worktree, pelo `tdd`, e só chega à `main` quando o PR dessa branch é mesclado. Fatie para essa execução:
 
 - **Tickets de operação**: trabalho que precisa da `main`, de um serviço fora do repositório ou do Autor vai em tickets com título `Operação: ...`, cujo corpo começa com "Fora do `/implement-spec`", bloqueados pelo código que operam.
-- **Arquivos compartilhados**: tickets que editam o mesmo arquivo ganham uma aresta de bloqueio; toda outra aresta é dependência real. Os Temas são autossuficientes, então tickets de Temas diferentes só compartilham os índices da raiz e do Projeto.
-- **Costuras**: cada ticket nomeia a sua costura de teste. Num Tema, a costura é a página renderizada no navegador, comparada com as Capturas de referência da Origem dele.
+- **Arquivos compartilhados**: tickets que editam o mesmo arquivo ganham uma aresta de bloqueio; toda outra aresta é dependência real. Os Projetos são autossuficientes, então tickets de Projetos diferentes só compartilham o índice da raiz.
+- **Costuras**: cada ticket nomeia a sua costura de teste. Num Projeto, a costura é a página renderizada no navegador, comparada com as Capturas de referência da Origem dele.
 - **Folhas**: um ticket que pode parar à espera de decisão do Autor não bloqueia nada.
 - **Ferramentas**: um ticket que traz um CLI ou uma extensão que o agente ainda não rodou neste repositório a nomeia, e a sessão de fatiamento a roda uma vez no modo de permissão do agente, lendo o que ela escreve. Uma ferramenta que continua barrada vira passo da preparação única do Autor, e o ticket dela não bloqueia nada.
 - **Publicação**: um ticket que publica num Artefato diz isso no corpo, e as notas de handoff da spec pedem ao Autor a autorização dessas publicações na chamada do `/implement-spec`. O modo automático pode negar a publicação a um subagente mesmo depois de ela ter passado num Ciclo anterior.

@@ -1,0 +1,1842 @@
+/*
+ * The portal's design system.
+ *
+ * The @theme block below is the only source of the tokens: every value the origin uses (the Home board,
+ * the Ondas logo board and its mini version in the header) has a name here, named as found. Close values
+ * stay separate (ADR 0004); a value the board writes twice, once as its variable and once as a literal,
+ * has one token. Tailwind's own theme is reset, so its palette, type scale, radii, shadows, breakpoints
+ * and the rest do not exist as classes; only its spacing scale comes back, and it names every fixed
+ * length in px (gap-2.5 is 10px).
+ *
+ * Naming: a color or a length with one job is named after the job (night, gutter); a value that belongs
+ * to a scale is named after its value (text-15 is 15px, text-36-80 grows from 36 to 80px, leading-160 is
+ * 1.6, tracking-tight-35 is -0.035em, radius-10 is 10px, duration-350 is .35s). The Ondas logo's own
+ * values keep the names of its component.
+ *
+ * The board has tweaks, and the app draws every version of them (components/tweaks.tsx): the two
+ * versions of the cycle in section 01, the three versions of the team cards in section 02, and the three
+ * neon hovers of the cards' Version 02. Their states are data attributes (data-on, data-lit, data-fire,
+ * data-held, data-run, data-neon, data-team), read by the classes of the components and by the utilities
+ * below.
+ *
+ * Left out on purpose: the two hover rules of the board no element uses (.chip and .atk) and the .rvf
+ * reveal no element uses. The drawings keep their own geometry: the brand marks, the logos, the cycle's
+ * loop and rail (their strokes, their stations, and where their tags and items sit around them), and the
+ * distances, scales and opacities of the keyframes and of the neon's light, in the utilities and
+ * keyframes below; their colors, durations and curves are tokens, and so is the room the loop takes in
+ * its section: its height, the width of its drawing and of its list's items.
+ */
+
+@import "tailwindcss";
+
+/* The board's :hover rules apply to any pointer; Tailwind's own hover waits for (hover: hover).
+   Inside data-show-state="hover" a component is drawn hovered: the /design-system route shows the state
+   that way, with no pointer over it. */
+@custom-variant hover (&:is(:hover, [data-show-state="hover"] *));
+
+/* The board's breakpoints, each named after the layout it changes. */
+/* At 760px and below the header stops sticking and the nav gets a row. */
+@custom-variant narrow (@media (max-width: 760px));
+/* Between 1100 and 1279px the loop's drawing shrinks, and its tags with it. */
+@custom-variant loop-tight (@media (min-width: 1100px) and (max-width: 1279px));
+/* At 1099px and below the cycle goes to two columns: the cards, without their rail, and the loop's
+   list, under its drawing. */
+@custom-variant cycle-two (@media (max-width: 1099px));
+/* At 600px and below the cycle goes to one column. */
+@custom-variant cycle-one (@media (max-width: 600px));
+
+@theme static {
+  --*: initial;
+  --spacing: 0.25rem;
+
+  /* Families, with the board's fallbacks. */
+  --font-sans: "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-logo:
+    "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; /* the Ondas logo */
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+
+  /* Neutrals, from dark to light. */
+  --color-black: #000000; /* text on the light fill of the neon */
+  --color-night: #101010; /* page, text on the light button, logo background */
+  --color-grid: #131313; /* the dotted ground of the partners and the cycle, the cycle's tags, the loop's gap */
+  --color-surface: #161616; /* cards, the loop's stations */
+  --color-card-on: #1a1a1a; /* the cycle card in focus */
+  --color-station-on: #1f1f1f; /* the loop's station in focus */
+  --color-rule: #252525; /* section rules, the frame of the simple cards */
+  --color-grid-dot: #2c2c2c; /* the dots of the dotted ground */
+  --color-rule-strong: #333333; /* borders of stations and tags, the loop's stroke, the cards' rail */
+  --color-flow: #666666; /* the dots that run along the loop and the cards' rail */
+  --color-rail-arrow: #6e6e6e; /* the arrows on the cards' rail */
+  --color-unlit: #696969; /* declared by the board, used by no element */
+  --color-rule-lit: #7a7a7a; /* the tweaks panel: the catalog's, not the board's */
+  --color-quiet: #858585; /* the small copy of the cards */
+  --color-subtle: #8c8c8c; /* mono labels, footer, partners, the border of the loop's station in focus */
+  --color-muted: #b8b8b8; /* paragraphs, nav, links, caption "agente", the third deliverable */
+  --color-bright: #f2f2f2; /* main text, light button, the fourth deliverable */
+
+  /* Accents: red is attack and the Red Team, blue is guardrail and the Blue Team. */
+  --color-red: #ec5b48;
+  --color-blue: #5a90f8; /* also the focus ring and the Blue Team's wall */
+
+  /* The neon of the team cards' Version 02: for each team the four stops of its light fill, which also
+     make its turning border, and its core, the color of the glow. The fourth stop is the team's light,
+     the color of the hovered icon and of the spotlight. */
+  --color-neon-red-1: #cdccff;
+  --color-neon-red-2: #ebcfff;
+  --color-neon-red-3: #c3d2ff;
+  --color-neon-red-4: #e1c8ff;
+  --color-neon-red-core: #ae3cff;
+  --color-neon-blue-1: #9492ff;
+  --color-neon-blue-2: #cff4ff;
+  --color-neon-blue-3: #aaaaff;
+  --color-neon-blue-4: #bee6ff;
+  --color-neon-blue-core: #3d4dff;
+
+  /* The Ondas logo's colors, in the hero and, as the mini, in the header's brand. */
+  --color-logo-red: #ec5b48; /* attack */
+  --color-logo-blue: #5a90f8; /* guardrails */
+  --color-logo-agent: #c9d1d6; /* agent */
+  --color-logo-gray: #87949c; /* valid answers */
+  --color-logo-bright: #eef1f2; /* the logo's base color */
+  --color-logo-night: #0a0d0f; /* the logo board's own background */
+
+  /* Translucent colors, named after their alpha in hundredths. */
+  --color-header: rgba(16, 16, 16, 0.82);
+  --color-white-0: rgba(255, 255, 255, 0); /* where the cards' lights fade out */
+  --color-white-3: rgba(255, 255, 255, 0.03); /* the lit lobe of the loop */
+  --color-white-4: rgba(255, 255, 255, 0.04); /* nav pill */
+  --color-white-6: rgba(255, 255, 255, 0.06); /* nav link hover */
+  --color-white-7: rgba(255, 255, 255, 0.07); /* header bottom rule */
+  --color-white-9: rgba(255, 255, 255, 0.09); /* nav pill border */
+  --color-white-10: rgba(255, 255, 255, 0.1); /* current nav link */
+  --color-white-50: rgba(255, 255, 255, 0.5); /* the light under the pointer on the neon fill */
+  --color-white-stripe: rgba(255, 255, 255, 0.035); /* the stripes of a GIF's space */
+  --color-white-spot: rgba(255, 255, 255, 0.075); /* the light under the pointer on a cycle card */
+  --color-bright-0: rgba(242, 242, 242, 0); /* where the arrival ring of a station ends */
+  --color-bright-10: rgba(242, 242, 242, 0.1); /* where the lit edge of a cycle card fades */
+  --color-bright-13: rgba(
+    242,
+    242,
+    242,
+    0.13
+  ); /* the edge of the cycle card in focus, running by itself */
+  --color-bright-50: rgba(242, 242, 242, 0.5); /* where the arrival ring of a station starts */
+  --color-bright-85: rgba(
+    242,
+    242,
+    242,
+    0.85
+  ); /* the lit edge of a cycle card, under the pointer */
+  --color-black-72: rgba(0, 0, 0, 0.72); /* the team's line on the neon fill */
+  --color-red-12: rgba(236, 91, 72, 0.12); /* declared by the board, used by no element */
+  --color-blue-0: rgba(90, 144, 248, 0); /* the Blue Team's wall, at its ends */
+  --color-blue-12: rgba(90, 144, 248, 0.12); /* declared by the board, used by no element */
+
+  /* Font sizes: fixed ones in px, fluid ones from their minimum to their maximum. */
+  --text-11: 11px; /* the loop's captions and, a little narrower, its tags; the label of a GIF's space */
+  --text-12: 12px; /* mono labels, logo caption, the cycle's tags */
+  --text-13: 13px; /* footer, the Red Team's shots */
+  --text-14: 14px; /* nav, buttons, links, partners' title, team lines */
+  --text-15: 15px; /* brand, the copy of the loop's steps and of the cycle cards, the simple cards' copy */
+  --text-16: 16px; /* page base, card names, the team cards' copy */
+  --text-17: 17px; /* lead paragraphs */
+  --text-19: 19px; /* partners */
+  --text-20: 20px; /* the loop's step names */
+  --text-28: 28px; /* the simple cards' numbers */
+  --text-19-23: clamp(19px, 1.62vw, 23px); /* the cycle cards' large copy */
+  --text-24-32: clamp(24px, 2.3vw, 32px); /* the simple cards' team names */
+  --text-24-32-large: clamp(24px, 2.35vw, 32px); /* the surprise cards' large copy */
+  --text-28-42: clamp(28px, 2.9vw, 42px); /* section titles */
+  --text-36-80: clamp(36px, 4.9vw, 80px); /* hero title */
+  --text-logo: 2.604cqw; /* the logo's characters: 64 columns span its width */
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+
+  /* Letter spacing, in thousandths of an em. */
+  --tracking-wide-140: 0.14em; /* the label of a GIF's space */
+  --tracking-wide-80: 0.08em; /* uppercase mono labels, the loop's captions */
+  --tracking-wide-40: 0.04em; /* the cycle cards' step number */
+  --tracking-tight-10: -0.01em; /* brand, team lines */
+  --tracking-tight-20: -0.02em; /* partners, the loop's step names, the simple cards' team names */
+  --tracking-tight-25: -0.025em; /* section titles */
+  --tracking-tight-30: -0.03em; /* the simple cards' numbers, the cycle cards' large copy */
+  --tracking-tight-35: -0.035em; /* hero title */
+  --tracking-tight-40: -0.04em; /* the surprise cards' large copy */
+
+  /* Line heights, in hundredths, and the fixed ones in px. */
+  --leading-100: 1; /* the simple cards' numbers */
+  --leading-104: 1.04; /* hero title */
+  --leading-110: 1.1; /* section titles */
+  --leading-115: 1.15; /* the simple cards' team names */
+  --leading-116: 1.16; /* the surprise cards' large copy */
+  --leading-120: 1.2; /* the loop's step names, the cycle's tags, the cycle cards' large copy */
+  --leading-130: 1.3; /* the loop's captions, what a step delivers in the loop and in a cycle card */
+  --leading-140: 1.4; /* partners' title, the label of a GIF's space */
+  --leading-145: 1.45; /* the copy of the loop's steps */
+  --leading-150: 1.5; /* page base */
+  --leading-160: 1.6; /* paragraphs */
+  --leading-1200: 1.2; /* the logo's characters */
+  --leading-px-19: 19px; /* card lines */
+  --leading-px-22: 22px; /* the cycle cards' small copy */
+  --leading-px-24: 24px; /* card names, the team cards' copy */
+
+  /* Fluid spacing, the page width and the sizes the cycle and the cards are drawn at; the loop's are
+     read by its utilities, below. */
+  --spacing-gutter: clamp(20px, 4vw, 48px); /* side padding of header, main and footer */
+  --spacing-team-card: clamp(264px, 33vw, 460px); /* the surprise cards' least height */
+  --spacing-large-13: 13em; /* the cycle cards' large copy */
+  --spacing-large-15: 15em; /* the surprise cards' large copy */
+  --spacing-loop-stage: 400px; /* the height the loop takes, with its drawing in the middle */
+  /* The loop's drawing: at most 718px wide, leaving 440px of the loop to its list's two columns. */
+  --spacing-loop-map: min(718px, calc(100cqw - 440px));
+  --spacing-loop-map-stacked: min(100%, 600px); /* the loop's drawing, above its list */
+  --spacing-loop-item: 250px; /* an item of the loop's list, beside the drawing */
+  --container-page: 1344px;
+
+  /* Grids: as many columns as fit, each at least its minimum, and one column when even that does not. */
+  --grid-template-columns-teams: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); /* team cards */
+
+  --aspect-gif: 16 / 9; /* the GIFs' spaces */
+  --aspect-loop: 760 / 360; /* the loop's drawing */
+
+  --radius-2: 2px; /* the Blue Team's wall */
+  --radius-6: 6px; /* a GIF's space */
+  --radius-8: 8px; /* cards */
+  --radius-10: 10px; /* buttons */
+  --radius-12: 12px; /* the inside of a simple card */
+  --radius-16: 16px; /* the frame of a simple card */
+  --radius-pill: 999px; /* nav pill and its links, the cycle's tags */
+  --radius-circle: 50%; /* brand mark, stations, the deliverables' dots */
+
+  --shadow-glow: 0 8px 28px rgba(242, 242, 242, 0.2); /* button hover */
+  --shadow-wall: 0 0 14px 1px rgba(90, 144, 248, 0.55); /* the Blue Team's wall */
+  --blur-16: 16px; /* header backdrop */
+
+  /* The keyboard focus ring, in --color-blue. */
+  --outline-width-focus: 2px;
+  --outline-offset-focus: 3px;
+  --outline-offset-loop: 6px; /* the ring of an item of the loop's list */
+
+  /* Motion. Hover transitions of links and buttons take .2s with the default ease. */
+  --default-transition-duration: 0.2s;
+  --default-transition-timing-function: ease;
+  --ease-enter: cubic-bezier(0.2, 0.7, 0.2, 1); /* entrances, the station's arrival ring */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1); /* what opens, grows or lights up in the cards */
+  --ease-travel: cubic-bezier(0.5, 0.05, 0.25, 1); /* a deliverable travelling between two steps */
+  --ease-pop: cubic-bezier(0.3, 0.7, 0.2, 1); /* the icons' gestures, the neon fill's opening */
+  --ease-draw: cubic-bezier(0.4, 0, 0.2, 1); /* the monitor's line drawing itself */
+  --ease-out: ease-out; /* the neon following the pointer */
+  --duration-instant: 0.01s; /* transitions with reduced motion */
+  --duration-0: 0s; /* the cycle card's light, back to its start at once */
+  --duration-160: 0.16s;
+  --duration-300: 0.3s;
+  --duration-350: 0.35s;
+  --duration-400: 0.4s;
+  --duration-450: 0.45s;
+  --duration-500: 0.5s;
+  --duration-600: 0.6s;
+  --duration-700: 0.7s;
+  --duration-800: 0.8s;
+  --duration-900: 0.9s;
+  --duration-1100: 1.1s;
+  --duration-1500: 1.5s;
+  --duration-2600: 2.6s;
+  --duration-3000: 3s;
+  --duration-5000: 5s;
+  --duration-7000: 7s;
+  --duration-64000: 64s; /* one lap of the partners */
+  --delay-80: 80ms;
+  --delay-140: 0.14s;
+  --delay-150: 0.15s;
+  --delay-280: 0.28s;
+  --delay-600: 0.6s; /* the cycle card's light, back to its start once it has faded */
+  --delay-700: 0.7s;
+  --delay-enter-2: 0.08s;
+  --delay-enter-3: 0.16s;
+  --delay-enter-4: 0.24s;
+  /* Scroll-driven animations run on a timeline; the duration only has to be non-zero. */
+  --duration-timeline: 1ms;
+  --animate-enter: rai-up var(--duration-800) var(--ease-enter) both;
+}
+
+/* The angle of the neon's turning border: animated, so it is a registered property. */
+@property --tm-a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* The board's keyframes, with its names. */
+@keyframes rai-up {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rai-left {
+  from {
+    opacity: 0;
+    transform: translateX(-80px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes rai-right {
+  from {
+    opacity: 0;
+    transform: translateX(80px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes rai-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes rai-orb {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0.12;
+    transform: translateY(72px) scale(0.9);
+  }
+}
+
+@keyframes rai-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mq-run {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes wk-march {
+  to {
+    stroke-dashoffset: -9.01;
+  }
+}
+
+@keyframes wk-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes wk3-head {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes wk3-back {
+  0% {
+    left: calc(100% - 14px);
+    top: 0;
+    opacity: 0;
+  }
+  4% {
+    left: 100%;
+    top: 0;
+    opacity: 1;
+  }
+  22% {
+    left: 100%;
+    top: 100%;
+  }
+  78% {
+    left: 0;
+    top: 100%;
+  }
+  96% {
+    left: 0;
+    top: 0;
+    opacity: 1;
+  }
+  100% {
+    left: 14px;
+    top: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes wk-arrive {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 var(--color-bright-50);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 14px var(--color-bright-0);
+  }
+}
+
+@keyframes wk-ping {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--pc) 45%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 12px color-mix(in srgb, var(--pc) 0%, transparent);
+  }
+}
+
+@keyframes wk6-comet {
+  0% {
+    stroke-dashoffset: 6;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+
+@keyframes wk6-comet-s {
+  0% {
+    stroke-dashoffset: 16;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+
+@keyframes wk-scan {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(2px, -2px);
+  }
+  50% {
+    transform: translate(-2px, -1px);
+  }
+  75% {
+    transform: translate(1px, 2px);
+  }
+}
+
+@keyframes wk-open-l {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(-2.5px);
+  }
+}
+
+@keyframes wk-open-r {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(2.5px);
+  }
+}
+
+@keyframes wk-draw3 {
+  from {
+    stroke-dashoffset: 8.6;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wk-draw4 {
+  from {
+    stroke-dashoffset: 36.3;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tm-shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes tm-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 70px 20px rgb(from var(--gc) r g b / 0.45);
+  }
+  50% {
+    box-shadow: 0 0 90px 28px rgb(from var(--gc) r g b / 0.25);
+  }
+}
+
+@keyframes tm-glow-line {
+  0%,
+  100% {
+    box-shadow:
+      0 0 26px 2px rgb(from var(--gc) r g b / 0.55),
+      0 0 80px 8px rgb(from var(--gc) r g b / 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 34px 4px rgb(from var(--gc) r g b / 0.4),
+      0 0 100px 14px rgb(from var(--gc) r g b / 0.18);
+  }
+}
+
+@keyframes tm-spin {
+  to {
+    --tm-a: 360deg;
+  }
+}
+
+@keyframes tm-thrust {
+  0%,
+  30%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  7% {
+    transform: translate(-3px, 3px) rotate(-5deg);
+  }
+  15% {
+    transform: translate(5px, -5px) rotate(3deg);
+  }
+}
+
+@keyframes tm-brace {
+  0%,
+  34%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  10% {
+    transform: translateY(-2px) scale(1.14);
+  }
+  22% {
+    transform: translateY(0) scale(0.97);
+  }
+}
+
+@keyframes tm-recoil {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  30% {
+    transform: translate(-4px, 4px) rotate(-9deg);
+  }
+}
+
+@keyframes tm-shot {
+  0%,
+  10% {
+    left: 56%;
+    opacity: 0;
+  }
+  16% {
+    opacity: 1;
+  }
+  34% {
+    left: calc(100% - 18px);
+    opacity: 1;
+  }
+  40%,
+  100% {
+    left: calc(100% - 18px);
+    opacity: 0;
+  }
+}
+
+@keyframes tm-wall {
+  0%,
+  26% {
+    opacity: 0;
+    transform: scaleY(0.4);
+  }
+  36% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  62% {
+    opacity: 0.75;
+    transform: scaleY(1);
+  }
+  84%,
+  100% {
+    opacity: 0;
+    transform: scaleY(0.7);
+  }
+}
+
+/* The focus ring of every link, button and field, from the board's :focus-visible rule. Inside
+   data-show-state="focus", drawn focused: the /design-system route shows the state that way. The
+   button of a cycle step draws no ring of its own: its step does (step-focus, below). */
+@layer base {
+  a:focus-visible,
+  button:focus-visible,
+  textarea:focus-visible,
+  [data-show-state="focus"] :is(a, button, textarea) {
+    outline: var(--outline-width-focus) solid var(--color-blue);
+    outline-offset: var(--outline-offset-focus);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+/*
+ * Motion utilities, one per class of the board (in its own words: in1-in4, rv, rv2, fl, fr, prog, orbx,
+ * the dotted ground's fade). Every animation waits for prefers-reduced-motion: no-preference; the
+ * scroll-driven ones also wait for animation-timeline support. Anywhere else the content shows in its
+ * final state, and the scroll progress bar stays at zero width.
+ */
+
+/* Entrance on load, staggered: in1 to in4. */
+@utility enter-1 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+  }
+}
+
+@utility enter-2 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+    animation-delay: var(--delay-enter-2);
+  }
+}
+
+@utility enter-3 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+    animation-delay: var(--delay-enter-3);
+  }
+}
+
+@utility enter-4 {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: var(--animate-enter);
+    animation-delay: var(--delay-enter-4);
+  }
+}
+
+/* Rise into place as the element enters the view: rv, rv2. */
+@utility reveal-1 {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rai-up linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@utility reveal-2 {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rai-up linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: view();
+      animation-range: entry 8% entry 50%;
+    }
+  }
+}
+
+/* Slide in from the sides as the element enters the view: fl, fr. */
+@utility slide-from-left {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rai-left linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+
+@utility slide-from-right {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rai-right linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+
+/* The header bar that grows with the page scroll: prog. At rest it has zero width. */
+@utility scroll-progress {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rai-grow linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: scroll();
+    }
+  }
+}
+
+/* The hero logo fading and sinking as it leaves the view: orbx. */
+@utility fade-on-exit {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rai-orb linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+/*
+ * The partners' strip: two equal sets in a row that run left by exactly one set (mq, mq-track,
+ * mq-set). With reduced motion the strip stands still, the second set is gone and the first wraps,
+ * centered, with no faded sides.
+ */
+@utility fade-sides {
+  mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%);
+  @media (prefers-reduced-motion: reduce) {
+    mask-image: none;
+  }
+}
+
+@utility marquee {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: mq-run var(--duration-64000) linear infinite;
+    will-change: transform;
+  }
+}
+
+/*
+ * The dotted ground behind the partners and the cycle (wk-bg): the page width wide, fading in at the
+ * top and out at the bottom, and fading in as it enters the view.
+ */
+@utility dotted-ground {
+  background-color: var(--color-grid);
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--color-grid-dot) 1px,
+    transparent 1.5px
+  );
+  background-size: 28px 28px;
+  background-position: 50% 0;
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0,
+    #000 200px,
+    #000 calc(100% - 140px),
+    transparent 100%
+  );
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: rai-fade linear both;
+      animation-duration: var(--duration-timeline);
+      animation-timeline: view();
+      animation-range: entry 0% entry 85%;
+    }
+  }
+}
+
+/*
+ * The cycle, the same in its two versions (wk-*). The version's root has data-cycle, data-held while a
+ * step is under the pointer, focused or pinned, and data-run while the cycle runs by itself; a step in
+ * focus has data-on; a deliverable between two steps has data-lit when it is lit and data-fire while it
+ * travels. --pc is the color of a deliverable: red, blue, muted or bright, from the first to the fourth.
+ */
+
+/* The ring of a focused step's button, drawn on the step (the loop's item or the card's body), at the
+   step's own offset when it has one (--step-focus-offset). */
+@utility step-focus {
+  @supports selector(:has(a)) {
+    &:has(.step-button:focus-visible) {
+      outline: var(--outline-width-focus) solid var(--color-blue);
+      outline-offset: var(--step-focus-offset, var(--outline-offset-focus));
+    }
+  }
+}
+
+/* The button of a step: plain text, the control for the keyboard and screen readers (wk-btn). */
+@utility step-button {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+  @supports selector(:has(a)) {
+    &:focus-visible {
+      outline: none;
+    }
+  }
+}
+
+/* A step's icon, a line drawing in the current color (wk-ico), and its gesture when its step comes
+   into focus: the lens looks around, the brackets open, the check draws itself, the line runs. */
+@utility step-icon {
+  display: block;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+
+@utility step-icon-1 {
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-on]) & {
+      animation: wk-scan var(--duration-1500) var(--ease-pop) both;
+    }
+  }
+}
+
+@utility step-icon-2 {
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-on]) & path:nth-child(1) {
+      animation: wk-open-l var(--duration-900) var(--ease-pop) both;
+    }
+    :where([data-on]) & path:nth-child(2) {
+      animation: wk-open-r var(--duration-900) var(--ease-pop) both;
+    }
+  }
+}
+
+@utility step-icon-3 {
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-on]) & path:nth-child(2) {
+      stroke-dasharray: 8.6;
+      animation: wk-draw3 var(--duration-700) var(--delay-150) var(--ease-pop) both;
+    }
+  }
+}
+
+@utility step-icon-4 {
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-on]) & path {
+      stroke-dasharray: 36.3;
+      animation: wk-draw4 var(--duration-1100) var(--ease-draw) both;
+    }
+  }
+}
+
+/* The arrow that says which way a deliverable goes (wk-arw), a line drawing in the current color. */
+@utility step-arrow {
+  display: block;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The pulse that travels along the cards' rail (wk-pulse): a dot in --pc with a ring and a glow. */
+@utility pulse {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: var(--radius-circle);
+  background: var(--pc);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--pc) 22%, transparent),
+    0 0 16px 3px color-mix(in srgb, var(--pc) 60%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The dotted rail around the cards (wk-loop), as an SVG: the track and the dots that run along it. */
+@utility rail-frame {
+  position: absolute;
+  z-index: 0;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+@utility rail-track {
+  fill: none;
+  stroke: var(--color-rule-strong);
+  stroke-width: 1;
+}
+
+@utility rail-flow {
+  fill: none;
+  stroke: var(--color-flow);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.01 9;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: wk-march var(--duration-1100) linear infinite;
+  }
+}
+
+/* A runner over the rail, where a pulse waits at its top right corner (wk-rail). */
+@utility runner {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  & > .pulse {
+    left: 100%;
+    top: 0;
+  }
+}
+
+/* The runner that turns (wk-turn): as its deliverable leaves, the pulse runs down the right side, back
+   along the bottom and up the left side. */
+@utility runner-turn {
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-fire] > .pulse {
+      animation: wk3-back var(--duration-1100) linear both;
+    }
+  }
+}
+
+/* The tag that says what a deliverable is (wk-tag), lit with it: its border takes the deliverable's
+   color, and it rings as the deliverable leaves. */
+@utility step-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-grid);
+  border: 1px solid var(--color-rule-strong);
+  font: var(--font-weight-normal) var(--text-12) / var(--leading-120) var(--font-mono);
+  color: var(--color-subtle);
+  white-space: nowrap;
+  transition:
+    color var(--duration-350),
+    border-color var(--duration-350);
+  &[data-lit] {
+    color: var(--color-bright);
+    border-color: color-mix(in srgb, var(--pc) 60%, var(--color-rule-strong));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-fire] {
+      animation: wk-ping var(--duration-1100) var(--ease-out) both;
+    }
+  }
+}
+
+/* Version 06, the loop: one stroke in the shape of infinity, the work before production on the left
+   lobe and what happens in production on the right one; at the crossing the guardrails go over and the
+   metrics come back under (wk6-*). --fw is the width of the drawing, and the tags and the items sit
+   around its middle at shares of it. At 1099px and below the drawing goes up and the list comes below
+   it; at 600px and below the stations are smaller and the captions are gone. */
+@utility loop {
+  position: relative;
+  height: var(--spacing-loop-stage);
+  container-type: inline-size;
+  --fw: var(--spacing-loop-map);
+  @media (max-width: 1099px) {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+}
+
+@utility loop-map {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--fw);
+  aspect-ratio: var(--aspect-loop);
+  transform: translate(-50%, -50%);
+  @media (max-width: 1099px) {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: var(--spacing-loop-map-stacked);
+    margin: 0 auto;
+  }
+}
+
+/* The lobe of the step in focus lights: the left one for Pesquisar and Desenvolver, the right one for
+   Implementar and Monitorar. */
+@utility loop-lobe {
+  fill: var(--color-white-3);
+  opacity: 0;
+  transition: opacity var(--duration-900) ease;
+  &[data-on] {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-instant);
+  }
+}
+
+@utility loop-track {
+  fill: none;
+  stroke: var(--color-rule-strong);
+  stroke-width: 1;
+}
+
+/* The dots run along the stroke the way of the cycle; an arc lights in its deliverable's color. */
+@utility loop-flow {
+  fill: none;
+  stroke: var(--color-flow);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.01 9;
+  transition: stroke var(--duration-350);
+  :where([data-lit]) > & {
+    stroke: var(--pc);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    animation: wk-march var(--duration-1100) linear infinite;
+  }
+}
+
+/* The gap in the arcs under the crossing, in the color of the ground. */
+@utility loop-gap {
+  fill: none;
+  stroke: var(--color-grid);
+  stroke-width: 12;
+}
+
+/* The comet that runs along an arc while its deliverable travels; the two short arcs have a longer one. */
+@utility loop-comet {
+  fill: none;
+  stroke: var(--pc);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 6 200;
+  stroke-dashoffset: 7;
+  opacity: 0;
+  filter: drop-shadow(0 0 5px var(--pc));
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-fire]) > & {
+      animation: wk6-comet var(--duration-1100) var(--ease-travel) both;
+    }
+  }
+}
+
+@utility loop-comet-short {
+  fill: none;
+  stroke: var(--pc);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 16 200;
+  stroke-dashoffset: 17;
+  opacity: 0;
+  filter: drop-shadow(0 0 5px var(--pc));
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-fire]) > & {
+      animation: wk6-comet-s var(--duration-1100) var(--ease-travel) both;
+    }
+  }
+}
+
+/* The names of the two halves, in the middle of each lobe, lit with it. */
+@utility loop-caption {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: color var(--duration-600);
+  &[data-on] {
+    color: var(--color-bright);
+  }
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
+@utility loop-caption-left {
+  left: 26.5%;
+}
+
+@utility loop-caption-right {
+  left: 73.5%;
+}
+
+/* A station on the stroke: it grows and rings when its step comes into focus. */
+@utility loop-station {
+  position: absolute;
+  z-index: 2;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  box-sizing: border-box;
+  border-radius: var(--radius-circle);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-rule-strong);
+  color: var(--color-subtle);
+  transition:
+    border-color var(--duration-350),
+    background-color var(--duration-350),
+    color var(--duration-350),
+    transform var(--duration-450) var(--ease-settle);
+  &[data-on] {
+    border-color: var(--color-subtle);
+    background-color: var(--color-station-on);
+    color: var(--color-bright);
+    transform: scale(1.1);
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: var(--radius-circle);
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-on]::after {
+      animation: wk-arrive var(--duration-1100) var(--ease-enter) both;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-instant);
+  }
+  @media (max-width: 600px) {
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+  }
+}
+
+/* Where the tags sit around the crossing: the first and the third beside the short arcs, the second
+   above the crossing and the fourth below it. */
+@utility loop-tag {
+  position: absolute;
+  z-index: 3;
+}
+
+@utility loop-tag-left {
+  right: calc(50% + 0.3947 * var(--fw) + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@utility loop-tag-right {
+  left: calc(50% + 0.3947 * var(--fw) + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@utility loop-tag-top {
+  left: 50%;
+  top: calc(50% - 0.1605 * var(--fw));
+  transform: translate(-50%, -50%);
+}
+
+@utility loop-tag-bottom {
+  left: 50%;
+  top: calc(50% + 0.1605 * var(--fw));
+  transform: translate(-50%, -50%);
+}
+
+/* An item of the list, beside its station: the two steps before production on the left, aligned to
+   the drawing, and the two in production on the right. At 1099px and below the items flow in the
+   list's grid. */
+@utility loop-item {
+  position: absolute;
+  z-index: 2;
+  width: var(--spacing-loop-item);
+  cursor: pointer;
+  transform: translateY(-50%);
+  --step-focus-offset: var(--outline-offset-loop);
+  @media (max-width: 1099px) {
+    position: static;
+    width: auto;
+    transform: none;
+  }
+}
+
+@utility loop-item-left {
+  right: calc(50% + 0.3554 * var(--fw) + 40px);
+  text-align: right;
+  @media (max-width: 1099px) {
+    text-align: left;
+  }
+}
+
+@utility loop-item-right {
+  left: calc(50% + 0.3554 * var(--fw) + 40px);
+}
+
+@utility loop-item-top {
+  top: calc(50% - 0.134 * var(--fw));
+}
+
+@utility loop-item-bottom {
+  top: calc(50% + 0.134 * var(--fw));
+}
+
+/* Version 03, the cards: four cards in a row and a dotted rail that closes the cycle below them (wk3-*).
+   The card in focus turns lighter, lights its edge and shows its copy large. While the cycle runs by
+   itself (data-run) its edge is even and a light runs along its top edge, from left to right, in the
+   color of what it delivers. The card follows the pointer through --mx and --my. */
+@utility cycle-card-spot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 440px;
+  height: 440px;
+  margin: -220px 0 0 -220px;
+  border-radius: var(--radius-circle);
+  background: radial-gradient(closest-side, var(--color-white-spot), var(--color-white-0));
+  opacity: 0;
+  transform: translate3d(var(--mx), var(--my), 0);
+  transition: opacity var(--duration-450) ease;
+  pointer-events: none;
+  :where(.cycle-card:is(:hover, [data-show-state="hover"] *)) & {
+    opacity: 1;
+  }
+}
+
+@utility cycle-card-edge {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    300px circle at var(--mx) var(--my),
+    var(--color-bright-85),
+    var(--color-bright-10) 72%
+  );
+  opacity: 0;
+  transition: opacity var(--duration-450) ease;
+  pointer-events: none;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  :where([data-on]) & {
+    opacity: 1;
+  }
+  /* With the cycle running by itself there is no pointer: the edge of the card in focus is even, and
+     what moves is the light on top. */
+  :where([data-run]) :where([data-on]) & {
+    background: var(--color-bright-13);
+  }
+}
+
+/* The glow under the light on top, inside the card: a soft circle in --pc that runs with it. */
+@utility cycle-card-glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 100%;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  &::before {
+    content: "";
+    position: absolute;
+    left: -180px;
+    top: -180px;
+    width: 360px;
+    height: 360px;
+    border-radius: var(--radius-circle);
+    background: radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--pc) 15%, transparent),
+      transparent
+    );
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-run]) :where([data-on]) & {
+      animation: wk3-head var(--duration-3000) linear both;
+    }
+  }
+}
+
+/* The line on the card's top edge, in --pc: whole while the card is in focus, and filling from left to
+   right over the 3s of the step while the cycle runs. Out of focus it fades, and only then goes back to
+   its start. */
+@utility cycle-card-run {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 1px;
+  background: var(--pc);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-600) ease,
+    transform var(--duration-0) var(--delay-600);
+  :where([data-on]) & {
+    opacity: 0.85;
+    transform: scaleX(1);
+    transition:
+      opacity var(--duration-350) ease,
+      transform var(--duration-0);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-run]) :where([data-on]) & {
+      animation: wk-fill var(--duration-3000) linear both;
+    }
+  }
+}
+
+/* The head of the light on top: a dot in --pc with a ring and a glow, which runs the card's top edge
+   while the cycle runs, over the card's edge. */
+@utility cycle-card-head {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  &::before {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: -3.5px;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-circle);
+    background: var(--pc);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--pc) 22%, transparent),
+      0 0 16px 3px color-mix(in srgb, var(--pc) 60%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-run]) :where([data-on]) & {
+      animation: wk3-head var(--duration-3000) linear both;
+    }
+  }
+}
+
+@utility cycle-card {
+  --mx: 96px;
+  --my: 72px;
+}
+
+@utility cycle-card-large {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--duration-500) var(--ease-settle),
+    transform var(--duration-500) var(--ease-settle);
+  :where([data-on]) & {
+    opacity: 1;
+    transform: none;
+    transition-delay: var(--delay-80);
+  }
+  @media (max-width: 600px) {
+    display: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-instant);
+  }
+}
+
+@utility cycle-card-small {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition:
+    opacity var(--duration-350) var(--ease-settle),
+    transform var(--duration-350) var(--ease-settle);
+  :where([data-on]) & {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  @media (max-width: 600px) {
+    &,
+    :where([data-on]) & {
+      position: static;
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-instant);
+  }
+}
+
+/* Where the cards' rail, its runner, the tags and the arrows sit: the rail 20px in from the top and
+   the bottom of the cycle, the tags on the top edge of the cards over the three seams and on the rail
+   below the middle, and the arrows on the rail below, at a quarter from each end. */
+@utility cards-rail-frame {
+  left: -14px;
+  top: 20px;
+  width: calc(100% + 28px);
+  height: calc(100% - 40px);
+}
+
+@utility cards-runner {
+  left: -14px;
+  right: -14px;
+  top: 20px;
+  bottom: 20px;
+}
+
+@utility cards-tag {
+  position: absolute;
+  z-index: 3;
+  top: 16px;
+  transform: translate(-50%, -50%);
+}
+
+@utility cards-tag-1 {
+  left: 25%;
+}
+
+@utility cards-tag-2 {
+  left: 50%;
+}
+
+@utility cards-tag-3 {
+  left: 75%;
+}
+
+@utility cards-tag-4 {
+  left: 50%;
+  top: calc(100% - 20px);
+}
+
+@utility cards-arrow {
+  position: absolute;
+  z-index: 1;
+  top: calc(100% - 20px);
+  margin: -5px 0 0 -5px;
+  color: var(--color-rail-arrow);
+}
+
+@utility cards-arrow-1 {
+  left: 24%;
+}
+
+@utility cards-arrow-2 {
+  left: 76%;
+}
+
+/* A space left for a GIF (tm-gif): dashed, striped, with what goes there written in the middle. */
+@utility gif-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-white-stripe) 0 1px,
+    transparent 1px 11px
+  );
+}
+
+/*
+ * The team cards' Version 02, the surprise (tm2-*). On hover the large copy takes the small one's place,
+ * and the neon comes in one of three forms, set by data-neon on the grid: fill (the gradient paints the
+ * card from where the pointer came in), line (the card stays dark, the gradient runs along its border
+ * and the glow leaks around it) and spot (the neon exists only around the pointer, inside the card, on
+ * its border and leaking through its nearest side). --gc is the team's core color and --nl its light;
+ * the card follows the pointer through --mx, --my (in px), --px, --py (from 0 to 1) and --ex, --ey (where
+ * the pointer came in or left).
+ */
+@utility team-card {
+  --mx: 160px;
+  --my: 120px;
+  --ex: 50px;
+  --ey: 50px;
+  --px: 0.5;
+  --py: 0.5;
+  &[data-team="red"] {
+    --gc: var(--color-neon-red-core);
+    --nl: var(--color-neon-red-4);
+  }
+  &[data-team="blue"] {
+    --gc: var(--color-neon-blue-core);
+    --nl: var(--color-neon-blue-4);
+  }
+}
+
+@utility team-glow {
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--radius-8);
+  opacity: 0;
+  translate: calc((var(--px) - 0.5) * 28px) calc((var(--py) - 0.5) * 28px);
+  transition:
+    opacity var(--duration-500) var(--ease-settle),
+    translate var(--duration-400) var(--ease-out);
+  :where([data-neon="fill"]) & {
+    box-shadow: 0 0 70px 20px rgb(from var(--gc) r g b / 0.45);
+  }
+  :where([data-neon="line"]) & {
+    box-shadow:
+      0 0 26px 2px rgb(from var(--gc) r g b / 0.55),
+      0 0 80px 8px rgb(from var(--gc) r g b / 0.3);
+  }
+  :where([data-neon="fill"], [data-neon="line"])
+    .team-card:is(:hover, [data-show-state="hover"] *)
+    & {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-neon="fill"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+      animation: tm-glow var(--duration-3000) ease-in-out infinite;
+    }
+    :where([data-neon="line"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+      animation: tm-glow-line var(--duration-3000) ease-in-out infinite;
+    }
+  }
+}
+
+@utility team-leak {
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 440px;
+  height: 440px;
+  margin: -220px 0 0 -220px;
+  border-radius: var(--radius-circle);
+  background: radial-gradient(
+    closest-side,
+    rgb(from var(--gc) r g b / 0.62),
+    rgb(from var(--gc) r g b / 0.22) 55%,
+    rgb(from var(--gc) r g b / 0)
+  );
+  opacity: 0;
+  transform: translate3d(var(--mx), var(--my), 0);
+  transition: opacity var(--duration-450) ease;
+  :where([data-neon="spot"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      opacity var(--duration-450) ease,
+      transform var(--duration-160) var(--ease-out);
+  }
+}
+
+@utility team-fill {
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background-size: 200% 200%;
+  opacity: 0;
+  clip-path: circle(0 at var(--ex) var(--ey));
+  transition:
+    clip-path var(--duration-900) var(--ease-pop),
+    opacity var(--duration-350) ease;
+  :where([data-team="red"]) & {
+    background-image: linear-gradient(
+      135deg,
+      var(--color-neon-red-1) 0%,
+      var(--color-neon-red-2) 33%,
+      var(--color-neon-red-3) 66%,
+      var(--color-neon-red-4) 100%
+    );
+  }
+  :where([data-team="blue"]) & {
+    background-image: linear-gradient(
+      135deg,
+      var(--color-neon-blue-1) 0%,
+      var(--color-neon-blue-2) 33%,
+      var(--color-neon-blue-3) 66%,
+      var(--color-neon-blue-4) 100%
+    );
+  }
+  :where([data-neon="fill"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+    opacity: 1;
+    clip-path: circle(160% at var(--ex) var(--ey));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-neon="fill"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+      animation: tm-shimmer var(--duration-5000) ease-in-out infinite;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-instant);
+  }
+}
+
+@utility team-spot {
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 560px;
+  height: 560px;
+  margin: -280px 0 0 -280px;
+  border-radius: var(--radius-circle);
+  opacity: 0;
+  transform: translate3d(var(--mx), var(--my), 0);
+  transition: opacity var(--duration-450) ease;
+  :where([data-neon="fill"]) & {
+    background: radial-gradient(closest-side, var(--color-white-50), var(--color-white-0));
+  }
+  :where([data-neon="line"]) & {
+    background: radial-gradient(
+      closest-side,
+      rgb(from var(--nl) r g b / 0.16),
+      rgb(from var(--nl) r g b / 0)
+    );
+  }
+  :where([data-neon="spot"]) & {
+    background: radial-gradient(
+      closest-side,
+      rgb(from var(--nl) r g b / 0.5),
+      rgb(from var(--gc) r g b / 0.2) 52%,
+      rgb(from var(--gc) r g b / 0)
+    );
+  }
+  .team-card:is(:hover, [data-show-state="hover"] *) & {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      opacity var(--duration-450) ease,
+      transform var(--duration-160) var(--ease-out);
+  }
+}
+
+@utility team-edge {
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1.5px;
+  opacity: 0;
+  transition: opacity var(--duration-450) ease;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  :where([data-neon="line"]) :where([data-team="red"]) & {
+    background: conic-gradient(
+      from var(--tm-a) at 50% 50%,
+      var(--color-neon-red-2),
+      var(--color-neon-red-core),
+      var(--color-neon-red-3),
+      var(--color-neon-red-4),
+      var(--color-neon-red-1),
+      var(--color-neon-red-core),
+      var(--color-neon-red-2)
+    );
+  }
+  :where([data-neon="line"]) :where([data-team="blue"]) & {
+    background: conic-gradient(
+      from var(--tm-a) at 50% 50%,
+      var(--color-neon-blue-2),
+      var(--color-neon-blue-core),
+      var(--color-neon-blue-3),
+      var(--color-neon-blue-4),
+      var(--color-neon-blue-1),
+      var(--color-neon-blue-core),
+      var(--color-neon-blue-2)
+    );
+  }
+  :where([data-neon="spot"]) & {
+    background: radial-gradient(
+      320px circle at var(--mx) var(--my),
+      rgb(from var(--nl) r g b),
+      rgb(from var(--nl) r g b / 0) 72%
+    );
+  }
+  :where([data-neon="line"], [data-neon="spot"])
+    .team-card:is(:hover, [data-show-state="hover"] *)
+    & {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-neon="line"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+      animation: tm-spin var(--duration-7000) linear infinite;
+    }
+  }
+}
+
+/* What the hovered card's top turns into: black on the fill, the team's light on the line and the
+   spot (the icon only). */
+@utility team-icon {
+  transition: color var(--duration-500) var(--ease-settle);
+  :where([data-neon="fill"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+    color: var(--color-black);
+  }
+  :where([data-neon="line"], [data-neon="spot"])
+    .team-card:is(:hover, [data-show-state="hover"] *)
+    & {
+    color: var(--nl);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-team="red"]):is(:hover, [data-show-state="hover"] *) & svg {
+      animation: tm-thrust var(--duration-2600) var(--ease-pop) infinite;
+    }
+    :where([data-team="blue"]):is(:hover, [data-show-state="hover"] *) & svg {
+      animation: tm-brace var(--duration-2600) var(--ease-pop) infinite;
+    }
+  }
+}
+
+@utility team-name {
+  transition: color var(--duration-500) var(--ease-settle);
+  :where([data-neon="fill"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+    color: var(--color-black);
+  }
+}
+
+@utility team-line {
+  transition: color var(--duration-500) var(--ease-settle);
+  :where([data-neon="fill"]) .team-card:is(:hover, [data-show-state="hover"] *) & {
+    color: var(--color-black-72);
+  }
+}
+
+@utility team-large {
+  color: var(--color-black);
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity var(--duration-500) var(--ease-settle),
+    transform var(--duration-500) var(--ease-settle);
+  :where([data-neon="line"], [data-neon="spot"]) & {
+    color: var(--color-bright);
+  }
+  .team-card:is(:hover, [data-show-state="hover"] *) & {
+    opacity: 1;
+    transform: none;
+    transition-delay: var(--delay-80);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: var(--duration-instant);
+  }
+}
+
+@utility team-small {
+  transition:
+    opacity var(--duration-350) var(--ease-settle),
+    transform var(--duration-350) var(--ease-settle);
+  .team-card:is(:hover, [data-show-state="hover"] *) & {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+/* The reaction between the two cards, only with a fine pointer and the cards side by side: hovering the
+   Red Team fires three shots at the Blue Team, which raises its wall and braces; hovering the Blue Team
+   raises the wall and the Red Team recoils. */
+@utility team-shot {
+  left: 56%;
+  opacity: 0;
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) and (min-width: 981px) {
+    :where(:has([data-team="red"]:hover)) & {
+      animation: tm-shot var(--duration-2600) linear infinite;
+    }
+  }
+}
+
+@utility team-wall {
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  z-index: 2;
+  background: linear-gradient(
+    180deg,
+    var(--color-blue-0),
+    var(--color-blue) 22%,
+    var(--color-blue) 78%,
+    var(--color-blue-0)
+  );
+  opacity: 0;
+  transform: scaleY(0.4);
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) and (min-width: 981px) {
+    :where(:has([data-team="red"]:hover)) & {
+      animation: tm-wall var(--duration-2600) ease-out infinite;
+    }
+    :where(:has([data-team="blue"]:hover)) & {
+      opacity: 0.85;
+      transform: scaleY(1);
+      transition:
+        opacity var(--duration-400) ease,
+        transform var(--duration-500) var(--ease-settle);
+    }
+  }
+}
+
+@utility team-react {
+  @media (prefers-reduced-motion: no-preference) and (hover: hover) and (min-width: 981px) {
+    :where(:has([data-team="red"]:hover)) :where([data-team="blue"]) & svg {
+      animation: tm-brace var(--duration-2600) var(--ease-pop) var(--delay-700) infinite;
+    }
+    :where(:has([data-team="blue"]:hover)) :where([data-team="red"]) & svg {
+      animation: tm-recoil var(--duration-700) var(--ease-pop) both;
+    }
+  }
+}

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { buildTokens, parseFontFaces } from '../publish.mjs';
-import { readTheme } from '../theme.mjs';
-import { makeTheme, tempDir } from './fixtures.mjs';
+import { readProject } from '../project.mjs';
+import { makeProject, tempDir } from './fixtures.mjs';
 
 const FACES = [{ family: 'Aurora Sans', file: 'fonts/aurora.woff2', weight: '100 900', style: 'normal' }];
 const META = { source: 'github', ref: 'main@abc1234' };
@@ -42,10 +42,10 @@ const DRAFT = {
 };
 
 test('the tokens take their values from @theme and their text from the draft', () => {
-  const theme = readTheme(makeTheme(tempDir()));
-  const { tokens, leftOut, dropped } = buildTokens({ theme, faces: FACES, draft: DRAFT, meta: META });
+  const project = readProject(makeProject(tempDir()));
+  const { tokens, leftOut, dropped } = buildTokens({ project, faces: FACES, draft: DRAFT, meta: META });
   assert.deepEqual(tokens, {
-    name: 'demo-portal · Aurora',
+    name: 'demo-portal',
     version: 1,
     meta: META,
     color: {
@@ -74,8 +74,8 @@ test('the tokens take their values from @theme and their text from the draft', (
 });
 
 test('a transition duration is motion, left out with the other motion tokens', () => {
-  const theme = readTheme(
-    makeTheme(tempDir(), {
+  const project = readProject(
+    makeProject(tempDir(), {
       'web/app/globals.css': `@theme {
   --color-ink: #101010;
   --default-transition-duration: 0.2s;
@@ -84,16 +84,16 @@ test('a transition duration is motion, left out with the other motion tokens', (
 `,
     }),
   );
-  const { tokens, leftOut } = buildTokens({ theme, faces: FACES, draft: DRAFT, meta: META });
+  const { tokens, leftOut } = buildTokens({ project, faces: FACES, draft: DRAFT, meta: META });
   assert.deepEqual(leftOut, ['--default-transition-duration', '--transition-duration-slow']);
   assert.equal(JSON.stringify(tokens).includes('transition'), false);
 });
 
 test('every @theme token without a usage note in the draft is named, with its family', () => {
-  const theme = readTheme(makeTheme(tempDir()));
+  const project = readProject(makeProject(tempDir()));
   const draft = { ...DRAFT, radius: { tokens: [] }, spacing: undefined };
   assert.throws(
-    () => buildTokens({ theme, faces: FACES, draft, meta: META }),
+    () => buildTokens({ project, faces: FACES, draft, meta: META }),
     (error) => {
       assert.match(error.message, /--spacing \(spacing\)/);
       assert.match(error.message, /--radius-8 \(radius\)/);
@@ -103,36 +103,36 @@ test('every @theme token without a usage note in the draft is named, with its fa
 });
 
 test('a draft without color themes or text styles is refused', () => {
-  const theme = readTheme(makeTheme(tempDir()));
+  const project = readProject(makeProject(tempDir()));
   assert.throws(
-    () => buildTokens({ theme, faces: FACES, draft: { ...DRAFT, color: { tokens: DRAFT.color.tokens } }, meta: META }),
+    () => buildTokens({ project, faces: FACES, draft: { ...DRAFT, color: { tokens: DRAFT.color.tokens } }, meta: META }),
     /color\.themes/,
   );
   assert.throws(
-    () => buildTokens({ theme, faces: FACES, draft: { ...DRAFT, type: {} }, meta: META }),
+    () => buildTokens({ project, faces: FACES, draft: { ...DRAFT, type: {} }, meta: META }),
     /type\.groups/,
   );
 });
 
 test('a token in no known family stops the build', () => {
-  const theme = readTheme(
-    makeTheme(tempDir(), { 'web/app/globals.css': '@theme {\n  --color-a: #000;\n  --perspective-near: 300px;\n}\n' }),
+  const project = readProject(
+    makeProject(tempDir(), { 'web/app/globals.css': '@theme {\n  --color-a: #000;\n  --perspective-near: 300px;\n}\n' }),
   );
-  assert.throws(() => buildTokens({ theme, faces: FACES, draft: DRAFT, meta: META }), /--perspective-near/);
+  assert.throws(() => buildTokens({ project, faces: FACES, draft: DRAFT, meta: META }), /--perspective-near/);
 });
 
 test('an aspect ratio goes to the layout family', () => {
-  const theme = readTheme(
-    makeTheme(tempDir(), { 'web/app/globals.css': '@theme {\n  --color-ink: #101010;\n  --aspect-4-3: 4 / 3;\n}\n' }),
+  const project = readProject(
+    makeProject(tempDir(), { 'web/app/globals.css': '@theme {\n  --color-ink: #101010;\n  --aspect-4-3: 4 / 3;\n}\n' }),
   );
   const draft = { ...DRAFT, layout: { tokens: [{ name: 'aspect-4-3', usage: 'Media.' }] } };
-  const { tokens } = buildTokens({ theme, faces: FACES, draft, meta: META });
+  const { tokens } = buildTokens({ project, faces: FACES, draft, meta: META });
   assert.deepEqual(tokens.layout, { tokens: [{ name: 'aspect-4-3', value: '4 / 3', usage: 'Media.' }] });
 });
 
 test('a grid of auto columns goes to the layout family, with the named grids', () => {
-  const theme = readTheme(
-    makeTheme(tempDir(), {
+  const project = readProject(
+    makeProject(tempDir(), {
       'web/app/globals.css': `@theme {
   --color-ink: #101010;
   --grid-template-columns-hero: minmax(0, 1fr) minmax(0, 600px);
@@ -150,7 +150,7 @@ test('a grid of auto columns goes to the layout family, with the named grids', (
       ],
     },
   };
-  const { tokens } = buildTokens({ theme, faces: FACES, draft, meta: META });
+  const { tokens } = buildTokens({ project, faces: FACES, draft, meta: META });
   assert.deepEqual(tokens.layout, {
     tokens: [
       { name: 'grid-template-columns-hero', value: 'minmax(0, 1fr) minmax(0, 600px)', usage: 'Hero.' },
@@ -160,8 +160,8 @@ test('a grid of auto columns goes to the layout family, with the named grids', (
 });
 
 test('a drawn background is left out, as the type takes no var() or url() in a value', () => {
-  const theme = readTheme(
-    makeTheme(tempDir(), {
+  const project = readProject(
+    makeProject(tempDir(), {
       'web/app/globals.css': `@theme {
   --color-ink: #101010;
   --background-image-hatch: repeating-linear-gradient(
@@ -173,7 +173,7 @@ test('a drawn background is left out, as the type takes no var() or url() in a v
 `,
     }),
   );
-  const { tokens, leftOut } = buildTokens({ theme, faces: FACES, draft: DRAFT, meta: META });
+  const { tokens, leftOut } = buildTokens({ project, faces: FACES, draft: DRAFT, meta: META });
   assert.deepEqual(leftOut, ['--background-image-hatch']);
   assert.deepEqual(tokens.color.tokens, [{ name: 'color-ink', value: '#101010', usage: 'Page.' }]);
   assert.equal(JSON.stringify(tokens).includes('background-image'), false);

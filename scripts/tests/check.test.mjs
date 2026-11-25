@@ -3,13 +3,13 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { checkSteps, runSteps } from '../check.mjs';
-import { REPO_ROOT } from '../theme.mjs';
-import { makeTheme, tempDir } from './fixtures.mjs';
+import { REPO_ROOT } from '../project.mjs';
+import { makeProject, tempDir } from './fixtures.mjs';
 
-test("a theme's check installs, lints, typechecks and tests its app, then checks its documents", () => {
-  const theme = makeTheme(tempDir());
-  const web = join(theme, 'web');
-  assert.deepEqual(checkSteps(theme), [
+test("a project's check installs, lints, typechecks and tests its app, then checks its documents", () => {
+  const project = makeProject(tempDir());
+  const web = join(project, 'web');
+  assert.deepEqual(checkSteps(project), [
     { name: 'install', command: 'pnpm', args: ['install', '--frozen-lockfile'], cwd: web },
     { name: 'lint', command: 'pnpm', args: ['lint'], cwd: web },
     { name: 'typecheck', command: 'pnpm', args: ['typecheck'], cwd: web },
@@ -17,14 +17,16 @@ test("a theme's check installs, lints, typechecks and tests its app, then checks
     {
       name: 'docs',
       command: process.execPath,
-      args: [join(REPO_ROOT, 'scripts', 'check-docs.mjs'), theme],
+      args: [join(REPO_ROOT, 'scripts', 'check-docs.mjs'), project],
       cwd: REPO_ROOT,
     },
   ]);
 });
 
-test('a folder that is not a theme is refused', () => {
-  assert.throws(() => checkSteps(tempDir()), /projects\/<project>\/themes\/<theme>/);
+test('a folder that is not projects/<project> is refused before any step', () => {
+  assert.throws(() => checkSteps(tempDir()), /a project folder is projects\/<project>$/);
+  const nested = join(makeProject(tempDir()), 'designs', 'aurora');
+  assert.throws(() => checkSteps(nested), /a project folder is projects\/<project>$/);
 });
 
 // A step that leaves a file named after itself in dir, then exits with code.
